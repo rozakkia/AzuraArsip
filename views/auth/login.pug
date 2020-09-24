@@ -1,0 +1,31 @@
+doctype html
+html(lang='en').no-focus
+    include ../common/head.pug
+    +head(title)
+    body
+        .main-content-boxed(id="page-container")
+            main(id="main-container")
+                .bg-body-light
+                    .row.mx-0.justify-content-center
+                        .hero-static.col-lg-4.col-xl-4
+                            .content.content-full.overflow-hidden
+                                .py-30.text-center
+                                    a(href="/").link-effect.font-w700
+                                        span.font-size-xl.text-primary Azura
+                                        span.font-size-xl.text-primary-dark Arsip
+                                form.js-validation-signin
+                                    .block.block-rounded.block-shadow.bg-pattern(style="background-image: url(assets/media/bg-pattern-inverse.png)")
+                                        .block-content.py-50.px-30
+                                            h4.font-w700.text-center.mb-0.mt-lg-30 Masuk
+                                            p.text-muted.text-center.font-w400 Lengkapi untuk masuk
+                                            .form-group.mt-20
+                                                input.form-control(type="text" placeholder="Username")
+                                            .form-group.mt-20
+                                                input.form-control(type="password" placeholder="Kata Sandi")
+                                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20.mb-30(type="submit") Masuk Sekarang
+                                            .text-center
+                                                small.text-muted.font-w400 Hubungi administrator jika mengalami masalah.
+    
+    include ../common/footer.pug
+    +footer()
+
