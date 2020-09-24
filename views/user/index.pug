@@ -1,0 +1,35 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="assets/js/plugins/select2/css/select2.min.css")
+
+block content
+    .content.content-full
+        a.btn.btn-primary.btn-noborder(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") Tambah User
+
+block modal
+    .modal.fade(id="mdl_user-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah User
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Username")
+                            .form-group.mt-20
+                                input.form-control(type="password" placeholder="Kata sandi")
+                            .form-group.mt-20
+                                select.js-select2.form-control(style="width:100%" id="example-select2" name="example-select2" data-placeholder="Level user")
+                                    option
+                                    option(value="1") Administrator
+                                    option(value="2") Petugas
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+    
+    
+
+block helpers
+    script(src="assets/js/plugins/select2/js/select2.full.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
