@@ -1,11 +1,42 @@
 extends layout
 
 block content
-  .bg-body-light
+  .content.content-full
+    .py-50
+      .position-relative
+        span.text-back Dashboard
+        h1.font-w700.mb-10 Selamat Pagi, 
+          span.text-primary Rozak
+        h3.font-w300.text-muted.mb-50 Ingin melakukan apa hari ini? 
+          i.si.si-emoticon-smile
+      .row 
+        .col-3
+          a.block.block-rounded.block-bordered.block-link-pop.bg-primary.text-center(href="javascript:void(0)")
+            .block-content.py-45
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-docs.text-white
+              p.font-w600.text-white.mb-30 Arsip Surat
+        .col-3
+          a.block.block-rounded.block-bordered.block-link-pop.bg-primary.text-center(href="javascript:void(0)")
+            .block-content.py-45
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-film.text-white
+              p.font-w600.text-white.mb-30 Invoices
+        .col-3
+          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="javascript:void(0)")
+            .block-content
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-doc.text-secondary
+              p.font-w600.text-secondary.mb-30 Templates
+        .col-3
+          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/users")
+            .block-content
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-users.text-secondary 
+              p.font-w600.mb-30.text-secondary Data Pegawai
+  .bg-white
     .content.content-full
-      .pt-100.pb-50
+      .py-50
         .position-relative
-          span.text-back DASHBOARD
-          h2.font-w700.text-center.mb-10 Selamat Pagi, 
-            span.text-primary Rozak
-          h4.font-w400.text-muted.text-center.mb-50 Ingin melakukan apa hari ini?
+          span.text-back Overview
+          h3.font-w300.text-muted.mb-50 Statistik

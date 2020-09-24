@@ -7,8 +7,18 @@ html(lang='en').no-focus
     div(id="page-container").page-header-fixed.main-content-boxed
       include common/navbar.pug
       +navbar()
-    main(id="main-container")
-      block content
+      main(id="main-container")
+        block content
+      footer.bg-white
+        .content.py-20.px-50.font-size-sm.clearfix
+          .float-left
+            | AzuraArsip v.1.0.0
+          .float-right
+            | Crafted With 
+            i.fa.fa-heart.text-pulse
+            |  by Rozak  
+    block modal
+    include common/footer.pug
+    +footer()
+    block helpers
 
-  include common/footer.pug
-  +footer()
