@@ -1,0 +1,20 @@
+mixin navbar()
+    header(id='page-header')
+        .content-header
+            .content-header-section
+                .content-header-item
+                    a(href='/').link-effect.font-w700.mr-5
+                        span.font-size-h4.text-primary Azura
+                        span.font-size-h4.text-dual-primary-dark Arsip
+            .content-header-section.d-none.d-lg-block
+                ul.nav
+                    li.nav-item.mr-xl-2
+                        a.nav-link.font-w600(href="javascript:void(0)")
+                            i.si.si-info.mr-1.font-w600 
+                            | Data User
+            .content-header-section.d-none.d-lg-block
+                ul.nav
+                    li.nav-item.mr-xl-2
+                        a.nav-link.font-w600(href="javascript:void(0)")
+                            i.si.si-info.mr-1.font-w600 
+                            | Keluar

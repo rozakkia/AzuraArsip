@@ -1,7 +1,14 @@
 doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+html(lang='en').no-focus
+  include common/head.pug
+  +head(title)
+  
   body
-    block content
+    div(id="page-container").page-header-fixed.main-content-boxed
+      include common/navbar.pug
+      +navbar()
+    main(id="main-container")
+      block content
+
+  include common/footer.pug
+  +footer()

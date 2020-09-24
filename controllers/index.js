@@ -1,3 +1,3 @@
-exports.index = function(req, res, next) {
+exports.get_index = function(req, res, next) {
     res.render('index', { title: 'Express' });
   }
