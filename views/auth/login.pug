@@ -13,15 +13,15 @@ html(lang='en').no-focus
                                     a(href="/").link-effect.font-w700
                                         span.font-size-xl.text-primary Azura
                                         span.font-size-xl.text-primary-dark Arsip
-                                form.js-validation-signin
+                                form.js-validation-signin(action="/login" method="POST")
                                     .block.block-rounded.block-shadow.bg-pattern(style="background-image: url(assets/media/bg-pattern-inverse.png)")
                                         .block-content.py-50.px-30
                                             h4.font-w700.text-center.mb-0.mt-lg-30 Masuk
                                             p.text-muted.text-center.font-w400 Lengkapi untuk masuk
                                             .form-group.mt-20
-                                                input.form-control(type="text" placeholder="Username")
+                                                input.form-control(type="text" name="username" placeholder="Username")
                                             .form-group.mt-20
-                                                input.form-control(type="password" placeholder="Kata Sandi")
+                                                input.form-control(type="password" name="password" placeholder="Kata Sandi")
                                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20.mb-30(type="submit") Masuk Sekarang
                                             .text-center
                                                 small.text-muted.font-w400 Hubungi administrator jika mengalami masalah.

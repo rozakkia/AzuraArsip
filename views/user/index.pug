@@ -2,10 +2,120 @@ extends ../layout
 
 block css
     link(rel="stylesheet", href="assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="assets/js/plugins/datatables/dataTables.bootstrap4.css")
 
 block content
     .content.content-full
-        a.btn.btn-primary.btn-noborder(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") Tambah User
+        .py-50
+            .position-relative
+                span.text-back Users Account
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            span.breadcrumb-item.active Users Page
+        .block
+            .block-header.block-header-default
+                h3.block-title Tabel Data User
+                .block-options
+                    button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                    a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") Tambah User
+            .block-content.block-content-full
+                table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                    thead
+                        tr
+                            th.text-center
+                            th name
+                            th.d-none.d-sm-table-cell Username
+                            th.d-none.d-sm-table-cell Level
+                            th.text-center Action
+                    tbody
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                        tr
+                            td.text-center 1
+                            td.font-w600 Rozak Ilham Aditya
+                            td.d-none.d-sm-table-cell rozakkia
+                            td.d-none.d-sm-table-cell Administrator
+                            td.text-center
+                                button.btn.btn-sm.btn-secondary Hapus
+                
+
 
 block modal
     .modal.fade(id="mdl_user-tambah" tabindex="-1" role="dialog")
@@ -17,11 +127,13 @@ block modal
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
                         form.js-validation-signin(action="/users" method="POST")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Username" name="username")
+                                input.form-control(type="text" placeholder="Username" name="username" value=formData.username)
+                                if (errors && errors.username)
+                                    p.small.text-danger #{errors.username}
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Nama Lengkap" name="name")
                             .form-group.mt-20
-                                input.form-control(type="password" placeholder="Kata sandi" name="password")
+                                input.form-control(type="password" placeholder="Kata sandi" name="password" value="")
                             .form-group.mt-20
                                 select.js-select2.form-control(style="width:100%" id="example-select2" name="level" data-placeholder="Level user")
                                     option
@@ -33,5 +145,9 @@ block modal
 
 block helpers
     script(src="assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="assets/js/pages/be_tables_datatables.min.js")
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })

@@ -6,7 +6,7 @@ html(lang='en').no-focus
   body
     div(id="page-container").page-header-fixed.main-content-boxed
       include common/navbar.pug
-      +navbar()
+      +navbar(user)
       main(id="main-container")
         block content
       footer.bg-white
