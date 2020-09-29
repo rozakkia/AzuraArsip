@@ -1,0 +1,39 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            span.breadcrumb-item.active #{title}
+        .row
+            .col-3
+            .col-9
+                .block
+                    .block-header.block-header-default
+                        h3.block-title Tabel Data User
+                        .block-options
+                            button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                            a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") Tambah User
+                    .block-content.block-content-full
+
+
+block modal
+    .modal.fade(id="mdl_user-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah User
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+    
+
+block helpers
