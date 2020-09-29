@@ -8,12 +8,12 @@ block content
     .content.content-full
         .py-50
             .position-relative
-                span.text-back Users Account
+                span.text-back #{title}
                 .row
                     .col-6
                         nav.breadcrumb.push
                             a.breadcrumb-item(href='/') Dashboard
-                            span.breadcrumb-item.active Users Page
+                            span.breadcrumb-item.active #{title}
         .block
             .block-header.block-header-default
                 h3.block-title Tabel Data User
@@ -30,91 +30,24 @@ block content
                             th.d-none.d-sm-table-cell Level
                             th.text-center Action
                     tbody
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                        tr
-                            td.text-center 1
-                            td.font-w600 Rozak Ilham Aditya
-                            td.d-none.d-sm-table-cell rozakkia
-                            td.d-none.d-sm-table-cell Administrator
-                            td.text-center
-                                button.btn.btn-sm.btn-secondary Hapus
-                
+                        if users
+                            for user_data in users
+                                tr
+                                    td.text-center 1
+                                    td.font-w600 #{user_data.name}
+                                    td.d-none.d-sm-table-cell #{user_data.username}
+                                    td.d-none.d-sm-table-cell 
+                                        case user_data.level
+                                            when 1 
+                                                const Administrator
+                                            when 2 
+                                                const Petugas
+                                            default 
+                                                const Galat Error!
+                                    td.text-center
+                                        a.btn.btn-sm.btn-noborder.btn-alt-primary.mr-5(href="/users/" + user_data.id ) Ubah
+                                        button.btn.btn-sm.btn-noborder.btn-alt-secondary Hapus
+                        
 
 
 block modal
