@@ -9,15 +9,31 @@ const { validateUser } = require('../validators/user');
 
 // Views Controller
 exports.get_login = function(req, res, next) {
-  res.render('auth/login', { title: 'Halaman Masuk' , user: req.user });
+  res.render('auth/login', { title: 'Login Page' , user: req.user });
 }
 
 exports.get_users = function(req, res, next) {
-  res.render('user/index', { title: 'Data User', user: req.user , formData: {}, errors: {} });
+  return models.User.findAll().then(users => {
+    res.render('user/index', { title: 'Users Account', user: req.user , users:users , formData: {}, errors: {} });
+  })
+}
+
+exports.get_detail = function(req, res, next) {
+  return models.User.findOne({
+    where : {
+        id : req.params.user_id
+    }
+  }).then(user_detail => {
+      res.render('user/detail', { title: 'Users Detail' , user: req.user, user_detail:user_detail });
+  });
+}
+
+exports.show_lead = function(req,res,next) {
+ 
 }
 
 exports.rerender_get_users = function(errors, req, res, next) {
-  res.render('user/index', { title: 'Data User', user: req.user , formData: req.body, errors: errors });
+  res.render('user/index', { title: 'Users Account', user: req.user , formData: req.body, errors: errors });
 }
 
 
@@ -40,6 +56,20 @@ exports.adding_user = function(req, res, next) {
           res.redirect('/users');  
       })
     }
+  })
+}
+
+exports.edit_user = function(req, res, next) {
+  req.params.user_id
+  req.body.name
+  return models.User.update({
+    name:req.body.name
+  },{
+    where: {
+      id: req.params.user_id
+    }
+  }).then(result => {
+    res.redirect('/users/' + req.params.user_id);
   })
 }
 
