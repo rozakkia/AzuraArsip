@@ -10,30 +10,48 @@ block content
         h3.font-w300.text-muted.mb-50 Ingin melakukan apa hari ini? 
           i.si.si-emoticon-smile
       .row 
-        .col-3
-          a.block.block-rounded.block-bordered.block-link-pop.bg-primary.text-center(href="javascript:void(0)")
-            .block-content.py-45
-              p.font-size-h1.mb-0.mt-10
-                i.si.si-docs.text-white
-              p.font-w600.text-white.mb-30 Arsip Surat
-        .col-3
-          a.block.block-rounded.block-bordered.block-link-pop.bg-primary.text-center(href="javascript:void(0)")
-            .block-content.py-45
-              p.font-size-h1.mb-0.mt-10
-                i.si.si-film.text-white
-              p.font-w600.text-white.mb-30 Invoices
-        .col-3
-          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="javascript:void(0)")
-            .block-content
-              p.font-size-h1.mb-0.mt-10
-                i.si.si-doc.text-secondary
-              p.font-w600.text-secondary.mb-30 Templates
-        .col-3
+        .col-4
+          a.block.block-rounded.block-link-pop.bg-primary(href="javascript:void(0)")
+            .block-content.block-content-full.py-45.d-flex.align-items-center.justify-content-between
+              .mr-5.mb-15.mt-15
+                small.font-w200.text-white Monthly
+                p.font-size-lg.font-w700.text-white.mb-0
+                  | 780
+                  i.fa.fa-arrow-circle-down.ml-5  
+                  span.text-secondary.text-white.mr-10.ml-10 |
+                  |  200
+                  i.fa.fa-arrow-circle-up.ml-5 
+                p.font-size-sm.text-uppercase.font-w600.text-white.mb-0.mt-1
+                  | Arsip Surat
+              .p-20
+                i.si.fa-3x.si-docs.text-white
+        .col-4
+          a.block.block-rounded.block-link-pop.bg-primary(href="javascript:void(0)")
+            .block-content.block-content-full.py-45.d-flex.align-items-center.justify-content-between
+              .mr-5.mb-15.mt-15
+                small.font-w200.text-white Monthly
+                p.font-size-lg.font-w700.text-white.mb-0
+                  | 780
+                  i.fa.fa-arrow-circle-down.ml-5  
+                  span.text-secondary.text-white.mr-10.ml-10 |
+                  |  200
+                  i.fa.fa-arrow-circle-up.ml-5 
+                p.font-size-sm.text-uppercase.font-w600.text-white.mb-0.mt-1
+                  | Invoices
+              .p-20
+                i.si.fa-3x.si-film.text-white
+        .col-2
           a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/users")
             .block-content
               p.font-size-h1.mb-0.mt-10
                 i.si.si-users.text-secondary 
               p.font-w600.mb-30.text-secondary Data Pegawai
+        .col-2
+          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/settings")
+            .block-content
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-equalizer.text-secondary
+              p.font-w600.text-secondary.mb-30 Pengaturan
   .bg-white
     .content.content-full
       .py-50
