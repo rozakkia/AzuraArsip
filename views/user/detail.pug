@@ -13,13 +13,14 @@ block content
                             a.breadcrumb-item(href='/') Dashboard
                             a.breadcrumb-item(href='/users') Users Account
                             span.breadcrumb-item.active #{title}
+            a.btn.btn-alt-secondary.btn-noborder.btn-hero(href="/users") Kembali
             .block
                 .block-header.block-header-default
                     h3.block-title Detail User: #{user_detail.username}
                     .block-options
                         button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                        a.btn.btn-primary.btn-noborder.btn-hero.mr-5(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") Ubah Data
-                        a.btn.btn-alt-danger.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") 
+                        a.btn.btn-primary.btn-noborder.btn-hero.mr-5(data-toggle="modal" data-target="#mdl_user-ubah" href="javascript:void(0)") Ubah Data
+                        a.btn.btn-alt-danger.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-hapus" href="javascript:void(0)") 
                             i.fa.fa-trash
                 .block-content.block-content-full
                     .row.mt-10
@@ -56,17 +57,37 @@ block content
                             
 
 block modal
-    .modal.fade(id="mdl_user-tambah" tabindex="-1" role="dialog")
+    .modal.fade(id="mdl_user-ubah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
                 .block.block-rounded.block-transparent
                     .block-content.mt-20.mb-20.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Ubah Data
                         p.text-muted.text-center.font-w400 username: #{user_detail.username}
-                        form.js-validation-signin(action="/users/" + user_detail.id , method="POST")
-                            .form-group.mt-20
+                        form.js-validation-signin(action="/users/" + user_detail.id + "/edit", method="POST")
+                            .form-group
+                                label Nama
                                 input.form-control(type="text" placeholder="Nama Lengkap" name="name" value=user_detail.name)
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
+    
+    .modal.fade(id="mdl_user-hapus" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
+                        p.text-muted.text-center.font-w400 username: #{user_detail.username}
+                        form.js-validation-signin(action="/users/" + user_detail.id + "/delete", method="POST")
+                            .form-group
+                                label Username
+                                input.form-control(type="text" name="username" value=user_detail.username disabled)
+                            .form-group
+                                label Nama
+                                input.form-control(type="text" name="name" value=user_detail.name disabled)
+                            hr
+                            h6.font-w700.text-center.mb-0.mt-lg-30 Hapus data ini?
+                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Ya, Hapus
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Batalkan
     
 
 block helpers
