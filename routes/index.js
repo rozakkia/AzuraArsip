@@ -14,9 +14,12 @@ router.get('/login', user.get_login);
 router.post('/login', user.login);
 
 router.get('/users', isLoggedIn, user.get_users);
-router.post('/users', isLoggedIn, user.adding_user);
+router.post('/users', isLoggedIn, user.create_user);
 router.get('/users/:user_id', isLoggedIn, user.get_detail);
 router.post('/users/:user_id/edit', isLoggedIn, user.edit_user);
+router.post('/users/:user_id/delete', isLoggedIn, user.delete_user);
+
+
 router.get('/settings', isLoggedIn, settings.get_settings);
 
 router.get('/logout', isLoggedIn, user.logout);
