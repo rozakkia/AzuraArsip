@@ -41,7 +41,7 @@ const generateHash = function(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
 }
 
-exports.adding_user = function(req, res, next) {
+exports.create_user = function(req, res, next) {
   let errors = {};
   return validateUser(errors, req).then(error => {
     if (!isEmpty(errors)) {
@@ -71,6 +71,16 @@ exports.edit_user = function(req, res, next) {
   }).then(result => {
     res.redirect('/users/' + req.params.user_id);
   })
+}
+
+exports.delete_user = function(req, res, next) {
+	return models.User.destroy({
+		where: {
+			id: req.params.user_id
+		}
+	}).then(result => {
+		res.redirect('/users');
+	})
 }
 
 exports.login = function(req,res,next){
