@@ -14,40 +14,40 @@ block content
                         nav.breadcrumb.push
                             a.breadcrumb-item(href='/') Dashboard
                             span.breadcrumb-item.active #{title}
-        .block
-            .block-header.block-header-default
-                h3.block-title Tabel Data User
-                .block-options
-                    button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                    a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") Tambah User
-            .block-content.block-content-full
-                table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
-                    thead
-                        tr
-                            th.text-center
-                            th name
-                            th.d-none.d-sm-table-cell Username
-                            th.d-none.d-sm-table-cell Level
-                            th.text-center Action
-                    tbody
-                        if users
-                            for user_data in users
-                                tr
-                                    td.text-center 1
-                                    td.font-w600 #{user_data.name}
-                                    td.d-none.d-sm-table-cell #{user_data.username}
-                                    td.d-none.d-sm-table-cell 
-                                        case user_data.level
-                                            when 1 
-                                                const Administrator
-                                            when 2 
-                                                const Petugas
-                                            default 
-                                                const Galat Error!
-                                    td.text-center
-                                        a.btn.btn-sm.btn-noborder.btn-alt-primary.mr-5(href="/users/" + user_data.id ) Ubah
-                                        button.btn.btn-sm.btn-noborder.btn-alt-secondary Hapus
-                        
+            
+            .block
+                .block-header.block-header-default
+                    h3.block-title Tabel Data User
+                    .block-options
+                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                        a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-tambah" href="javascript:void(0)") Tambah User
+                .block-content.block-content-full
+                    table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                        thead
+                            tr
+                                th.text-center
+                                th name
+                                th.d-none.d-sm-table-cell Username
+                                th.d-none.d-sm-table-cell Level
+                                th.text-center Action
+                        tbody
+                            if users
+                                for user_data in users
+                                    tr
+                                        td.text-center 
+                                        td.font-w600 #{user_data.name}
+                                        td.d-none.d-sm-table-cell #{user_data.username}
+                                        td.d-none.d-sm-table-cell 
+                                            case user_data.level
+                                                when 1 
+                                                    const Administrator
+                                                when 2 
+                                                    const Petugas
+                                                default 
+                                                    const Galat Error!
+                                        td.text-center
+                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + user_data.id ) Detail
+                            
 
 
 block modal
