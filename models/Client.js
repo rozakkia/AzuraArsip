@@ -1,35 +1,38 @@
 /* jshint indent: 2 */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    var User = sequelize.define('User', {
+    var Client = sequelize.define('Client', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             allowNull: false,
             primaryKey: true
         },
-        username: {
+        company_name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        pj_name: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        name: {
+        pj_jabatan: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        password: {
-            type: DataTypes.STRING,
+        alamat: {
+            type: DataTypes.TEXT,
             allowNull: true
         },
-        level: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            unique: true
+        kontak: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     })
 
-    User.associate = models => {
-        User.hasMany(models.Bill, {});
+    Client.associate = models => {
+        Client.hasMany(models.Bill, {});
     }
 
-    return User;
+    return Client;
 };
