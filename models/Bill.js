@@ -1,6 +1,5 @@
 /* jshint indent: 2 */
 'use strict';
-let models = require("../models");
 module.exports = (sequelize, DataTypes) => {
     var Bill = sequelize.define('Bill', {
         id: {
@@ -37,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
 
     Bill.associate = models => {
         Bill.hasMany(models.Detail_Bill, {});
+    }
+    Bill.associate = models => {
+        
         Bill.belongsTo(models.Client, {
             foreignKey: {
                 allowNull: false
