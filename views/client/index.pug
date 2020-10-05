@@ -1,0 +1,77 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            span.breadcrumb-item.active #{title}
+            
+            .block
+                .block-header.block-header-default
+                    h3.block-title Tabel Data Client
+                    .block-options
+                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                        a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_client-tambah" href="javascript:void(0)") Tambah Client
+                .block-content.block-content-full
+                    table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                        thead
+                            tr
+                                th.text-center
+                                th Company name
+                                th.d-none.d-sm-table-cell Kontak
+                                th.d-none.d-sm-table-cell Level
+                                th.text-center Action
+                        tbody
+                            if clients
+                                for client_data in clients
+                                    tr
+                                        td.text-center 
+                                        td.font-w600 #{client_data.company_name}
+                                        td.d-none.d-sm-table-cell #{client_data.kontak}
+                                        td.d-none.d-sm-table-cell #{client_data.alamat}
+                                        td.text-center
+                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + client_data.id ) Detail
+                            
+
+
+block modal
+    .modal.fade(id="mdl_client-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Client
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin(action="/clients" method="POST")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Username" name="company" value=formData.username)
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Nama Lengkap" name="name")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Jabatan" name="jabatan")
+                            .form-group.mt-20
+                                textarea.form-control(type="text" placeholder="Alamat Lengkap" name="alamat" rows="3")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Kontak" name="kontak")
+                            
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+    
+    
+
+block helpers
+    script(src="assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
