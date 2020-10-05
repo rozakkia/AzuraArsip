@@ -3,6 +3,7 @@ var router = express.Router();
 
 let index = require('../controllers/index');
 let user = require('../controllers/user');
+let client = require('../controllers/client');
 
 let {isLoggedIn} = require('../middleware/hasAuth.js')
 let {hasAuthAdmin} = require('../middleware/hasAuth.js')
@@ -18,6 +19,11 @@ router.post('/users', isLoggedIn, user.create_user);
 router.get('/users/:user_id', isLoggedIn, user.get_detail);
 router.post('/users/:user_id/edit', isLoggedIn, user.edit_user);
 router.post('/users/:user_id/delete', isLoggedIn, user.delete_user);
+
+// CLIENTS //
+router.get('/clients', isLoggedIn, client.get_clients);
+router.post('/clients', isLoggedIn, client.create_client);
+router.get('/clients/:client_id', isLoggedIn, client.get_detail);
 
 
 router.get('/logout', isLoggedIn, user.logout);
