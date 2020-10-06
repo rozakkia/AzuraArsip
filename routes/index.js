@@ -24,6 +24,8 @@ router.post('/users/:user_id/delete', isLoggedIn, user.delete_user);
 router.get('/clients', isLoggedIn, client.get_clients);
 router.post('/clients', isLoggedIn, client.create_client);
 router.get('/clients/:client_id', isLoggedIn, client.get_detail);
+router.post('/clients/:client_id/edit', isLoggedIn, client.edit_client);
+router.post('/clients/:client_id/delete', isLoggedIn, client.delete_client);
 
 
 router.get('/logout', isLoggedIn, user.logout);
