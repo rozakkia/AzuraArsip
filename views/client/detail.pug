@@ -29,61 +29,73 @@ block content
                                 .block-content.block-content-full.bg-secondary
                                     .text-center.py-50
                                         h4.font-w700.text-white.text-uppercase.mb-0 
-                                            case user_detail.level
-                                                when 1 
-                                                    const Administrator
-                                                when 2
-                                                    const Petugas
-                                                default
-                                                    const Galat Error
+                                            | Logo
                         .col-8
                             .row
                                 .col-6
                                     .form-group
-                                        label Username
-                                        span.form-control(type="text") #{user_detail.username}
+                                        label Company Name
+                                        span.form-control(type="text") #{client_detail.company_name}
                                 .col-6
                                     .form-group
-                                        label Name
-                                        span.form-control(type="text") #{user_detail.name}
+                                        label Kontak
+                                        span.form-control(type="text") #{client_detail.kontak}
+                                .col-12
+                                    .form-group
+                                        label Alamat
+                                        textarea.form-control(type="text" disabled name="alamat" rows="3") #{client_detail.alamat}
+                                .col-6
+                                    .form-group
+                                        label Penanggung Jawab
+                                        input.form-control(type="text" value=client_detail.pj_name disabled)
+                                .col-6
+                                    .form-group
+                                        label Jabatan
+                                        input.form-control(type="text" value=client_detail.pj_jabatan disabled)
                                 .col-6
                                     .form-group
                                         label Created At
-                                        input.form-control(type="text" value=user_detail.createdAt disabled)
+                                        input.form-control(type="text" value=client_detail.createdAt disabled)
                                 .col-6
                                     .form-group
                                         label Last Update
-                                        input.form-control(type="text" value=user_detail.createdAt disabled)
+                                        input.form-control(type="text" value=client_detail.createdAt disabled)
                             
 
 block modal
-    .modal.fade(id="mdl_user-ubah" tabindex="-1" role="dialog")
+    .modal.fade(id="mdl_client-ubah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
                 .block.block-rounded.block-transparent
                     .block-content.mt-20.mb-20.px-30
-                        h4.font-w700.text-center.mb-0.mt-lg-30 Ubah Data
-                        p.text-muted.text-center.font-w400 username: #{user_detail.username}
-                        form.js-validation-signin(action="/users/" + user_detail.id + "/edit", method="POST")
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
+                        form.js-validation-signin(action="/clients/" + client_detail.id + "/edit", method="POST")
                             .form-group
-                                label Nama
-                                input.form-control(type="text" placeholder="Nama Lengkap" name="name" value=user_detail.name)
+                                label Company Name
+                                input.form-control(type="text" placeholder="Company Name" name="company" value=client_detail.company_name)
+                            .form-group
+                                label Penanggung Jawab
+                                input.form-control(type="text" placeholder="Penanggung Jawab" name="name" value=client_detail.pj_name)
+                            .form-group
+                                label Jabatan
+                                input.form-control(type="text" placeholder="Jabatan" name="jabatan" value=client_detail.pj_jabatan)
+                            .form-group.mt-20
+                                textarea.form-control(type="text" placeholder="Alamat Lengkap" name="alamat" rows="3") #{client_detail.alamat}
+                            .form-group
+                                label Kontak
+                                input.form-control(type="text" placeholder="Kontak" name="kontak" value=client_detail.kontak)
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
     
-    .modal.fade(id="mdl_user-hapus" tabindex="-1" role="dialog")
+    .modal.fade(id="mdl_client-hapus" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
                 .block.block-rounded.block-transparent
                     .block-content.mt-20.mb-20.px-30
-                        h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
-                        p.text-muted.text-center.font-w400 username: #{user_detail.username}
-                        form.js-validation-signin(action="/users/" + user_detail.id + "/delete", method="POST")
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                        form.js-validation-signin(action="/clients/" + client_detail.id + "/delete", method="POST")
                             .form-group
-                                label Username
-                                input.form-control(type="text" name="username" value=user_detail.username disabled)
-                            .form-group
-                                label Nama
-                                input.form-control(type="text" name="name" value=user_detail.name disabled)
+                                label Company Name
+                                input.form-control(type="text" name="company" value=client_detail.company_name disabled)
                             hr
                             h6.font-w700.text-center.mb-0.mt-lg-30 Hapus data ini?
                             button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Ya, Hapus
