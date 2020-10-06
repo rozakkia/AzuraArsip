@@ -27,7 +27,35 @@ exports.get_detail = function(req, res, next) {
       where : {
           id : req.params.client_id
       }
-    }).then(user_detail => {
+    }).then(client_detail => {
         res.render('client/detail', { title: 'Client Detail' , user: req.user, client_detail:client_detail });
     });
+  }
+
+  exports.edit_client = function(req, res, next) {
+    req.params.client_id
+    req.body.name
+    return models.Client.update({
+        company_name:req.body.company,
+        pj_name:req.body.name,
+        pj_jabatan:req.body.jabatan,
+        alamat:req.body.alamat,
+        kontak:req.body.kontak
+    },{
+      where: {
+        id: req.params.client_id
+      }
+    }).then(result => {
+      res.redirect('/clients/' + req.params.client_id);
+    })
+  }
+  
+  exports.delete_client = function(req, res, next) {
+      return models.Client.destroy({
+          where: {
+              id: req.params.client_id
+          }
+      }).then(result => {
+          res.redirect('/clients');
+      })
   }
