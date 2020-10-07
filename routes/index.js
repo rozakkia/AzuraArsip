@@ -4,6 +4,9 @@ var router = express.Router();
 let index = require('../controllers/index');
 let user = require('../controllers/user');
 let client = require('../controllers/client');
+let billing = require('../controllers/billing');
+let template = require('../controllers/template');
+let setting = require('../controllers/setting');
 
 let {isLoggedIn} = require('../middleware/hasAuth.js')
 let {hasAuthAdmin} = require('../middleware/hasAuth.js')
@@ -27,6 +30,15 @@ router.get('/clients/:client_id', isLoggedIn, client.get_detail);
 router.post('/clients/:client_id/edit', isLoggedIn, client.edit_client);
 router.post('/clients/:client_id/delete', isLoggedIn, client.delete_client);
 
+// BILLINGS
+router.get('/billings', isLoggedIn, billing.get_billings);
+router.post('/billings', isLoggedIn, billing.create);
+
+// SETTINGS
+router.get('/settings', isLoggedIn, setting.get_settings);
+
+// TEMP
+router.get('/invoice_1', isLoggedIn, template.get_invoice_1);
 
 router.get('/logout', isLoggedIn, user.logout);
 
