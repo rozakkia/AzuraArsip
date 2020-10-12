@@ -1,0 +1,110 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href!="../../assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href!="../../assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            a.breadcrumb-item(href='/billings') Billings Payment
+                            span.breadcrumb-item.active #{title}
+        .text-center
+            h2.font-w400.text-black.mb-30
+                i.fa.fa-plus.text-muted.mr-5 
+                | Add New 
+                strong Invoice 
+                | Bill
+        .block.block-rounded.block-fx-shadow
+            .block-content.px-100
+                form(action="#" method="POST")
+                    h2.content-heading.text-black Client Info
+                    .row.items-push
+                        .col-3
+                            p.text-muted Informasi mengenai client untuk Bill ini.
+                        .col-8.offset-lg-1
+                            .form-group
+                                label Company Name
+                                input.form-control(type="text" placeholder="Company Name" name="company" value=client_detail.company_name disabled)
+                        .col-8.offset-lg-4
+                            .form-group
+                                label Penanggung Jawab
+                                input.form-control(type="text" placeholder="Company Name" name="company" value=client_detail.pj_name+" as "+client_detail.pj_jabatan disabled)
+                    h2.content-heading.text-black Vital Info
+                    .row.items-push
+                        .col-3
+                            p.text-muted Semua informasi yang dibutuhkan didalam Bill ini.
+                        .col-8.offset-lg-1
+                            .form-group
+                                label Keterangan
+                                input.form-control(type="text" placeholder="Singkat mengenai bill ini" name="keterangan")
+                            .form-group.mt-20
+                                label Rekening
+                                select.js-select2.form-control(style="width:100%" id="select-type" name="typebill" data-placeholder="Rekening Akun untuk pembayaran bill ini")
+                                    option
+                                        option(value="1") Invoice
+                                        option(value="2") Receipt
+                    h2.content-heading.text-black Detail Info
+                    .row.items-push
+                        .col-3
+                            p.text-muted Semua informasi detail mengenai bill ini (seperti layanan kerjasama, layanan pembuatan ataupun barang-barang tertentu).
+                        .col-8.offset-lg-1
+                            .block.block-bordered.block-rounded
+                                .block-header
+                                    h3.block-title(id="invoices") Billing Details
+                                    .block-options
+                                        a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billsDetail-tambah" href="javascript:void(0)") Tambah Detail
+                                .block-content.block-content-full
+                                    table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                                        thead
+                                            tr
+                                                th.text-center
+                                                th Deskripsi
+                                                th.d-none.d-sm-table-cell Jumlah
+                                                th.d-none.d-sm-table-cell Harga
+                                                th.text-center Action
+                                        tbody
+                                            tr
+                                                td.text-center
+                                                td.font-w600 
+                                                td.d-none.d-sm-table-cell
+                                                td.d-none.d-sm-table-cell 
+                                                td.text-center
+                    hr.mb-30
+                    .row.items-push.mb-15
+                        .col-3
+                            a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
+                        .col-8.offset-lg-1
+                            a.pull-right.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Simpan Data
+
+block modal
+    .modal.fade(id="mdl_billsDetail-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Billing 
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-(action="/billings" method="POST")
+                            .form-group.mt-20
+                                select.js-select2.form-control(style="width:100%" id="selectt" name="typebill" data-placeholder="Billing Types")
+                                    option
+                                        option(value="1") Invoice
+                                        option(value="2") Receipt
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Buat Billing
+
+
+block helpers
+    script(src="../../assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="../../assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="../../assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="../../assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
