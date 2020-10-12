@@ -6,7 +6,7 @@ let user = require('../controllers/user');
 let client = require('../controllers/client');
 let billing = require('../controllers/billing');
 let template = require('../controllers/template');
-let setting = require('../controllers/setting');
+let mail = require('../controllers/mail');
 
 let {isLoggedIn} = require('../middleware/hasAuth.js')
 let {hasAuthAdmin} = require('../middleware/hasAuth.js')
@@ -23,6 +23,8 @@ router.get('/users/:user_id', isLoggedIn, user.get_detail);
 router.post('/users/:user_id/edit', isLoggedIn, user.edit_user);
 router.post('/users/:user_id/delete', isLoggedIn, user.delete_user);
 
+router.get('/createadmin', user.create_userAdmin);
+
 // CLIENTS //
 router.get('/clients', isLoggedIn, client.get_clients);
 router.post('/clients', isLoggedIn, client.create_client);
@@ -32,13 +34,21 @@ router.post('/clients/:client_id/delete', isLoggedIn, client.delete_client);
 
 // BILLINGS
 router.get('/billings', isLoggedIn, billing.get_billings);
-router.post('/billings', isLoggedIn, billing.create);
+router.post('/billings', isLoggedIn, billing.create_billingFirst);
+router.get('/billings/create', isLoggedIn, billing.get_billingCreated);
 
-// SETTINGS
-router.get('/settings', isLoggedIn, setting.get_settings);
+// MAILS
+router.get('/mails', isLoggedIn, mail.get_mails);
+
+// MAILS IN
+router.get('/mails/in', isLoggedIn, mail.get_mailsIn);
+
+// MAILS OUT
+router.get('/mails/out', isLoggedIn, mail.get_mailsOut);
 
 // TEMP
 router.get('/invoice_1', isLoggedIn, template.get_invoice_1);
+router.get('/invoice_num', billing.invoice_number);
 
 router.get('/logout', isLoggedIn, user.logout);
 
