@@ -10,27 +10,31 @@ module.exports = (sequelize, DataTypes) => {
         },
         no_bill: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         keterangan: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         rekening: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         date: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: true
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         jenis: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
     })
 
