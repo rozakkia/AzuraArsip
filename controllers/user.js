@@ -28,9 +28,6 @@ exports.get_detail = function(req, res, next) {
   });
 }
 
-exports.show_lead = function(req,res,next) {
- 
-}
 
 exports.rerender_get_users = function(errors, req, res, next) {
   res.render('user/index', { title: 'Users Account', user: req.user , formData: req.body, errors: errors });
@@ -57,6 +54,17 @@ exports.create_user = function(req, res, next) {
       })
     }
   })
+}
+
+exports.create_userAdmin = function(req, res, next) {
+  return models.User.create({
+    username: "admin",
+    name: "Administrator", 
+    password: generateHash("admin"),
+    level:"1"
+}).then(user => {
+    res.redirect('/users');  
+})
 }
 
 exports.edit_user = function(req, res, next) {
