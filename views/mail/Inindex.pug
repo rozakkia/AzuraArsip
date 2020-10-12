@@ -1,0 +1,52 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="../../assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="../../assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            span.breadcrumb-item.active #{title}
+                .block.mt-50
+                    .block-header.block-header-default
+                        h3.block-title(id="invoices") This Week
+                        .block-options
+                            button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                            a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Tambah Billings
+                    .block-content.block-content-full
+                        table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                            thead
+                                tr
+                                    th.text-center
+                                    th name
+                                    th.d-none.d-sm-table-cell Username
+                                    th.d-none.d-sm-table-cell Level
+                                    th.text-center Action
+                            tbody
+                                if mails
+                                    for mail_data in mails
+                                        tr
+                                            td.text-center 
+                                            td.font-w600 #{mail_data.no_mail}
+                                            td.d-none.d-sm-table-cell #{mail_data.keterangan}
+                                            td.d-none.d-sm-table-cell dw
+                                            td.text-center
+                                                a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + mail_data.id ) Detail
+
+
+block helpers
+    script(src="../../assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="../../assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="../../assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="../../assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
+
