@@ -22,8 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         level: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            unique: true
+            allowNull: false
         }
     })
 
