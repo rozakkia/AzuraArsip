@@ -14,12 +14,13 @@ block content
                         nav.breadcrumb.push
                             a.breadcrumb-item(href='/') Dashboard
                             span.breadcrumb-item.active #{title}
-                h4.font-w300.mt-50 Overview
+                h4.font-w300.mt-50 #{title} Overview
                 .row
                     .col-8
                         .block.block-rounded
                             .block-content.block-content-full
-                                i.si.si-game-controller.fa-2x.text-body-bg-dark
+                                i.si.si-game-controller.fa-2x.text-body-bg-dark 
+                                span.h5.text-body-bg-dark October 2020
                                 .row.py-20.text-center
                                     .col-6.border-r
                                         .font-size-h3.font-w600 24
@@ -52,13 +53,13 @@ block content
                                 if clients
                                     for client_data in clients
                                         tr
-                                            td.text-center 
+                                            td.text-center
                                             td.font-w600 #{client_data.company_name}
                                             td.d-none.d-sm-table-cell #{client_data.kontak}
                                             td.d-none.d-sm-table-cell #{client_data.alamat}
                                             td.text-center
                                                 a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + client_data.id ) Detail
-                
+                                        
 block modal
     .modal.fade(id="mdl_billing-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
@@ -68,19 +69,17 @@ block modal
                         h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Billing 
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
                         form.js-validation-(action="/billings" method="POST")
+                            input(type="text" name="userid" value=user.id hidden)
                             .form-group.mt-20
-                                select.js-select2.form-control(style="width:100%" id="example-select2" name="level" data-placeholder="Company Client")
+                                select.js-select2.form-control(style="width:100%" id="example-select2" name="idclient" data-placeholder="Company Client")
                                     option
-                                    option(value="1") Administrator
-                                    option(value="2") Petugas
-                            .form-group.row.mt-20
-                                .col-12
-                                    .custom-control.custom-radio.custom-control-inline.mb-5
-                                        input.custom-control-input(type="radio" name="type" value="1")
-                                        label.custom-control-label Invoices
-                                    .custom-control.custom-radio.custom-control-inline.mb-5
-                                        input.custom-control-input(type="radio" name="type" value="2")
-                                        label.custom-control-label Receipts
+                                        for client_data in clients
+                                            option(value=client_data.id) #{client_data.company_name}
+                            .form-group.mt-20
+                                select.js-select2.form-control(style="width:100%" id="select-type" name="typebill" data-placeholder="Billing Types")
+                                    option
+                                        option(value="1") Invoice
+                                        option(value="2") Receipt
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Buat Billing
 
 block helpers
