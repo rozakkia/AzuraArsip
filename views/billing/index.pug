@@ -14,7 +14,8 @@ block content
                         nav.breadcrumb.push
                             a.breadcrumb-item(href='/') Dashboard
                             span.breadcrumb-item.active #{title}
-                h4.font-w300.mt-50 #{title} Overview
+                h4.font-w300.mt-50 #{title} 
+                    small Overview
                 .row
                     .col-8
                         .block.block-rounded
@@ -48,17 +49,37 @@ block content
                                     th Invoice Number
                                     th.d-none.d-sm-table-cell Keterangan
                                     th.d-none.d-sm-table-cell Client Company
+                                    th.d-none.d-sm-table-cell Jenis
+                                    th.d-none.d-sm-table-cell Status
                                     th.text-center Action
                             tbody
-                                if clients
-                                    for client_data in clients
+                                if resultGetBills
+                                    for bill_data in resultGetBills
                                         tr
                                             td.text-center
-                                            td.font-w600 #{client_data.company_name}
-                                            td.d-none.d-sm-table-cell #{client_data.kontak}
-                                            td.d-none.d-sm-table-cell #{client_data.alamat}
+                                            td.font-w600.w-5 #{bill_data.no_bill}
+                                            td.d-none.d-sm-table-cell 
+                                                if bill_data.keterangan == null
+                                                    em.text-muted Belum tersedia
+                                                else 
+                                                    | #{bill_data.keterangan}
+                                            td.d-none.d-sm-table-cell #{bill_data.Client.company_name}
+                                            td.d-none.d-sm-table-cell 
+                                                case bill_data.jenis
+                                                    when 1
+                                                        span.badge.badge-primary Invoice
+                                                    when 2 
+                                                        span.badge.badge-info Receipt
+                                                    default
+                                                        span.badge.badge-danger Galat Error!
+                                            td.d-none.d-sm-table-cell 
+                                                case bill_data.status
+                                                    when 0
+                                                        span.badge.badge-danger Incompleted
+                                                    when 1 
+                                                        span.badge.badge-info Completed
                                             td.text-center
-                                                a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + client_data.id ) Detail
+                                                a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/create?passCode=" + Buffer.from(bill_data.no_bill).toString('base64') ) Detail
                                         
 block modal
     .modal.fade(id="mdl_billing-tambah" tabindex="-1" role="dialog")
@@ -73,7 +94,7 @@ block modal
                             .form-group.mt-20
                                 select.js-select2.form-control(style="width:100%" id="example-select2" name="idclient" data-placeholder="Company Client")
                                     option
-                                        for client_data in clients
+                                        for client_data in resultClients
                                             option(value=client_data.id) #{client_data.company_name}
                             .form-group.mt-20
                                 select.js-select2.form-control(style="width:100%" id="select-type" name="typebill" data-placeholder="Billing Types")
