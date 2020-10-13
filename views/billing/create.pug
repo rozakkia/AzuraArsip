@@ -31,11 +31,11 @@ block content
                         .col-8.offset-lg-1
                             .form-group
                                 label Company Name
-                                input.form-control(type="text" placeholder="Company Name" name="company" value=client_detail.company_name disabled)
+                                input.form-control(type="text" placeholder="Company Name" name="company" value=bill_detail.Client.company_name disabled)
                         .col-8.offset-lg-4
                             .form-group
                                 label Penanggung Jawab
-                                input.form-control(type="text" placeholder="Company Name" name="company" value=client_detail.pj_name+" as "+client_detail.pj_jabatan disabled)
+                                input.form-control(type="text" placeholder="Company Name" name="company" value=bill_detail.Client.pj_name+" as "+bill_detail.Client.pj_jabatan disabled)
                     h2.content-heading.text-black Vital Info
                     .row.items-push
                         .col-3
@@ -59,7 +59,7 @@ block content
                                 .block-header
                                     h3.block-title(id="invoices") Billing Details
                                     .block-options
-                                        a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billsDetail-tambah" href="javascript:void(0)") Tambah Detail
+                                        a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billDetail-tambah" href="javascript:void(0)") Tambah Detail
                                 .block-content.block-content-full
                                     table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
                                         thead
@@ -70,12 +70,31 @@ block content
                                                 th.d-none.d-sm-table-cell Harga
                                                 th.text-center Action
                                         tbody
-                                            tr
-                                                td.text-center
-                                                td.font-w600 
-                                                td.d-none.d-sm-table-cell
-                                                td.d-none.d-sm-table-cell 
-                                                td.text-center
+                                            for data_detail in bills_detail
+                                                tr
+                                                    td.text-center 
+                                                    td.font-w600 #{data_detail.deskripsi}
+                                                    td.d-none.d-sm-table-cell #{data_detail.jumlah}
+                                                    td.d-none.d-sm-table-cell #{data_detail.harga}
+                                                    td.text-center
+                                                        a.btn.btn-danger.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billDetail-hapus-" + data_detail.id , href="javascript:void(0)") Hapus
+                                                .modal.fade(id="mdl_billDetail-hapus-" + data_detail.id , tabindex="-1" role="dialog")
+                                                    .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                        .modal-content.rounded
+                                                            .block.block-rounded.block-transparent
+                                                                .block-content.mt-20.mb-20.px-30
+                                                                    h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
+                                                                    p.text-muted.text-center.font-w400 
+                                                                    form.js-validation-signin(action="delete-detail" method="POST")
+                                                                        input(type="text" name="id_detail" value=data_detail.id hidden)
+                                                                        input(type="text" name="no_bill" value=bill_detail.no_bill hidden)
+                                                                        .form-group
+                                                                            label Deskripsi Layanan
+                                                                            textarea.form-control(type="text" disabled rows="3") #{data_detail.deskripsi}
+                                                                        hr
+                                                                        h6.font-w700.text-center.mb-0.mt-lg-30 Hapus data ini?
+                                                                        button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Ya, Hapus
+                                                                        button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Batalkan
                     hr.mb-30
                     .row.items-push.mb-15
                         .col-3
@@ -84,21 +103,26 @@ block content
                             a.pull-right.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Simpan Data
 
 block modal
-    .modal.fade(id="mdl_billsDetail-tambah" tabindex="-1" role="dialog")
+    .modal.fade(id="mdl_billDetail-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
                 .block.block-rounded.block-transparent
                     .block-content.py-50.px-30
-                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Billing 
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Detail 
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-(action="/billings" method="POST")
+                        form.js-validation-(action="create-detail" method="POST")
+                            input.form-control(type="text" hidden name="no_bill" value=bill_detail.no_bill)
+                            input.form-control(type="text" hidden name="bill_id" value=bill_detail.id)
                             .form-group.mt-20
-                                select.js-select2.form-control(style="width:100%" id="selectt" name="typebill" data-placeholder="Billing Types")
-                                    option
-                                        option(value="1") Invoice
-                                        option(value="2") Receipt
-                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Buat Billing
+                                input.form-control(type="text" placeholder="Deskripsi layanan" name="deskripsi")
+                            .form-group.mt-20
+                                input.form-control(type="number" placeholder="Jumlah" name="jumlah")
+                            .form-group.mt-20
+                                input.form-control(type="number" placeholder="Harga satuan" name="harga")
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambah Detail
 
+    
+    
 
 block helpers
     script(src="../../assets/js/plugins/select2/js/select2.full.min.js")
