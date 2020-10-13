@@ -9,8 +9,15 @@ const url = require('url');
 
 
 exports.get_billings = function(req, res, next) {
-  return models.Client.findAll().then(clients => {
-    res.render('billing/index', { title: 'Billings Payment' , user: req.user, clients:clients });
+  return models.Bill.findAll({
+    include: [models.Client],
+    order : [
+      ['createdAt', 'DESC']
+    ]
+  }).then(resultGetBills => {
+    return models.Client.findAll({}).then(resultClients => {
+      res.render('billing/index', { title: 'Billings Payment' , user: req.user, resultGetBills:resultGetBills, resultClients:resultClients }); 
+    })     
   })
 }
 
@@ -47,17 +54,6 @@ exports.invoice_number = function(req, res, next) {
   })
 }
 
-exports.getnewInvoiceNumbers = function(req, res, next) {
-  return models.Bill.findAll({
-    order : [
-      ['createdAt', 'DESC']
-    ],
-    limit : 1
-  }).then(hasil => {
-    res.send({hasil:hasil})
-  })
-}
-
 
 exports.create_billingFirst = function(req, res, next) {
   let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
@@ -87,6 +83,7 @@ exports.create_billingFirst = function(req, res, next) {
       getCountNew = "001";
     }
     new_noBill = year + '/' + month + '-' + getCountNew;
+    encoded = Buffer.from(new_noBill).toString('base64');
     return models.Bill.create({
       no_bill: new_noBill,
       jenis: req.body.typebill,
@@ -97,16 +94,72 @@ exports.create_billingFirst = function(req, res, next) {
       res.redirect(url.format({
         pathname: "billings/create",
         query: {
-          "passCode" : new_noBill
-        }
+          "passCode" : encoded
+        },
+        order: [
+          ['createdAt','DESC']
+        ]
       }))
     })
   })
 }
 
+
 exports.get_billingCreated = function(req, res, next){
-  console.log("Pass Code: " + req.query.passCode)
-  res.render('index', { title: 'Billings Created' , user: req.user });
+  decode = Buffer.from(req.query.passCode, 'base64').toString('ascii')
+  return models.Bill.findOne({
+    where: [{
+      no_bill : decode
+    }],
+    include: [models.Client]
+  }).then(resultGetBill => {
+    return models.Detail_Bill.findAll({
+      where: {
+        BillId: resultGetBill.id
+      }
+    }).then(result =>{
+      res.render('billing/create', { title: 'Billing Created' , user: req.user, bill_detail:resultGetBill, bills_detail:result });
+    })
+  })
+}
+
+exports.create_detail = function(req, res, next){
+  return models.Detail_Bill.create({
+    deskripsi: req.body.deskripsi,
+    jumlah: req.body.jumlah,
+    harga: req.body.harga,
+    BillId: req.body.bill_id
+  }).then(result =>{
+    encoded = Buffer.from(req.body.no_bill).toString('base64');
+    res.redirect(url.format({
+      pathname: "create",
+      query: {
+        "passCode" : encoded
+      },
+      order: [
+        ['createdAt','DESC']
+      ]
+    }))
+  })
+}
+
+exports.delete_detail = function(req, res, next){
+  return models.Detail_Bill.destroy({
+    where: {
+      id: req.body.id_detail
+    }
+  }).then(result =>{
+    encoded = Buffer.from(req.body.no_bill).toString('base64');
+    res.redirect(url.format({
+      pathname: "create",
+      query: {
+        "passCode" : encoded
+      },
+      order: [
+        ['createdAt','DESC']
+      ]
+    }))
+  })
 }
 
 
