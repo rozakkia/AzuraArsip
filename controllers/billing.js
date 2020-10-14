@@ -161,6 +161,20 @@ exports.delete_detail = function(req, res, next){
   })
 }
 
+exports.update_billingCreated = function(req, res, next){
+  return models.Bill.update({
+    keterangan: req.body.keterangan,
+    rekening: req.body.rekening,
+    status: 1
+  },{
+    where:{
+      id: req.body.idBill
+    }
+  }).then(result => {
+    res.redirect('/billings');
+  })
+}
+
 
 
 /*
