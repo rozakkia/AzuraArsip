@@ -38,6 +38,7 @@ router.post('/billings', isLoggedIn, billing.create_billingFirst);
 router.get('/billings/create', isLoggedIn, billing.get_billingCreated);
 router.post('/billings/create-detail', isLoggedIn, billing.create_detail);
 router.post('/billings/delete-detail', isLoggedIn, billing.delete_detail);
+router.post('/billings/update', isLoggedIn, billing.update_billingCreated);
 
 // MAILS
 router.get('/mails', isLoggedIn, mail.get_mails);
