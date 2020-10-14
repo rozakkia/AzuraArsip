@@ -90,7 +90,6 @@ exports.create_billingFirst = function(req, res, next) {
       ClientId: req.body.idclient,
       UserId: req.body.userid
     }).then(result => {
-      //res.redirect('/billings/' + req.body.idclient + '/' + req.body.typebill + '/' + new_noBill);
       res.redirect(url.format({
         pathname: "billings/create",
         query: {
