@@ -25,8 +25,8 @@ block content
             .block-header.bg-primary.px-100
                 h1.mt-20.text-white(id="invoices") #INVOICE: #{bill_detail.no_bill}
             .block-content.px-100.py-50
-                
-                form(action="#" method="POST")
+                form(action="update" method="POST")
+                    input(type="text" name="idBill" value=bill_detail.id hidden)
                     h2.content-heading.text-black Client Info
                     .row.items-push
                         .col-3
@@ -34,11 +34,11 @@ block content
                         .col-8.offset-lg-1
                             .form-group
                                 label Company Name
-                                input.form-control(type="text" placeholder="Company Name" name="company" value=bill_detail.Client.company_name disabled)
+                                input.form-control(type="text" placeholder="Company Name" value=bill_detail.Client.company_name disabled)
                         .col-8.offset-lg-4
                             .form-group
                                 label Penanggung Jawab
-                                input.form-control(type="text" placeholder="Company Name" name="company" value=bill_detail.Client.pj_name+" as "+bill_detail.Client.pj_jabatan disabled)
+                                input.form-control(type="text" placeholder="Company Name" value=bill_detail.Client.pj_name+" as "+bill_detail.Client.pj_jabatan disabled)
                     h2.content-heading.text-black Vital Info
                     .row.items-push
                         .col-3
@@ -49,10 +49,9 @@ block content
                                 input.form-control(type="text" placeholder="Singkat mengenai bill ini" name="keterangan")
                             .form-group.mt-20
                                 label Rekening
-                                select.js-select2.form-control(style="width:100%" id="select-type" name="typebill" data-placeholder="Rekening Akun untuk pembayaran bill ini")
+                                select.js-select2.form-control(style="width:100%" id="select-type" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
                                     option
-                                        option(value="1") Invoice
-                                        option(value="2") Receipt
+                                        option(value="BNI Syariah_0901741785_Abdurrosyid Broto Handoyo") BNI Syariah | 0901741785
                     h2.content-heading.text-black Detail Info
                     .row.items-push
                         .col-3
@@ -102,7 +101,7 @@ block content
                         .col-3
                             a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
                         .col-8.offset-lg-1
-                            a.pull-right.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Simpan Data
+                            button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
 
 block modal
     .modal.fade(id="mdl_billDetail-tambah" tabindex="-1" role="dialog")
