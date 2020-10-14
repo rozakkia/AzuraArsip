@@ -22,7 +22,10 @@ block content
                 strong Invoice 
                 | Bill
         .block.block-rounded.block-fx-shadow
-            .block-content.px-100
+            .block-header.bg-primary.px-100
+                h1.mt-20.text-white(id="invoices") #INVOICE: #{bill_detail.no_bill}
+            .block-content.px-100.py-50
+                
                 form(action="#" method="POST")
                     h2.content-heading.text-black Client Info
                     .row.items-push
@@ -64,7 +67,6 @@ block content
                                     table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
                                         thead
                                             tr
-                                                th.text-center
                                                 th Deskripsi
                                                 th.d-none.d-sm-table-cell Jumlah
                                                 th.d-none.d-sm-table-cell Harga
@@ -72,12 +74,12 @@ block content
                                         tbody
                                             for data_detail in bills_detail
                                                 tr
-                                                    td.text-center 
                                                     td.font-w600 #{data_detail.deskripsi}
                                                     td.d-none.d-sm-table-cell #{data_detail.jumlah}
                                                     td.d-none.d-sm-table-cell #{data_detail.harga}
                                                     td.text-center
-                                                        a.btn.btn-danger.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billDetail-hapus-" + data_detail.id , href="javascript:void(0)") Hapus
+                                                        a.btn.btn-sm.btn-danger.btn-noborder(data-toggle="modal" data-target="#mdl_billDetail-hapus-" + data_detail.id , href="javascript:void(0)")
+                                                            i.fa.fa-trash-o
                                                 .modal.fade(id="mdl_billDetail-hapus-" + data_detail.id , tabindex="-1" role="dialog")
                                                     .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
                                                         .modal-content.rounded
