@@ -10,7 +10,7 @@ block content
         h3.font-w300.text-muted.mb-50 Ingin melakukan apa hari ini? 
           i.si.si-emoticon-smile
       .row 
-        .col-4
+        .col-3
           a.block.block-rounded.block-link-pop.bg-primary(href="/mails")
             .block-content.block-content-full.py-45.d-flex.align-items-center.justify-content-between
               .mr-5.mb-15.mt-15
@@ -25,7 +25,7 @@ block content
                   | Archieve Mails
               .p-20
                 i.si.fa-3x.si-docs.text-white
-        .col-4
+        .col-3
           a.block.block-rounded.block-link-pop.bg-primary(href="/billings")
             .block-content.block-content-full.py-45.d-flex.align-items-center.justify-content-between
               .mr-5.mb-15.mt-15
@@ -45,16 +45,23 @@ block content
             .block-content
               p.font-size-h1.mb-0.mt-10
                 i.si.si-globe-alt.text-secondary 
-              p.font-w600.mb-30.text-secondary Clients
+              p.font-w600.mb-30.text-secondary Client
+        .col-2
+          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/bank_accounts")
+            .block-content
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-credit-card.text-secondary 
+              p.font-w600.mb-30.text-secondary Rekening
         .col-2
           a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/users")
             .block-content
               p.font-size-h1.mb-0.mt-10
-                i.si.si-users.text-secondary 
-              p.font-w600.mb-30.text-secondary Users
+                i.si.si-user-following.text-secondary 
+              p.font-w600.mb-30.text-secondary User dan Roles
+        
   .bg-white
     .content.content-full
       .py-50
         .position-relative
           span.text-back Overview
-          h3.font-w300.text-muted.mb-50 Statistik
+          h3.font-w300.text-muted.mb-50(id="overview") Statistik
