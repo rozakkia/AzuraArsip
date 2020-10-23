@@ -22,6 +22,7 @@ router.post('/users', isLoggedIn, user.create_user);
 router.get('/users/:user_id', isLoggedIn, user.get_detail);
 router.post('/users/:user_id/edit', isLoggedIn, user.edit_user);
 router.post('/users/:user_id/delete', isLoggedIn, user.delete_user);
+router.post('/users/role-create', isLoggedIn, user.create_role);
 
 router.get('/createadmin', user.create_userAdmin);
 
@@ -38,16 +39,14 @@ router.post('/billings', isLoggedIn, billing.create_billingFirst);
 router.get('/billings/create', isLoggedIn, billing.get_billingCreated);
 router.post('/billings/create-detail', isLoggedIn, billing.create_detail);
 router.post('/billings/delete-detail', isLoggedIn, billing.delete_detail);
-router.post('/billings/update', isLoggedIn, billing.update_billingCreated);
+router.get('/billings/detail', isLoggedIn, billing.get_billingCreated);
+
 
 // MAILS
 router.get('/mails', isLoggedIn, mail.get_mails);
-
-// MAILS IN
-router.get('/mails/in', isLoggedIn, mail.get_mailsIn);
-
-// MAILS OUT
-router.get('/mails/out', isLoggedIn, mail.get_mailsOut);
+//router.post('/mails', isLoggedIn, mail.create_mail);
+//router.get('/mails/create', isLoggedIn, mail.getCreate_mail);
+//router.post('/mails/create', isLoggedIn, mail.createUpdate_mail);
 
 // TEMP
 router.get('/invoice_1', isLoggedIn, template.get_invoice_1);
