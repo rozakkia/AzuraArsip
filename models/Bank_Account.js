@@ -1,34 +1,30 @@
 /* jshint indent: 2 */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    var Client = sequelize.define('Client', {
+    var Bank_Account = sequelize.define('Bank_Account', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             allowNull: false,
             primaryKey: true
         },
-        company_name: {
+        bank: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        pj_name: {
+        bank_name: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false
         },
-        pj_jabatan: {
+        bank_num: {
             type: DataTypes.STRING,
-            allowNull: true
-        },
-        alamat: {
-            type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: false
         }
     })
-
-    Client.associate = models => {
-        Client.hasMany(models.Client_Contact, {});
+    
+    Bank_Account.associate = models => {
+        Bank_Account.hasMany(models.Bill, {});
     }
 
-    return Client;
+    return Bank_Account;
 };

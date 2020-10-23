@@ -1,51 +1,40 @@
 /* jshint indent: 2 */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    var Mail = sequelize.define('Mail', {
+    var Mail_Type = sequelize.define('Mail_Type', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             allowNull: false,
             primaryKey: true
         },
-        no_mail: {
+        nama: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        keterangan: {
+        format_no: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        perihal: {
+        file_template: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        tujuan: {
+        jenis: {
             type: DataTypes.STRING,
             allowNull: false
-        },
-        date: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        isi: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        }
+        }   
     })
-    
-    Mail.associate = models => {
-        Mail.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            }
-        });
-        Mail.belongsTo(models.Mail_Type, {
+    Mail_Type.associate = models => {
+        Mail_Type.hasMany(models.Mail,{})
+    }
+    Mail_Type.associate = models => {
+        Mail_Type.belongsTo(models.Service, {
             foreignKey: {
                 allowNull: false
             }
         });
     }
 
-    return Mail;
+    return Mail_Type;
 };

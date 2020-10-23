@@ -1,30 +1,26 @@
 /* jshint indent: 2 */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    var Template = sequelize.define('Template', {
+    var Service = sequelize.define('Service', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             allowNull: false,
             primaryKey: true
         },
-        keterangan: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        jenis: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        detail: {
-            type: DataTypes.TEXT,
+        unique: {
+            type: DataTypes.STRING,
             allowNull: false
         }
     })
-
-    Template.associate = models => {
-        Template.hasMany(models.Mail, {});
+    
+    Service.associate = models => {
+        Service.hasMany(models.Mail_Type, {});
     }
 
-    return Template;
+    return Service;
 };

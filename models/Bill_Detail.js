@@ -1,28 +1,27 @@
 /* jshint indent: 2 */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    var Detail_Bill = sequelize.define('Detail_Bill', {
-        jumlah: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        deskripsi: {
+    var Bill_Detail = sequelize.define('Bill_Detail', {
+        keterangan: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        harga: {
+        jumlah: {
             type: DataTypes.INTEGER,
             allowNull: false
         }
     })
-
-    Detail_Bill.associate = models => {
-        Detail_Bill.belongsTo(models.Bill, {
+    Bill_Detail.associate = models => {
+        Bill_Detail.hasMany(models.Bill_Detail_Sub, {});
+    }
+    Bill_Detail.associate = models => {
+        
+        Bill_Detail.belongsTo(models.Bill, {
             foreignKey: {
                 allowNull: false
             }
         });
     }
 
-    return Detail_Bill;
+    return Bill_Detail;
 };

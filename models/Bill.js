@@ -16,23 +16,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        rekening: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        date: {
+        tgl_dikirim: {
             type: DataTypes.DATE,
             allowNull: true
         },
-        email: {
+        jenis: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        jenis: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        status: {
+        stat: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         }
@@ -42,7 +34,11 @@ module.exports = (sequelize, DataTypes) => {
         Bill.hasMany(models.Detail_Bill, {});
     }
     Bill.associate = models => {
-        
+        Bill.belongsTo(models.Bank_Account, {
+            foreignKey: {
+                allowNull: false
+            }
+        });
         Bill.belongsTo(models.Client, {
             foreignKey: {
                 allowNull: false
