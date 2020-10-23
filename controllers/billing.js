@@ -112,12 +112,16 @@ exports.get_billingCreated = function(req, res, next){
     }],
     include: [models.Client]
   }).then(resultGetBill => {
+    rekening = null;
+    if(resultGetBill.status==1){
+      rekening = resultGetBill.rekening.replace( '_' , ' ');
+    }
     return models.Detail_Bill.findAll({
       where: {
         BillId: resultGetBill.id
       }
     }).then(result =>{
-      res.render('billing/create', { title: 'Billing Created' , user: req.user, bill_detail:resultGetBill, bills_detail:result });
+      res.render('billing/create', { title: 'Billing Created' , user: req.user, bill_detail:resultGetBill, bills_detail:result, rekening:rekening });
     })
   })
 }

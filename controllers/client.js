@@ -5,7 +5,11 @@ const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
 
 exports.get_clients = function(req, res, next) {
-    return models.Client.findAll().then(clients => {
+    return models.Client.findAll({
+      order: [
+        ['createdAt', 'DESC']
+      ]
+    }).then(clients => {
       res.render('client/index', { title: 'Clients Data', user: req.user , clients:clients , formData: {}, errors: {} });
     })
 }

@@ -14,7 +14,9 @@ exports.get_login = function(req, res, next) {
 
 exports.get_users = function(req, res, next) {
   return models.User.findAll().then(users => {
-    res.render('user/index', { title: 'Users Account', user: req.user , users:users , formData: {}, errors: {} });
+    return models.Role.findAll().then(roles =>{
+      res.render('user/index', { title: 'Users Account', roles:roles, user: req.user , users:users , formData: {}, errors: {} });
+    })    
   })
 }
 
@@ -47,8 +49,7 @@ exports.create_user = function(req, res, next) {
       return models.User.create({
           username: req.body.username,
           name: req.body.name, 
-          password: generateHash(req.body.password),
-          level: req.body.level
+          password: generateHash(req.body.password)
       }).then(user => {
           res.redirect('/users');  
       })
@@ -60,8 +61,7 @@ exports.create_userAdmin = function(req, res, next) {
   return models.User.create({
     username: "admin",
     name: "Administrator", 
-    password: generateHash("admin"),
-    level:"1"
+    password: generateHash("admin")
 }).then(user => {
     res.redirect('/users');  
 })
@@ -103,4 +103,14 @@ exports.logout = function(req, res, next) {
   req.logout();
   req.session.destroy();
   res.redirect('/');
+}
+
+exports.create_role = function(req, res, next) {
+  role = req.body.roles.toString()
+  return models.Role.create({
+    nama_role: req.body.name,
+    routing: role
+  }).then(result => {
+    res.redirect('/users');
+  })
 }
