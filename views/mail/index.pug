@@ -14,7 +14,8 @@ block content
                         nav.breadcrumb.push
                             a.breadcrumb-item(href='/') Dashboard
                             span.breadcrumb-item.active #{title}
-                h4.font-w300.mt-50 Overview
+                h4.font-w300.mt-50 #{title}
+                    small  Overview
                 .row
                     .col-8
                         .block.block-rounded
@@ -44,10 +45,26 @@ block content
                         h3.block-title(id="invoices") This Week
                         .block-options
                             button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                            a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Tambah Billings
+                            a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Tambah Surat
                     .block-content.block-content-full
                         
-
+block modal
+    .modal.fade(id="mdl_billing-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Surat 
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-(action="/billings" method="POST")
+                            .form-group.mt-20
+                                select.js-select2.form-control(style="width:100%" id="select-type" name="typebill" data-placeholder="Mail Types")
+                                    option
+                                        option(value="1") Internal  
+                                        option(value="1") External 
+                                        option(value="1") Penawaran 
+                                        option(value="2") Tugas
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Buat Surat
 
 block helpers
     script(src="assets/js/plugins/select2/js/select2.full.min.js")

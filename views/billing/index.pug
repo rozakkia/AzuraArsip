@@ -45,7 +45,7 @@ block content
                         table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
                             thead
                                 tr
-                                    th.text-center
+                                    th.text-center No
                                     th Invoice Number
                                     th.d-none.d-sm-table-cell Keterangan
                                     th.d-none.d-sm-table-cell Client Company
@@ -54,9 +54,10 @@ block content
                                     th.text-center Action
                             tbody
                                 if resultGetBills
+                                    - i = 1
                                     for bill_data in resultGetBills
                                         tr
-                                            td.text-center
+                                            td.text-center #{i}
                                             td.font-w600.w-5 #{bill_data.no_bill}
                                             td.d-none.d-sm-table-cell 
                                                 if bill_data.keterangan == null
@@ -79,8 +80,9 @@ block content
                                                     when 1 
                                                         span.badge.badge-info Completed
                                             td.text-center
-                                                a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/create?passCode=" + Buffer.from(bill_data.no_bill).toString('base64') ) Detail
-                                        
+                                                a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/detail?passCode=" + Buffer.from(bill_data.no_bill).toString('base64') ) Detail
+                                        - i = i+1
+
 block modal
     .modal.fade(id="mdl_billing-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")

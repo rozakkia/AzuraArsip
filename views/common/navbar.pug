@@ -10,10 +10,14 @@ mixin navbar(user)
             .content-header-section.d-none.d-lg-block
                 ul.nav
                     li.nav-item.mr-xl-2
-                        li.nav-item.mr-xl-2
-                            a.nav-link.font-w600(href="/settings")
+                        li.nav-item.mr-xl-2.border-r
+                            a.nav-link.font-w600(href="/settings/profile")
                                 i.font-w600 
                                 | #{user.name}
+                        li.nav-item.mr-xl-2
+                            a.nav-link.font-w600(href="/settings/core")
+                                i.font-w600 
+                                | Pengaturan
                     if user
                         li.nav-item.mr-xl-2
                             a.nav-link.font-w600(href="/logout")

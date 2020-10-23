@@ -15,9 +15,11 @@ block content
                             a.breadcrumb-item(href='/') Dashboard
                             span.breadcrumb-item.active #{title}
             
+            h4.font-w300.mt-50 #{title} 
+                small Overview
             .block
                 .block-header.block-header-default
-                    h3.block-title Tabel Data Client
+                    h3.block-title Tabel Data
                     .block-options
                         button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
                         a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_client-tambah" href="javascript:void(0)") Tambah Client
@@ -25,22 +27,23 @@ block content
                     table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
                         thead
                             tr
-                                th.text-center
+                                th.text-center No
                                 th Company name
                                 th.d-none.d-sm-table-cell Kontak
                                 th.d-none.d-sm-table-cell Level
                                 th.text-center Action
                         tbody
                             if clients
+                                - i = 1
                                 for client_data in clients
                                     tr
-                                        td.text-center 
+                                        td.text-center #{i}
                                         td.font-w600 #{client_data.company_name}
                                         td.d-none.d-sm-table-cell #{client_data.kontak}
                                         td.d-none.d-sm-table-cell #{client_data.alamat}
                                         td.text-center
                                             a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + client_data.id ) Detail
-                            
+                                    - i = i+1
 
 
 block modal

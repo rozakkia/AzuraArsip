@@ -30,7 +30,7 @@ block content
                                 th.text-center No
                                 th name
                                 th.d-none.d-sm-table-cell Username
-                                th.d-none.d-sm-table-cell Level
+                                th.d-none.d-sm-table-cell Roles
                                 th.text-center Action
                         tbody
                             if users
@@ -71,20 +71,13 @@ block content
                                 tbody
                                     if users
                                         - i = 1
-                                        for user_data in users
+                                        for role_data in roles
                                             tr
                                                 td.text-center #{i}
-                                                td.font-w600 #{user_data.name}
-                                                td.d-none.d-sm-table-cell 
-                                                    case user_data.level
-                                                        when 1 
-                                                            const Administrator
-                                                        when 2 
-                                                            const Petugas
-                                                        default 
-                                                            const Galat Error!
+                                                td.font-w600 #{role_data.nama_role}
+                                                td.d-none.d-sm-table-cell #{role_data.routing}
                                                 td.text-center
-                                                    a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + user_data.id ) Detail
+                                                    a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + role_data.id ) Detail
                                             - i = i+1
                
 

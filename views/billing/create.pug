@@ -5,6 +5,11 @@ block css
     link(rel="stylesheet", href!="../../assets/js/plugins/datatables/dataTables.bootstrap4.css")
 
 block content
+    case bill_detail.jenis
+        when 1
+            - jenisnya = 'Invoice'
+        when 2 
+            - jenisnya = 'Receipt'
     .content.content-full
         .py-50
             .position-relative
@@ -15,15 +20,10 @@ block content
                             a.breadcrumb-item(href='/') Dashboard
                             a.breadcrumb-item(href='/billings') Billings Payment
                             span.breadcrumb-item.active #{title}
-        .text-center
-            h2.font-w400.text-black.mb-30
-                i.fa.fa-plus.text-muted.mr-5 
-                | Add New 
-                strong Invoice 
-                | Bill
         .block.block-rounded.block-fx-shadow
-            .block-header.bg-primary.px-100
-                h1.mt-20.text-white(id="invoices") #INVOICE: #{bill_detail.no_bill}
+        
+            .block-header.bg-info.px-100
+                h1.mt-20.text-white ##{jenisnya} : #{bill_detail.no_bill}
             .block-content.px-100.py-50
                 form(action="update" method="POST")
                     input(type="text" name="idBill" value=bill_detail.id hidden)
@@ -46,12 +46,18 @@ block content
                         .col-8.offset-lg-1
                             .form-group
                                 label Keterangan
-                                input.form-control(type="text" placeholder="Singkat mengenai bill ini" name="keterangan")
+                                if bill_detail.status=='1'
+                                    input.form-control(type="text" value=bill_detail.keterangan disabled)
+                                else
+                                    input.form-control(type="text" placeholder="Singkat mengenai bill ini" name="keterangan")
                             .form-group.mt-20
                                 label Rekening
-                                select.js-select2.form-control(style="width:100%" id="select-type" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
-                                    option
-                                        option(value="BNI Syariah_0901741785_Abdurrosyid Broto Handoyo") BNI Syariah | 0901741785
+                                if bill_detail.status=='1'
+                                    input.form-control(type="text" value=rekening disabled)
+                                else
+                                    select.js-select2.form-control(style="width:100%" id="select-type" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
+                                        option
+                                            option(value="BNI Syariah_0901741785_Abdurrosyid Broto Handoyo") BNI Syariah | 0901741785
                     h2.content-heading.text-black Detail Info
                     .row.items-push
                         .col-3
@@ -99,9 +105,15 @@ block content
                     hr.mb-30
                     .row.items-push.mb-15
                         .col-3
-                            a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
+                            if bill_detail.status=='0'
+                                a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
                         .col-8.offset-lg-1
-                            button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
+                            if bill_detail.status=='1'
+                                .pull-right
+                                    a.btn.btn-alt-primary.btn-noborder.btn-hero(href="#") Ubah Data
+                                    a.ml-10.btn.btn-primary.btn-noborder.btn-hero(href="#") Cetak
+                            else
+                                button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
 
 block modal
     .modal.fade(id="mdl_billDetail-tambah" tabindex="-1" role="dialog")
