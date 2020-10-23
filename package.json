@@ -19,6 +19,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "pg-promise": "^10.6.1",
+    "print-js": "^1.5.0",
     "promise": "^8.1.0",
     "pug": "2.0.0-beta11",
     "sequelize": "^6.3.5",
