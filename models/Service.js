@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     
     Service.associate = models => {
         Service.hasMany(models.Mail_Type, {});
+        Service.hasMany(models.Bill, {});
     }
 
     return Service;

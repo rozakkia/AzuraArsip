@@ -49,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             }
         });
+        Bill.belongsTo(models.Service, {
+            foreignKey: {
+                allowNull: false
+            }
+        });
     }
 
     return Bill;
