@@ -56,16 +56,13 @@ block modal
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
                         form.js-validation-signin(action="/clients" method="POST")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Company Name" name="company" value=formData.username)
+                                input.form-control(type="text" placeholder="Company Name" name="company")
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Penanggung Jawab" name="name")
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Jabatan" name="jabatan")
                             .form-group.mt-20
                                 textarea.form-control(type="text" placeholder="Alamat Lengkap" name="alamat" rows="3")
-                            .form-group.mt-20
-                                input.form-control(type="text" placeholder="Kontak" name="kontak")
-                            
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
     
     
