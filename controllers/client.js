@@ -14,17 +14,29 @@ exports.get_clients = function(req, res, next) {
     })
 }
 
+exports.create_clientContact = function(req, res, next) {
+  return models.Client_Contact.create({
+    alias: req.body.alias,
+    jenis_kontak: req.body.jenis,
+    detail_kontak: req.body.kontak,
+    ClientId: req.params.client_id
+  }).then(result =>{
+    res.redirect('/clients/' + req.params.client_id)
+  })
+}
+
 exports.create_client = function(req, res, next) {
     return models.Client.create({
         company_name: req.body.company,
         pj_name: req.body.name, 
         pj_jabatan: req.body.jabatan,
-        alamat: req.body.alamat,
-        kontak: req.body.kontak
+        alamat: req.body.alamat
     }).then(user => {
-        res.redirect('/clients');  
+      res.redirect('/clients/');  
     })
 }
+
+
 
 exports.get_detail = function(req, res, next) {
     return models.Client.findOne({
@@ -37,8 +49,6 @@ exports.get_detail = function(req, res, next) {
   }
 
   exports.edit_client = function(req, res, next) {
-    req.params.client_id
-    req.body.name
     return models.Client.update({
         company_name:req.body.company,
         pj_name:req.body.name,
