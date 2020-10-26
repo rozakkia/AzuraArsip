@@ -2,11 +2,14 @@ var express = require('express');
 var router = express.Router();
 
 let index = require('../controllers/index');
-let user = require('../controllers/user');
-let client = require('../controllers/client');
+
+let bank_accounts = require('../controllers/bank_account');
 let billing = require('../controllers/billing');
-let template = require('../controllers/template');
+let client = require('../controllers/client');
 let mail = require('../controllers/mail');
+let template = require('../controllers/template');
+let user = require('../controllers/user');
+
 
 let {isLoggedIn} = require('../middleware/hasAuth.js')
 let {hasAuthAdmin} = require('../middleware/hasAuth.js')
@@ -24,7 +27,7 @@ router.post('/users/:user_id/edit', isLoggedIn, user.edit_user);
 router.post('/users/:user_id/delete', isLoggedIn, user.delete_user);
 router.post('/users/role-create', isLoggedIn, user.create_role);
 
-router.get('/createadmin', user.create_userAdmin);
+router.get('/createadmin', user.create_userSuperAdmin);
 
 // CLIENTS //
 router.get('/clients', isLoggedIn, client.get_clients);
@@ -32,6 +35,13 @@ router.post('/clients', isLoggedIn, client.create_client);
 router.get('/clients/:client_id', isLoggedIn, client.get_detail);
 router.post('/clients/:client_id/edit', isLoggedIn, client.edit_client);
 router.post('/clients/:client_id/delete', isLoggedIn, client.delete_client);
+router.post('/clients/:client_id/contact_create', isLoggedIn, client.create_clientContact);
+
+// BANK ACCOUNTS
+router.get('/bank_accounts', isLoggedIn, bank_accounts.get_bankaccounts);
+router.post('/bank_accounts', isLoggedIn, bank_accounts.create_bankaccounts);
+router.post('/bank_accounts/hapus', isLoggedIn, bank_accounts.delete_bankaccounts);
+router.post('/bank_accounts/ubah', isLoggedIn, bank_accounts.update_bankaccounts);
 
 // BILLINGS
 router.get('/billings', isLoggedIn, billing.get_billings);
