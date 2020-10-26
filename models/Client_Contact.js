@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             primaryKey: true
         },
+        alias: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         jenis_kontak: {
             type: DataTypes.INTEGER,
             allowNull: false
