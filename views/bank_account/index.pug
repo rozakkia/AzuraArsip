@@ -1,0 +1,123 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            span.breadcrumb-item.active #{title}
+            
+            h4.font-w300.mt-50 #{title} 
+                small Overview
+            .block
+                .block-header.block-header-default
+                    h3.block-title Tabel Data
+                    .block-options
+                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                        a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_bank_account-tambah" href="javascript:void(0)") Tambah Bank Accounts
+                .block-content.block-content-full
+                    table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                        thead
+                            tr
+                                th.text-center No
+                                th Alias
+                                th Nama Bank
+                                th.d-none.d-sm-table-cell Atas Nama
+                                th.d-none.d-sm-table-cell No Rekening
+                                th.text-center Action
+                        tbody
+                            if bank_accounts
+                                - i = 1
+                                for data in bank_accounts
+                                    tr
+                                        td.text-center #{i}
+                                        td.font-w600 #{data.alias}
+                                        td.font-w600 #{data.bank}
+                                        td.d-none.d-sm-table-cell #{data.bank_name}
+                                        td.d-none.d-sm-table-cell #{data.bank_num}
+                                        td.text-center
+                                            a.btn.btn-sm.btn-noborder.btn-alt-primary.mr-5(data-toggle="modal" data-target="#mdl_bank_account-ubah" + data.id , href="javascript:void(0)") 
+                                                i.si.si-pencil.mr-5
+                                                | Ubah
+                                            a.btn.btn-sm.btn-noborder.btn-alt-danger.mr-5(data-toggle="modal" data-target="#mdl_bank_account-hapus" + data.id , href="javascript:void(0)") 
+                                                i.si.si-trash.mr-5
+                                                | Hapus
+                                    - i = i+1
+                                    .modal.fade(id="mdl_bank_account-ubah" + data.id , tabindex="-1" role="dialog")
+                                        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                            .modal-content.rounded
+                                                .block.block-rounded.block-transparent
+                                                    .block-content.py-50.px-30
+                                                        h4.font-w700.text-center.mb-0.mt-lg-30 Ubah Data
+                                                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                                                        form.js-validation-signin(action="/bank_accounts/ubah" method="POST")
+                                                            input(type="text" hidden value=data.id name="id")
+                                                            .form-group.mt-20
+                                                                input.form-control(type="text" placeholder="Alias Name" name="alias" value=data.alias)
+                                                            .form-group.mt-20
+                                                                input.form-control(type="text" placeholder="Bank Name" name="bank" value=data.bank)
+                                                            .form-group.mt-20
+                                                                input.form-control(type="text" placeholder="Atas Nama" name="nama" value=data.bank_name)
+                                                            .form-group.mt-20
+                                                                input.form-control(type="number" placeholder="Nomor Rekening" name="nomor" value=data.bank_num)
+                                                            hr 
+                                                            p Mengubah data akan mengubah setiap data yang terRelasi
+                                                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
+                                    .modal.fade(id="mdl_bank_account-hapus" + data.id , tabindex="-1" role="dialog")
+                                        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                            .modal-content.rounded
+                                                .block.block-rounded.block-transparent
+                                                    .block-content.py-50.px-30
+                                                        h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
+                                                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                                                        form.js-validation-signin(action="/bank_accounts/hapus" method="POST")
+                                                            input(type="text" hidden value=data.id name="id")
+                                                            .form-group.mt-20
+                                                                input.form-control(type="text" placeholder="Alias Name" name="alias" value=data.alias)
+                                                            .form-group.mt-20
+                                                                input.form-control(type="text" placeholder="Bank Name" name="bank" value=data.bank)
+                                                            .form-group.mt-20
+                                                                input.form-control(type="text" placeholder="Atas Nama" name="nama" value=data.bank_name)
+                                                            .form-group.mt-20
+                                                                input.form-control(type="number" placeholder="Nomor Rekening" name="nomor" value=data.bank_num)
+                                                            hr 
+                                                            p Menghapus data akan menyebabkan konflik pada Relasi
+                                                            button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                                                            button.btn.btn-secondary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Hapus Data
+block modal
+    .modal.fade(id="mdl_bank_account-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Bank Account
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin(action="/bank_accounts" method="POST")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Alias Name" name="alias")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Bank Name" name="bank")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Atas Nama" name="nama")
+                            .form-group.mt-20
+                                input.form-control(type="number" placeholder="Nomor Rekening" name="nomor")
+                            
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+    
+    
+    
+    
+
+block helpers
+    script(src="assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="assets/js/pages/be_tables_datatables.min.js")
