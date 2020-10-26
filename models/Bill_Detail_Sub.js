@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
 
     Bill_Detail_Sub.associate = models => {

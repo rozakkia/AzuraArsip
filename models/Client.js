@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: true
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
 
     Client.associate = models => {

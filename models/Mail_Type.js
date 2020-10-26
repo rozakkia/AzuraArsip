@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         }   
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
     Mail_Type.associate = models => {
         Mail_Type.hasMany(models.Mail,{})

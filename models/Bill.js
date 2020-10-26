@@ -28,6 +28,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
 
     Bill.associate = models => {

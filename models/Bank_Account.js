@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             primaryKey: true
         },
+        alias: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         bank: {
             type: DataTypes.STRING,
             allowNull: false
@@ -20,8 +24,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
-    
     Bank_Account.associate = models => {
         Bank_Account.hasMany(models.Bill, {});
     }

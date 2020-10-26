@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
 
     User.associate = models => {

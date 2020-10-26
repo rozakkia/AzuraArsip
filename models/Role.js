@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
     
     Role.associate = models => {

@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
 
     Client_Contact.associate = models => {

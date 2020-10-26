@@ -32,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: false
         }
+    },{
+        deletedAt: 'deletedAT',
+        paranoid: true
     })
     
     Mail.associate = models => {
