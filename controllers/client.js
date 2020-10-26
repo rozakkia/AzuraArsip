@@ -44,7 +44,13 @@ exports.get_detail = function(req, res, next) {
           id : req.params.client_id
       }
     }).then(client_detail => {
-        res.render('client/detail', { title: 'Client Detail' , user: req.user, client_detail:client_detail });
+      return models.Client_Contact.findAll({
+        where : {
+          ClientId: req.params.client_id
+        }
+      }).then(contact => {
+        res.render('client/detail', { title: 'Client Detail' , user: req.user, contact:contact, client_detail:client_detail });
+      })
     });
   }
 
