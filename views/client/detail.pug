@@ -1,6 +1,8 @@
 extends ../layout
 
 block css
+    link(rel="stylesheet", href="../../assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="../../assets/js/plugins/datatables/dataTables.bootstrap4.css")
 
 block content
     .content.content-full
@@ -44,6 +46,27 @@ block content
                                     .form-group
                                         label Alamat
                                         textarea.form-control(type="text" disabled name="alamat" rows="3") #{client_detail.alamat}
+                                .col-12
+                                    .block.block-bordered.block-rounded
+                                        .block-header.block-header-default
+                                            h3.block-title Contact List
+                                            .block-options
+                                                a.btn.btn-alt-primary.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl_contact-tambah" href="javascript:void(0)") Tambah Kontak
+                                        .block-content
+                                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                                                thead
+                                                    tr
+                                                        th Jenis
+                                                        th Kontak
+                                                        th.d-none.d-sm-table-cell Action
+                                                tbody
+                                                    if contact
+                                                        for data in contact
+                                                            tr
+                                                                td.text-center #{data.jenis_kontak}
+                                                                td.font-w600 #{data.detail_kontak}
+                                                                td.text-center
+                                                                    a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + data.id ) Detail
                                 .col-6
                                     .form-group
                                         label Penanggung Jawab
@@ -81,10 +104,28 @@ block modal
                                 input.form-control(type="text" placeholder="Jabatan" name="jabatan" value=client_detail.pj_jabatan)
                             .form-group.mt-20
                                 textarea.form-control(type="text" placeholder="Alamat Lengkap" name="alamat" rows="3") #{client_detail.alamat}
-                            .form-group
-                                label Kontak
-                                input.form-control(type="text" placeholder="Kontak" name="kontak" value=client_detail.kontak)
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
+
+    .modal.fade(id="mdl_contact-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Tambah Kontak
+                        form.js-validation-signin(action="/clients/" + client_detail.id + "/contact_create", method="POST")
+                            .form-group
+                                input.form-control(type="text" placeholder="Alias Name" name="alias")
+                            .form-group
+                                select.js-select2.form-control(style="width:100%" id="example-select2" name="jenis" data-placeholder="Jenis Kontak")
+                                    option
+                                    option(value="1") Email
+                                    option(value="2") Telegram
+                                    option(value="3") Telepon Kantor
+                                    option(value="4") Whatsapp
+                                    option(value="5") Others
+                            .form-group
+                                input.form-control(type="text" placeholder="Detail Kontak" name="kontak")
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
     
     .modal.fade(id="mdl_client-hapus" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
@@ -103,3 +144,10 @@ block modal
     
 
 block helpers
+    script(src="../../assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="../../assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="../../assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="../../assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
