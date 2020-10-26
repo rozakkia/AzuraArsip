@@ -13,7 +13,9 @@ exports.get_login = function(req, res, next) {
 }
 
 exports.get_users = function(req, res, next) {
-  return models.User.findAll().then(users => {
+  return models.User.findAll({
+    include: [models.Role]
+  }).then(users => {
     return models.Role.findAll().then(roles =>{
       res.render('user/index', { title: 'Users Account', roles:roles, user: req.user , users:users , formData: {}, errors: {} });
     })    
@@ -26,7 +28,7 @@ exports.get_detail = function(req, res, next) {
         id : req.params.user_id
     }
   }).then(user_detail => {
-      res.render('user/detail', { title: 'Users Detail' , user: req.user, user_detail:user_detail });
+      res.render('user/detail', { title: 'User Detail' , user: req.user, user_detail:user_detail });
   });
 }
 
@@ -49,7 +51,8 @@ exports.create_user = function(req, res, next) {
       return models.User.create({
           username: req.body.username,
           name: req.body.name, 
-          password: generateHash(req.body.password)
+          password: generateHash(req.body.password),
+          RoleId: req.body.role
       }).then(user => {
           res.redirect('/users');  
       })
@@ -57,7 +60,7 @@ exports.create_user = function(req, res, next) {
   })
 }
 
-exports.create_userAdmin = function(req, res, next) {
+exports.create_userSuperAdmin = function(req, res, next) {
   return models.User.create({
     username: "admin",
     name: "Administrator", 
