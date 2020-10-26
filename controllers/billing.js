@@ -63,8 +63,8 @@ exports.create_billingFirst = function(req, res, next) {
     ],
     limit : 1
   }).then(resultBill => {
-    const no_billData = resultBill.no_bill;
-    if (no_billData != null){
+    if (resultBill.no_bill != null){
+      const no_billData = resultBill.no_bill ;
       const get_no_billData = no_billData.slice(0, 7);
       const today = year + '/' + month;
       if (get_no_billData == today){
