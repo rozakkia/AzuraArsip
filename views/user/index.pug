@@ -40,14 +40,7 @@ block content
                                         td.text-center #{i}
                                         td.font-w600 #{user_data.name}
                                         td.d-none.d-sm-table-cell #{user_data.username}
-                                        td.d-none.d-sm-table-cell 
-                                            case user_data.level
-                                                when 1 
-                                                    const Administrator
-                                                when 2 
-                                                    const Petugas
-                                                default 
-                                                    const Galat Error!
+                                        td.d-none.d-sm-table-cell #{user_data.Role.nama_role}
                                         td.text-center
                                             a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + user_data.id ) Detail
                                     - i = i+1
@@ -100,13 +93,12 @@ block modal
                             .form-group.mt-20
                                 input.form-control(type="password" placeholder="Kata sandi" name="password" value="")
                             .form-group.mt-20
-                                select.js-select2.form-control(style="width:100%" id="example-select2" name="level" data-placeholder="Level user")
+                                select.js-select2.form-control(style="width:100%" id="example-select2" name="role" data-placeholder="Role User")
                                     option
-                                    option(value="1") Administrator
-                                    option(value="2") Petugas
+                                    for role_data in roles
+                                        option(value=role_data.id) #{role_data.nama_role}
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
 
-block modal
     .modal.fade(id="mdl_role-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
@@ -118,7 +110,7 @@ block modal
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Nama Role" name="name")
                             .form-group.mt-20
-                                select.js-select2.form-control(style="width:100%" name="roles" data-placeholder="Routing" multiple)
+                                select.js-select2.form-control(multiple style="width:100%" name="roles" data-placeholder="Routing")
                                     option
                                     option(value="1") Bank Account 
                                     option(value="2") Billings
