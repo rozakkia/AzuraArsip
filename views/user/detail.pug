@@ -13,10 +13,12 @@ block content
                             a.breadcrumb-item(href='/') Dashboard
                             a.breadcrumb-item(href='/users') Users Account
                             span.breadcrumb-item.active #{title}
-            a.btn.btn-alt-secondary.btn-noborder.btn-hero(href="/users") Kembali
+            
             .block
                 .block-header.block-header-default
-                    h3.block-title Detail User: #{user_detail.username}
+                    a.text-primary(href="/users") 
+                        i.si.si-action-undo    
+                        | Kembali
                     .block-options
                         button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
                         a.btn.btn-primary.btn-noborder.btn-hero.mr-5(data-toggle="modal" data-target="#mdl_user-ubah" href="javascript:void(0)") Ubah Data
@@ -24,7 +26,7 @@ block content
                             i.fa.fa-trash
                 .block-content.block-content-full
                     .row.mt-10
-                        .col-4.px-30
+                        .col-4
                             .block
                                 .block-content.block-content-full.bg-secondary
                                     .text-center.py-50
