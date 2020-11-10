@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({ extended: true });
+var jsonParser = bodyParser.json()
 
 let index = require('../controllers/index');
 
@@ -7,6 +10,7 @@ let bank_accounts = require('../controllers/bank_account');
 let billing = require('../controllers/billing');
 let client = require('../controllers/client');
 let mail = require('../controllers/mail');
+let setting = require('../controllers/setting');
 let template = require('../controllers/template');
 let user = require('../controllers/user');
 
@@ -50,6 +54,14 @@ router.get('/billings/create', isLoggedIn, billing.get_billingCreated);
 router.post('/billings/create-detail', isLoggedIn, billing.create_detail);
 router.post('/billings/delete-detail', isLoggedIn, billing.delete_detail);
 router.get('/billings/detail', isLoggedIn, billing.get_billingCreated);
+
+// SETTINGS
+
+// - CORE
+router.get('/settings/core', isLoggedIn, setting.get_core);
+router.post('/settings/core/service-create', isLoggedIn, setting.create_service);
+router.post('/settings/core/types-create', isLoggedIn, jsonParser,urlencodedParser,setting.create_type);
+router.post('/settings/core/format-create', isLoggedIn, setting.create_format);
 
 
 // MAILS
