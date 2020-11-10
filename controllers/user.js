@@ -9,7 +9,10 @@ const { validateUser } = require('../validators/user');
 
 // Views Controller
 exports.get_login = function(req, res, next) {
-  res.render('auth/login', { title: 'Login Page' , user: req.user });
+  res.render('auth/login', { 
+    title: 'Login Page' , 
+    user: req.user 
+  });
 }
 
 exports.get_users = function(req, res, next) {
@@ -17,7 +20,29 @@ exports.get_users = function(req, res, next) {
     include: [models.Role]
   }).then(users => {
     return models.Role.findAll().then(roles =>{
-      res.render('user/index', { title: 'Users Account', roles:roles, user: req.user , users:users , formData: {}, errors: {} });
+      res.render('user/index', { 
+        title: 'Users Account', 
+        roles:roles, 
+        user: req.user , 
+        users:users , 
+        errors: {} 
+      });
+    })    
+  })
+}
+
+const rerender_get_users = function(errors, req, res, next) {
+  return models.User.findAll({
+    include: [models.Role]
+  }).then(users => {
+    return models.Role.findAll().then(roles =>{
+      res.render('user/index', { 
+        title: 'Users Account', 
+        roles:roles, 
+        user: req.user , 
+        users:users , 
+        errors: errors
+      });
     })    
   })
 }
@@ -28,14 +53,16 @@ exports.get_detail = function(req, res, next) {
         id : req.params.user_id
     }
   }).then(user_detail => {
-      res.render('user/detail', { title: 'User Detail' , user: req.user, user_detail:user_detail });
+      res.render('user/detail', { 
+        title: 'User Detail' , 
+        user: req.user, 
+        user_detail:user_detail 
+      });
   });
 }
 
 
-exports.rerender_get_users = function(errors, req, res, next) {
-  res.render('user/index', { title: 'Users Account', user: req.user , formData: req.body, errors: errors });
-}
+
 
 
 const generateHash = function(password) {
@@ -109,7 +136,7 @@ exports.logout = function(req, res, next) {
 }
 
 exports.create_role = function(req, res, next) {
-  role = req.body.roles.toString()
+  role = req.body.route.toString()
   return models.Role.create({
     nama_role: req.body.name,
     routing: role
