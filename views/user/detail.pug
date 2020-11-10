@@ -21,23 +21,15 @@ block content
                         | Kembali
                     .block-options
                         button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                        a.btn.btn-primary.btn-noborder.btn-hero.mr-5(data-toggle="modal" data-target="#mdl_user-ubah" href="javascript:void(0)") Ubah Data
-                        a.btn.btn-alt-danger.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-hapus" href="javascript:void(0)") 
-                            i.fa.fa-trash
+                        
+                            
                 .block-content.block-content-full
                     .row.mt-10
                         .col-4
-                            .block
-                                .block-content.block-content-full.bg-secondary
-                                    .text-center.py-50
-                                        h4.font-w700.text-white.text-uppercase.mb-0 
-                                            case user_detail.level
-                                                when 1 
-                                                    const Administrator
-                                                when 2
-                                                    const Petugas
-                                                default
-                                                    const Galat Error
+                            .block.block-bordered.block-rounded
+                                .block-content.block-content-full
+                                    hr
+                                    h6.font-w400 Riwayat Terakhir
                         .col-8
                             .row
                                 .col-6
@@ -48,15 +40,17 @@ block content
                                     .form-group
                                         label Name
                                         span.form-control(type="text") #{user_detail.name}
-                                .col-6
-                                    .form-group
-                                        label Created At
-                                        input.form-control(type="text" value=user_detail.createdAt disabled)
-                                .col-6
-                                    .form-group
-                                        label Last Update
-                                        input.form-control(type="text" value=user_detail.createdAt disabled)
-                            
+                                .col-12
+                                    .block.block-bordered.block-rounded
+                                        .block-content.block-content-full
+                                            h6.font-w400 Role Akses
+                                
+                                .col-12.mt-10.text-right
+                                    a.btn.btn-alt-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_user-hapus" href="javascript:void(0)") 
+                                        i.fa.fa-trash.mr-5
+                                        | Hapus
+                                    a.btn.btn-alt-primary.btn-noborder.btn-hero.ml-10(data-toggle="modal" data-target="#mdl_user-ubah" href="javascript:void(0)") Ubah Data
+                                    
 
 block modal
     .modal.fade(id="mdl_user-ubah" tabindex="-1" role="dialog")
