@@ -32,7 +32,8 @@ exports.create_client = function(req, res, next) {
         pj_jabatan: req.body.jabatan,
         alamat: req.body.alamat
     }).then(user => {
-      res.redirect('/clients/');  
+      var clientAdd = {};
+      return res.send(clientAdd)
     })
 }
 
