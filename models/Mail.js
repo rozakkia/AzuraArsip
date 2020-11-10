@@ -31,6 +31,14 @@ module.exports = (sequelize, DataTypes) => {
         isi: {
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        jenis: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        stat: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
     },{
         deletedAt: 'deletedAT',
@@ -43,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             }
         });
-        Mail.belongsTo(models.Mail_Type, {
+        Mail.belongsTo(models.Type, {
             foreignKey: {
                 allowNull: false
             }
