@@ -1,8 +1,8 @@
 extends ../layout
 
 block css
-    link(rel="stylesheet", href="assets/js/plugins/select2/css/select2.min.css")
-    link(rel="stylesheet", href="assets/js/plugins/datatables/dataTables.bootstrap4.css")
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
 
 block content
     .content.content-full
@@ -12,6 +12,8 @@ block content
                 .row
                     .col-6
                         nav.breadcrumb.push
+                            if errors && errors.username
+                                a.breadcrumb-item(href='/') Dashboard
                             a.breadcrumb-item(href='/') Dashboard
                             span.breadcrumb-item.active #{title}
             
@@ -70,7 +72,7 @@ block content
                                                 td.font-w600 #{role_data.nama_role}
                                                 td.d-none.d-sm-table-cell #{role_data.routing}
                                                 td.text-center
-                                                    a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + role_data.id ) Detail
+                                                    a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/role/" + role_data.id ) Detail
                                             - i = i+1
                
 
@@ -83,11 +85,9 @@ block modal
                     .block-content.py-50.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Tambah User
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-signin(action="/users" method="POST")
+                        form.js-validation-signin(action="users" method="POST")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Username" name="username" value=formData.username)
-                                if (errors && errors.username)
-                                    p.small.text-danger #{errors.username}
+                                input.form-control(type="text" placeholder="Username" name="username")
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Nama Lengkap" name="name")
                             .form-group.mt-20
@@ -110,7 +110,7 @@ block modal
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Nama Role" name="name")
                             .form-group.mt-20
-                                select.js-select2.form-control(multiple style="width:100%" name="roles" data-placeholder="Routing")
+                                select.js-select2.form-control(style="width:100%" id="route-select2" name="route" data-placeholder="Routing..." multiple)
                                     option
                                     option(value="1") Bank Account 
                                     option(value="2") Billings
@@ -122,10 +122,13 @@ block modal
     
 
 block helpers
-    script(src="assets/js/plugins/select2/js/select2.full.min.js")
-    script(src="assets/js/plugins/datatables/jquery.dataTables.min.js")
-    script(src="assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
 
-    script(src="assets/js/pages/be_tables_datatables.min.js")
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })
+
+    script(src="/assets/js/pages/user_index.js")
