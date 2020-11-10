@@ -20,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: true
         },
-        jenis: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
         stat: {
             type: DataTypes.INTEGER,
             defaultValue: 0
@@ -52,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             }
         });
-        Bill.belongsTo(models.Service, {
+        Bill.belongsTo(models.Type, {
             foreignKey: {
                 allowNull: false
             }
