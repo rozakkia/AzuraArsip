@@ -1,0 +1,294 @@
+extends ../../layout
+
+block css
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            a.breadcrumb-item(href='/') Settings
+                            span.breadcrumb-item.active #{title}
+            
+            h4.font-w300.mt-50 #{title} 
+                small Overview
+            .row
+                .col-4
+                    .block
+                        .block-header.block-header-default
+                            h3.block-title Services
+                            .block-options
+                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-service-tambah" href="javascript:void(0)") Tambah Service
+                        .block-content.block-content-full
+                            table.table.table-bordered.table-striped.table-vcenter.table-hover
+                                thead
+                                    tr
+                                        th.text-center No
+                                        th Service Name
+                                        th.text-center Action
+                                tbody
+                                    if services
+                                        - i = 1
+                                        for data in services
+                                            tr
+                                                td.text-center #{i}
+                                                td.font-w600 #{data.name} (#{data.unique})
+                                                td.text-center
+                                                    a.btn.btn-sm.btn-noborder.btn-alt-primary.mr-5(data-toggle="modal" data-target="#mdl_bank_account-ubah" + data.id , href="javascript:void(0)") 
+                                                        i.si.si-pencil.mr-5
+                                                        | Detail
+                                            - i = i+1
+                                            .modal.fade(id="mdl_bank_account-ubah" + data.id , tabindex="-1" role="dialog")
+                                                .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                    .modal-content.rounded
+                                                        .block.block-rounded.block-transparent
+                                                            .block-content.py-50.px-30
+                                                                h4.font-w700.text-center.mb-0.mt-lg-30 Ubah Data
+                                                                p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                                                                form.js-validation-signin(action="/bank_accounts/ubah" method="POST")
+                                                                    input(type="text" hidden value=data.id name="id")
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="text" placeholder="Alias Name" name="alias" value=data.alias)
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="text" placeholder="Bank Name" name="bank" value=data.bank)
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="text" placeholder="Atas Nama" name="nama" value=data.bank_name)
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="number" placeholder="Nomor Rekening" name="nomor" value=data.bank_num)
+                                                                    hr 
+                                                                    p Mengubah data akan mengubah setiap data yang terRelasi
+                                                                    button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
+                                            .modal.fade(id="mdl_bank_account-hapus" + data.id , tabindex="-1" role="dialog")
+                                                .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                    .modal-content.rounded
+                                                        .block.block-rounded.block-transparent
+                                                            .block-content.py-50.px-30
+                                                                h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
+                                                                p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                                                                form.js-validation-signin(action="/bank_accounts/hapus" method="POST")
+                                                                    input(type="text" hidden value=data.id name="id")
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="text" placeholder="Alias Name" name="alias" value=data.alias)
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="text" placeholder="Bank Name" name="bank" value=data.bank)
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="text" placeholder="Atas Nama" name="nama" value=data.bank_name)
+                                                                    .form-group.mt-20
+                                                                        input.form-control(type="number" placeholder="Nomor Rekening" name="nomor" value=data.bank_num)
+                                                                    hr 
+                                                                    p Menghapus data akan menyebabkan konflik pada Relasi
+                                                                    button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                                                                    button.btn.btn-secondary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Hapus Data
+                    
+                .col-4
+                    .block
+                        .block-header.block-header-default
+                            h3.block-title Format Nums
+                            .block-options
+                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-format-tambah" href="javascript:void(0)") Tambah Format
+                        .block-content.block-content-full
+                            table.table.table-bordered.table-striped.table-vcenter.table-hover
+                                thead
+                                    tr
+                                        th.text-center No
+                                        th Alias
+                                        th Format
+                                tbody
+                                    if format
+                                        - i = 1
+                                        for data in format
+                                            tr
+                                                td.text-center #{i}
+                                                td.font-w600 #{data.alias}
+                                                td.font-w600 #{data.format_num}
+                .col-4
+                    .block
+                        .block-header.block-header-default
+                            h3.block-title Roles
+                            .block-options
+                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-format-tambah" href="javascript:void(0)") Tambah Format
+                        .block-content.block-content-full
+            h4.font-w300.mt-50 Types 
+                small Overview
+            .row
+                .col-6
+                    .block.block-themed.block-rounded
+                        .block-header.block-header-default.bg-gd-sea
+                            h3.block-title Billings
+                            .block-options
+                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-billtype-tambah" href="javascript:void(0)") Tambah
+                        .block-content.block-content-full
+                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full.table-hover
+                                thead
+                                    tr
+                                        th.text-center No
+                                        th Alias
+                                        th.d-none.d-sm-table-cell Service
+                                        th.d-none.d-sm-table-cell Format num
+                                        th.text-center Action
+                                tbody
+                                    if types
+                                        - i = 1
+                                        for data in types
+                                            if data.jenis=='3'
+                                                tr
+                                                    td.text-center #{i}
+                                                    td.font-w600 #{data.alias} 
+                                                    td.d-none.d-sm-table-cell #{data.Service.name}
+                                                    td.d-none.d-sm-table-cell #{data.Format_Num.format_num}
+                                                    td.text-center
+                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/") Detail
+                                                - i = i+1
+                .col-6
+                    .block.block-themed.block-rounded
+                        .block-header.block-header-default.bg-gd-emerald
+                            h3.block-title Mails
+                            .block-options
+                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-mailtype-tambah" href="javascript:void(0)") Tambah
+                        .block-content.block-content-full
+                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full.table-hover
+                                thead
+                                    tr
+                                        th.text-center ID
+                                        th Alias
+                                        th.d-none.d-sm-table-cell Inisial
+                                        th.d-none.d-sm-table-cell Format Num
+                                        th.text-center Action
+                                tbody
+                                    if types
+                                        for data in types
+                                            if data.jenis=='1' || data.jenis=='2'
+                                                tr
+                                                    td.text-center #{data.unique_code}
+                                                    td.font-w600 #{data.alias} 
+                                                    td.d-none.d-sm-table-cell #{data.inisial}
+                                                    td.d-none.d-sm-table-cell #{data.Format_Num.format_num}
+                                                    td.text-center
+                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/") Detail
+                                            
+
+block modal
+    .modal.fade(id="mdl-format-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Format Penomoran
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin(action="#" id="formFormatAdd" method="POST")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Alias Name" id="alias" name="name")
+                            .form-group.mt-20
+                                label Format Numbering
+                                input.js-tags-input.form-control(type="text" data-height="34px" id="format" placeholder="Format Nums, eg: DD-YYYY/nums" name="format")
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+
+    .modal.fade(id="mdl-service-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Layanan
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin(action="#" id="formServiceAdd" method="POST")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Service Name" id="name" name="name")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Unique ID, eg: AS , AZ" id="unique" name="unique" multiple)
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+
+    .modal.fade(id="mdl-billtype-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Bill Type
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin(action="core/types-create" method="POST" enctype="multipart/form-data")
+                            .form-group.mt-20
+                                input(type="text" name="jenis" id="jenis" value="3" hidden)
+                                input(type="text" name="unique" id="unique" value="0" hidden)
+                                input.form-control(type="text" placeholder="Aliases Name" id="name" name="name")
+                            .form-group.mt-20
+                                 select.js-select2.form-control(style="width:100%" id="format" name="format" data-placeholder="Numbering Format")
+                                        option
+                                            for data in format
+                                                option(value=data.id) #{data.alias} - #{data.format_num}
+                            .form-group.mt-20
+                                 select.js-select2.form-control(style="width:100%" id="service" name="service" data-placeholder="Services Index")
+                                        option
+                                            for data in services
+                                                option(value=data.id) #{data.name} (#{data.unique})
+                            .form-group.mt-20
+                                .custom-file
+                                    input.custom-file-input(type="file" id="template" name="template" data-toggle="custom-file-input")
+                                    label.custom-file-label Template file (.pug)
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+    
+    .modal.fade(id="mdl-mailtype-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Mail Type
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin(action="core/types-create" method="POST")
+                            .form-group.mt-20
+                                input(type="text" name="jenis" hidden value="1")
+                                input.form-control(type="text" placeholder="Aliases Name" name="name")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Inisial (eg: SPk)" name="inisial")
+                            .format-group.mt-20
+                                select.js-select2.form-control(style="width:100%" id="select-format" name="format" data-placeholder="Numbering Format")
+                                    option
+                                        for data in format
+                                            option(value=data.id) #{data.alias} - #{data.format_num}
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Unique Code (eg: 02)" name="unique")
+                            .form-group.mt-20
+                                .custom-file
+                                    input.custom-file-input(type="file" name="template" data-toggle="custom-file-input")
+                                    label.custom-file-label Template file (.pug)
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+    
+
+    
+    
+
+block helpers
+    if alerts == "1"
+        script.
+            setTimeout(function () {  
+                    swal.fire({
+                        title: 'Data Tersimpan',
+                        icon: 'success',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+                },10);
+                window.setTimeout(function(){ 
+                    location.replace('/settings/core');
+                } ,2500); 
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2','tags-inputs']); })
+    
+    script(src="/assets/js/pages/settings_core_index.js")
+        
+        

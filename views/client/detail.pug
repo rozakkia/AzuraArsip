@@ -15,58 +15,43 @@ block content
                             a.breadcrumb-item(href='/') Dashboard
                             a.breadcrumb-item(href='/clients') Clients Data
                             span.breadcrumb-item.active #{title}
-            a.btn.btn-alt-secondary.btn-noborder.btn-hero(href="/clients") Kembali
             .block
                 .block-header.block-header-default
-                    h3.block-title Detail Client: #{client_detail.company_name}
+                    a.text-primary(href="/clients") 
+                        i.si.si-action-undo    
+                        | Kembali
                     .block-options
                         button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
                         a.btn.btn-primary.btn-noborder.btn-hero.mr-5(data-toggle="modal" data-target="#mdl_client-ubah" href="javascript:void(0)") Ubah Data
                         a.btn.btn-alt-danger.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_client-hapus" href="javascript:void(0)") 
                             i.fa.fa-trash
                 .block-content.block-content-full
+                    h6.text-center.mb-0.mt-30
+                        small Company Name
+                    h2.font-w600.mt-0.mb-50.text-center #{client_detail.company_name}
                     .row.mt-10
-                        .col-4.px-30
-                            .block
-                                .block-content.block-content-full.bg-secondary
-                                    .text-center.py-50
-                                        h4.font-w700.text-white.text-uppercase.mb-0 
-                                            | Logo
+                        .col-4
+                            .block.block-bordered.block-rounded
+                                .block-header.block-header-default
+                                    h3.block-title Contact List
+                                    .block-options
+                                        a.btn.btn-alt-primary.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl_contact-tambah" href="javascript:void(0)") Tambah Kontak
+                                .block-content.py-15
+                                    table.table.table-bordered.table-hover.table-vcenter.js-dataTable-full
+                                        tbody
+                                            if contact
+                                                for data in contact
+                                                    tr
+                                                        a(href="#")
+                                                            td #{data.alias} 
+                                                            td.font-w600 #{data.detail_kontak}
                         .col-8
                             .row
-                                .col-6
-                                    .form-group
-                                        label Company Name
-                                        span.form-control(type="text") #{client_detail.company_name}
-                                .col-6
-                                    .form-group
-                                        label Kontak
-                                        span.form-control(type="text") #{client_detail.kontak}
                                 .col-12
                                     .form-group
                                         label Alamat
                                         textarea.form-control(type="text" disabled name="alamat" rows="3") #{client_detail.alamat}
-                                .col-12
-                                    .block.block-bordered.block-rounded
-                                        .block-header.block-header-default
-                                            h3.block-title Contact List
-                                            .block-options
-                                                a.btn.btn-alt-primary.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl_contact-tambah" href="javascript:void(0)") Tambah Kontak
-                                        .block-content
-                                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
-                                                thead
-                                                    tr
-                                                        th Jenis
-                                                        th Kontak
-                                                        th.d-none.d-sm-table-cell Action
-                                                tbody
-                                                    if contact
-                                                        for data in contact
-                                                            tr
-                                                                td.text-center #{data.jenis_kontak}
-                                                                td.font-w600 #{data.detail_kontak}
-                                                                td.text-center
-                                                                    a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + data.id ) Detail
+                                
                                 .col-6
                                     .form-group
                                         label Penanggung Jawab

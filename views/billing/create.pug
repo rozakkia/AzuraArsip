@@ -46,18 +46,19 @@ block content
                         .col-8.offset-lg-1
                             .form-group
                                 label Keterangan
-                                if bill_detail.status=='1'
+                                if bill_detail.stat=='1'
                                     input.form-control(type="text" value=bill_detail.keterangan disabled)
                                 else
                                     input.form-control(type="text" placeholder="Singkat mengenai bill ini" name="keterangan")
                             .form-group.mt-20
                                 label Rekening
-                                if bill_detail.status=='1'
+                                if bill_detail.stat=='1'
                                     input.form-control(type="text" value=rekening disabled)
                                 else
                                     select.js-select2.form-control(style="width:100%" id="select-type" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
                                         option
-                                            option(value="BNI Syariah_0901741785_Abdurrosyid Broto Handoyo") BNI Syariah | 0901741785
+                                            for data in resultBank
+                                                option(value=data.id) #{data.alias}
                     h2.content-heading.text-black Detail Info
                     .row.items-push
                         .col-3

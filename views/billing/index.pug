@@ -91,18 +91,18 @@ block modal
                     .block-content.py-50.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Billing 
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-(action="/billings" method="POST")
+                        form.js-validation-(action="billings" method="POST")
                             input(type="text" name="userid" value=user.id hidden)
                             .form-group.mt-20
                                 select.js-select2.form-control(style="width:100%" id="example-select2" name="idclient" data-placeholder="Company Client")
                                     option
-                                        for client_data in resultClients
-                                            option(value=client_data.id) #{client_data.company_name}
+                                        for data in resultClients
+                                            option(value=data.id) #{data.company_name}
                             .form-group.mt-20
                                 select.js-select2.form-control(style="width:100%" id="select-type" name="typebill" data-placeholder="Billing Types")
                                     option
-                                        option(value="1") Invoice
-                                        option(value="2") Receipt
+                                        for data in resultTypes
+                                            option(value=data.id) #{data.alias} (#{data.Service.name})
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Buat Billing
 
 block helpers
@@ -113,4 +113,6 @@ block helpers
     script(src="assets/js/pages/be_tables_datatables.min.js")
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })
+    
+    script(src="assets/js/pages/billing_index.js")
 

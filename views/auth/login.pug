@@ -26,6 +26,23 @@ html(lang='en').no-focus
                                             .text-center
                                                 small.text-muted.font-w400 Hubungi administrator jika mengalami masalah.
     
+    block helpers
+        
+        if swallError == '1'
+            p #{swallError}
+            - swallError = 0
+            p #{swallError}
+            script.
+                setTimeout(function () {  
+                swal.fire({
+                    title: 'Your Username or Password are wrong :(',
+                    icon: 'warning',
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+                },10);    
+                
+
     include ../common/footer.pug
     +footer()
 

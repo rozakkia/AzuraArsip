@@ -1,8 +1,8 @@
 extends ../layout
 
 block css
-    link(rel="stylesheet", href="assets/js/plugins/select2/css/select2.min.css")
-    link(rel="stylesheet", href="assets/js/plugins/datatables/dataTables.bootstrap4.css")
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
 
 block content
     .content.content-full
@@ -30,7 +30,8 @@ block content
                                 th.text-center No
                                 th Company name
                                 th.d-none.d-sm-table-cell Kontak
-                                th.d-none.d-sm-table-cell Level
+                                th.d-none.d-sm-table-cell Alamat
+                                th.d-none.d-sm-table-cell Keterangan
                                 th.text-center Action
                         tbody
                             if clients
@@ -40,6 +41,7 @@ block content
                                         td.text-center #{i}
                                         td.font-w600 #{client_data.company_name}
                                         td.d-none.d-sm-table-cell #{client_data.kontak}
+                                        td.d-none.d-sm-table-cell #{client_data.alamat}
                                         td.d-none.d-sm-table-cell #{client_data.alamat}
                                         td.text-center
                                             a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + client_data.id ) Detail
@@ -54,24 +56,26 @@ block modal
                     .block-content.py-50.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Client
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-signin(action="/clients" method="POST")
+                        form.js-validation-signin(action="#" id="formClientAdd" method="POST")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Company Name" name="company")
+                                input.form-control(type="text" placeholder="Company Name" id="company" name="company")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Penanggung Jawab" name="name")
+                                input.form-control(type="text" placeholder="Penanggung Jawab" id="name" name="name")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Jabatan" name="jabatan")
+                                input.form-control(type="text" placeholder="Jabatan" id="jabatan" name="jabatan")
                             .form-group.mt-20
-                                textarea.form-control(type="text" placeholder="Alamat Lengkap" name="alamat" rows="3")
+                                textarea.form-control(type="text" placeholder="Alamat Lengkap" id="alamat" name="alamat" rows="3")
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
     
     
 
 block helpers
-    script(src="assets/js/plugins/select2/js/select2.full.min.js")
-    script(src="assets/js/plugins/datatables/jquery.dataTables.min.js")
-    script(src="assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
 
-    script(src="assets/js/pages/be_tables_datatables.min.js")
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })
+
+    script(src="/assets/js/pages/client_index.js")
