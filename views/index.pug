@@ -65,3 +65,14 @@ block content
         .position-relative
           span.text-back Overview
           h3.font-w300.text-muted.mb-50(id="overview") Statistik
+  block helpers
+    if (isLogin)
+      script.
+        setTimeout(function () {  
+          swal.fire({
+              title: 'Cail',
+              icon: 'success',
+              timer: 2500,
+              showConfirmButton: false
+          });
+        },10);    
