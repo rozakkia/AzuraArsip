@@ -83,7 +83,7 @@ const formatIndexOf =  function(formatString){
   return oF
 }
 
-const newNumberID = function(oF, type){
+const newNumberID = function(req,res, oF, type){
   return models.Service.findOne({
     where: {
       id: type.ServiceId
@@ -114,18 +114,34 @@ const newNumberID = function(oF, type){
       oF.ID.push("001")
       newArrayNum.splice(oF.ID[0],0,oF.ID[1])
     }
-    
     newNum = (newArrayNum.toString()).replace(/,/g , '/')
-    console.log("No Bill: " + newNum)
+    createBill(newNum, req, res)
   })
-   /*
-    if I (layanan)
-    if U (kode surat)
-    if YYYY atau YY
-    if M
-    inc ID++ 
+}
 
-  */
+
+const nextNumberID = function(){
+
+}
+
+const createBill = function(newNum, req, res) {
+  encoded = Buffer.from(newNum).toString('base64');
+  return models.Bill.create({
+    no_bill: newNum,
+    ClientId: req.body.idclient,
+    TypeId: req.body.typebill,
+    UserId: req.body.userid
+  }).then(result => {
+    res.redirect(url.format({
+      pathname: "billings/create",
+      query: {
+        "passCode" : encoded
+      },
+      order: [
+        ['createdAt','DESC']
+      ]
+    }))
+  })
 }
 
 exports.create_billingFirst = function(req, res, next) {
@@ -144,30 +160,21 @@ exports.create_billingFirst = function(req, res, next) {
       return models.Type.findOne({
         where: {
           id: req.body.typebill
-        }, include : [models.Format_Num]
+        }, 
+        include : [models.Format_Num]
       }).then(c_formatType => {
-        console.log(Date())
-        newNum = newNumberID(formatIndexOf(c_formatType.Format_Num.format_num),c_formatType)
-        
+        newNumberID(req,res, formatIndexOf(c_formatType.Format_Num.format_num),c_formatType)
       })
     }else{
+      console.log("tidak ada")
       return models.Format_Num.findOne({
         where: {
           id: c_LastBill.Type.FormatNumId
         }
-      }).then(c_formatNum =>{
-        console.log(c_formatNum.format_num)
+      }).then(c_formatType => {
+        nextNum = nextNumberID(formatIndexOf(c_formatType.format_num))
       })
     }
-  })
-  return models.Type.findOne({
-    where: {
-      id: req.body.typebill
-    },
-    include: [models.Format_Num]
-  }).then(resultType => {
-    let format_num = resultType.Format_Num.format_num;
-    console.log(format_num);
   })
 }
 
