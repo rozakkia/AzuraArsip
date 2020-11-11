@@ -1,15 +1,10 @@
 extends ../layout
 
 block css
-    link(rel="stylesheet", href!="../../assets/js/plugins/select2/css/select2.min.css")
-    link(rel="stylesheet", href!="../../assets/js/plugins/datatables/dataTables.bootstrap4.css")
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
 
 block content
-    case bill_detail.jenis
-        when 1
-            - jenisnya = 'Invoice'
-        when 2 
-            - jenisnya = 'Receipt'
     .content.content-full
         .py-50
             .position-relative
@@ -23,10 +18,10 @@ block content
         .block.block-rounded.block-fx-shadow
         
             .block-header.bg-info.px-100
-                h1.mt-20.text-white ##{jenisnya} : #{bill_detail.no_bill}
+                h1.mt-20.text-white ##{bill_detail.Type.alias} : #{bill_detail.no_bill}
             .block-content.px-100.py-50
-                form(action="update" method="POST")
-                    input(type="text" name="idBill" value=bill_detail.id hidden)
+                form(action="#" id="formDetail" method="POST")
+                    input(type="text" name="idBill" id="idBill" value=bill_detail.id hidden)
                     h2.content-heading.text-black Client Info
                     .row.items-push
                         .col-3
@@ -40,25 +35,30 @@ block content
                                 label Penanggung Jawab
                                 input.form-control(type="text" placeholder="Company Name" value=bill_detail.Client.pj_name+" as "+bill_detail.Client.pj_jabatan disabled)
                     h2.content-heading.text-black Vital Info
+                        a.mb-5.pull-right.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl_billDetail-tambah" href="javascript:void(0)") Ubah
+                    
                     .row.items-push
                         .col-3
                             p.text-muted Semua informasi yang dibutuhkan didalam Bill ini.
                         .col-8.offset-lg-1
                             .form-group
                                 label Keterangan
-                                if bill_detail.stat=='1'
-                                    input.form-control(type="text" value=bill_detail.keterangan disabled)
+                                if bill_detail.stat=='0'
+                                    input.form-control(type="text" id="keterangan" placeholder="Singkat mengenai bill ini" name="keterangan")
                                 else
-                                    input.form-control(type="text" placeholder="Singkat mengenai bill ini" name="keterangan")
+                                    input.form-control(type="text" value=bill_detail.keterangan disabled)
+                                    
                             .form-group.mt-20
                                 label Rekening
-                                if bill_detail.stat=='1'
-                                    input.form-control(type="text" value=rekening disabled)
-                                else
-                                    select.js-select2.form-control(style="width:100%" id="select-type" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
+                                if bill_detail.stat=='0'
+                                    select.js-select2.form-control(style="width:100%" id="bank" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
                                         option
                                             for data in resultBank
-                                                option(value=data.id) #{data.alias}
+                                                option(value=data.id) #{data.bank} (#{data.bank_num}) | An. #{data.bank_name}
+                                else
+                                    - rekening = bill_detail.Bank_Account.bank + " - " + bill_detail.Bank_Account.bank_num + " | An. " + bill_detail.Bank_Account.bank_name
+                                    input.form-control(type="text" value=rekening disabled)
+                                    
                     h2.content-heading.text-black Detail Info
                     .row.items-push
                         .col-3
@@ -78,31 +78,32 @@ block content
                                                 th.d-none.d-sm-table-cell Harga
                                                 th.text-center Action
                                         tbody
-                                            for data_detail in bills_detail
-                                                tr
-                                                    td.font-w600 #{data_detail.deskripsi}
-                                                    td.d-none.d-sm-table-cell #{data_detail.jumlah}
-                                                    td.d-none.d-sm-table-cell #{data_detail.harga}
-                                                    td.text-center
-                                                        a.btn.btn-sm.btn-danger.btn-noborder(data-toggle="modal" data-target="#mdl_billDetail-hapus-" + data_detail.id , href="javascript:void(0)")
-                                                            i.fa.fa-trash-o
-                                                .modal.fade(id="mdl_billDetail-hapus-" + data_detail.id , tabindex="-1" role="dialog")
-                                                    .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-                                                        .modal-content.rounded
-                                                            .block.block-rounded.block-transparent
-                                                                .block-content.mt-20.mb-20.px-30
-                                                                    h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
-                                                                    p.text-muted.text-center.font-w400 
-                                                                    form.js-validation-signin(action="delete-detail" method="POST")
-                                                                        input(type="text" name="id_detail" value=data_detail.id hidden)
-                                                                        input(type="text" name="no_bill" value=bill_detail.no_bill hidden)
-                                                                        .form-group
-                                                                            label Deskripsi Layanan
-                                                                            textarea.form-control(type="text" disabled rows="3") #{data_detail.deskripsi}
-                                                                        hr
-                                                                        h6.font-w700.text-center.mb-0.mt-lg-30 Hapus data ini?
-                                                                        button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Ya, Hapus
-                                                                        button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Batalkan
+                                            if bills_detail
+                                                for data_detail in bills_detail
+                                                    tr
+                                                        td.font-w600 #{data_detail.deskripsi}
+                                                        td.d-none.d-sm-table-cell #{data_detail.jumlah}
+                                                        td.d-none.d-sm-table-cell #{data_detail.harga}
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-danger.btn-noborder(data-toggle="modal" data-target="#mdl_billDetail-hapus-" + data_detail.id , href="javascript:void(0)")
+                                                                i.fa.fa-trash-o
+                                                    .modal.fade(id="mdl_billDetail-hapus-" + data_detail.id , tabindex="-1" role="dialog")
+                                                        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                            .modal-content.rounded
+                                                                .block.block-rounded.block-transparent
+                                                                    .block-content.mt-20.mb-20.px-30
+                                                                        h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
+                                                                        p.text-muted.text-center.font-w400 
+                                                                        form.js-validation-signin(action="delete-detail" method="POST")
+                                                                            input(type="text" name="id_detail" value=data_detail.id hidden)
+                                                                            input(type="text" name="no_bill" value=bill_detail.no_bill hidden)
+                                                                            .form-group
+                                                                                label Deskripsi Layanan
+                                                                                textarea.form-control(type="text" disabled rows="3") #{data_detail.deskripsi}
+                                                                            hr
+                                                                            h6.font-w700.text-center.mb-0.mt-lg-30 Hapus data ini?
+                                                                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Ya, Hapus
+                                                                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Batalkan
                     hr.mb-30
                     .row.items-push.mb-15
                         .col-3
@@ -139,10 +140,12 @@ block modal
     
 
 block helpers
-    script(src="../../assets/js/plugins/select2/js/select2.full.min.js")
-    script(src="../../assets/js/plugins/datatables/jquery.dataTables.min.js")
-    script(src="../../assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
 
-    script(src="../../assets/js/pages/be_tables_datatables.min.js")
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })
+
+    script(src="/assets/js/pages/billing_create.js")
