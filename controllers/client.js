@@ -27,14 +27,14 @@ exports.create_clientContact = function(req, res, next) {
 
 exports.create_client = function(req, res, next) {
     return models.Client.create({
-        company_name: req.body.company,
-        pj_name: req.body.name, 
-        pj_jabatan: req.body.jabatan,
-        alamat: req.body.alamat
-    }).then(user => {
-      var clientAdd = {};
-      return res.send(clientAdd)
-    })
+      company_name: req.body.company,
+      pj_name: req.body.name, 
+      pj_jabatan: req.body.jabatan,
+      alamat: req.body.alamat
+  }).then(user => {
+    var clientAdd = {};
+    return res.send(clientAdd)
+  })
 }
 
 
