@@ -178,64 +178,13 @@ exports.create_billingFirst = function(req, res, next) {
   })
 }
 
-/*
-exports.create_billingFirst = function(req, res, next) {
-  let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
-  return models.Bill.findOne({
-    order : [
-      ['createdAt', 'DESC']
-    ],
-    limit : 1
-  }).then(resultBill => {
-    if (resultBill){
-      const no_billData = resultBill.no_bill ;
-      const get_no_billData = no_billData.slice(0, 7);
-      const today = year + '/' + month;
-      if (get_no_billData == today){
-        getNew = Number(no_billData.slice(8, 11)) + 1;
-        if(String(getNew).length == 1){
-          getCountNew = "00" + getNew
-        }else if (String(getNew).length == 2){
-          getCountNew = "0" + getNew
-        }else {
-          getCountNew = getNew
-        }
-      } else {
-        getCountNew = "001";
-      }
-    } else {
-      getCountNew = "001";
-    }
-    new_noBill = year + '/' + month + '-' + getCountNew;
-    encoded = Buffer.from(new_noBill).toString('base64');
-    return models.Bill.create({
-      no_bill: new_noBill,
-      jenis: req.body.typebill,
-      ClientId: req.body.idclient,
-      UserId: req.body.userid,
-      ServiceId: req.body.service
-    }).then(result => {
-      res.redirect(url.format({
-        pathname: "billings/create",
-        query: {
-          "passCode" : encoded
-        },
-        order: [
-          ['createdAt','DESC']
-        ]
-      }))
-    })
-  })
-}
-*/
-
 exports.get_billingCreated = function(req, res, next){
   decode = Buffer.from(req.query.passCode, 'base64').toString('ascii')
   return models.Bill.findOne({
     where: [{
       no_bill : decode
     }],
-    include: [models.Client]
+    include: [models.Client, models.Bank_Account, models.Type]
   }).then(resultGetBill => {
     return models.Bill_Detail.findOne({
       where: {
@@ -297,14 +246,15 @@ exports.delete_detail = function(req, res, next){
 exports.update_billingCreated = function(req, res, next){
   return models.Bill.update({
     keterangan: req.body.keterangan,
-    rekening: req.body.rekening,
-    status: 1
+    BankAccountId: req.body.BankAccountId,
+    stat: 1
   },{
     where:{
       id: req.body.idBill
     }
   }).then(result => {
-    res.redirect('/billings');
+    var alerts = {};
+    return res.send(alerts)
   })
 }
 
