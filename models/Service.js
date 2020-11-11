@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         unique: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        color_theme: {
+            type: DataTypes.INTEGER,
+            allowNull: true
         }
     },{
         deletedAt: 'deletedAT',
