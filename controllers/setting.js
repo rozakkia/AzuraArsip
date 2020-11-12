@@ -4,7 +4,6 @@ const passport = require('passport');
 const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
 const multer  = require('multer');
-const swal = require
 
 exports.get_settings = function(req, res, next) {
     return models.Client.findAll().then(clients => {
