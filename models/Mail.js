@@ -22,15 +22,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         tujuan: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         date: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: true
         },
         isi: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         jenis: {
             type: DataTypes.INTEGER,
@@ -48,12 +48,12 @@ module.exports = (sequelize, DataTypes) => {
     Mail.associate = models => {
         Mail.belongsTo(models.User, {
             foreignKey: {
-                allowNull: false
+                allowNull: true
             }
         });
         Mail.belongsTo(models.Type, {
             foreignKey: {
-                allowNull: false
+                allowNull: true
             }
         });
     }
