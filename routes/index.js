@@ -11,7 +11,6 @@ let billing = require('../controllers/billing');
 let client = require('../controllers/client');
 let mail = require('../controllers/mail');
 let setting = require('../controllers/setting');
-let template = require('../controllers/template');
 let user = require('../controllers/user');
 
 
@@ -67,13 +66,13 @@ router.post('/settings/core/format-create', isLoggedIn, setting.create_format);
 
 // MAILS
 router.get('/mails', isLoggedIn, mail.get_mails);
+router.post('/mails/surat_masuk-create', isLoggedIn, jsonParser, urlencodedParser, mail.create_suratMasuk);
+router.get('/mails/in/:surat_id', isLoggedIn, mail.get_detailMasuk);
 //router.post('/mails', isLoggedIn, mail.create_mail);
 //router.get('/mails/create', isLoggedIn, mail.getCreate_mail);
 //router.post('/mails/create', isLoggedIn, mail.createUpdate_mail);
 
 // TEMP
-router.get('/invoice_1', isLoggedIn, template.get_invoice_1);
-router.get('/invoice_num', billing.invoice_number);
 
 router.get('/logout', isLoggedIn, user.logout);
 
