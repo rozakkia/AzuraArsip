@@ -10,7 +10,7 @@ const url = require('url');
 
 exports.get_billings = function(req, res, next) {
   return models.Bill.findAll({
-    include: [models.Client],
+    include: [models.Client, models.Type],
     order : [
       ['createdAt', 'DESC']
     ]
@@ -73,6 +73,7 @@ const formatIndexOf =  function(formatString){
   format = formatString.split("/")
   let oF = {
     "format": format,
+    "L": format.length,
     "MM": [format.indexOf("MM")],
     "MV": [format.indexOf("MV")],
     "ID": [format.indexOf("ID")],
@@ -89,30 +90,30 @@ const newNumberID = function(req,res, oF, type){
       id: type.ServiceId
     }
   }).then(r_Service => {
-    newArrayNum = []
+    let newArrayNum = Array(oF.L).fill(0);
     if(oF.I[0] != -1){
       oF.I.push(r_Service.unique)
-      newArrayNum.splice(oF.I[0],0,oF.I[1])
+      newArrayNum[oF.I[0]] = oF.I[1]
     }
     if(oF.U[0] != -1){
       oF.U.push(type.unique_code)   
-      newArrayNum.splice(oF.U[0],0,oF.U[1])
+      newArrayNum[oF.U[0]] = oF.U[1]
     }
     if(oF.YYYY[0] != -1){
       oF.YYYY.push(year)
-      newArrayNum.splice(oF.YYYY[0],0,oF.YYYY[1])
+      newArrayNum[oF.YYYY[0]] = oF.YYYY[1]
     }
     if(oF.MM[0] != -1){
       oF.MM.push(month)
-      newArrayNum.splice(oF.MM[0],0,oF.MM[1])
+      newArrayNum[oF.MM[0]] = oF.MM[1]
     }
     if(oF.MV[0] != -1){
       oF.MV.push(month)
-      newArrayNum.splice(oF.MV[0],0,oF.MV[1])
+      newArrayNum[oF.MV[0]] = oF.MV[1]
     }
     if(oF.ID[0] != -1){
       oF.ID.push("001")
-      newArrayNum.splice(oF.ID[0],0,oF.ID[1])
+      newArrayNum[oF.ID[0]] = oF.ID[1]
     }
     newNum = (newArrayNum.toString()).replace(/,/g , '/')
     createBill(newNum, req, res)
@@ -186,7 +187,7 @@ exports.get_billingCreated = function(req, res, next){
     }],
     include: [models.Client, models.Bank_Account, models.Type]
   }).then(resultGetBill => {
-    return models.Bill_Detail.findOne({
+    return models.Bill_Detail.findAll({
       where: {
         BillId: resultGetBill.id
       }
@@ -206,21 +207,12 @@ exports.get_billingCreated = function(req, res, next){
 
 exports.create_detail = function(req, res, next){
   return models.Bill_Detail.create({
-    deskripsi: req.body.deskripsi,
+    keterangan: req.body.keterangan,
     jumlah: req.body.jumlah,
-    harga: req.body.harga,
-    BillId: req.body.bill_id
+    BillId: req.body.idBill
   }).then(result =>{
-    encoded = Buffer.from(req.body.no_bill).toString('base64');
-    res.redirect(url.format({
-      pathname: "create",
-      query: {
-        "passCode" : encoded
-      },
-      order: [
-        ['createdAt','DESC']
-      ]
-    }))
+    var alerts = {};
+    return res.send(alerts)
   })
 }
 
