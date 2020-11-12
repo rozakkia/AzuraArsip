@@ -16,7 +16,7 @@ block content
                             span.breadcrumb-item.active #{title}
                 h4.font-w300.mt-50 #{title}
                     small  Overview
-                .row
+                .row.mb-50
                     .col-8
                         .block.block-rounded
                             .block-content.block-content-full
@@ -28,45 +28,83 @@ block content
                                     .col-6
                                         .font-size-h3.font-w600 24
                                         .font-size-sm.font-w600.text-uppercase.text-muted Receipts
-                    .col-2
-                        a.block.block-rounded.block-bordered.block-link-pop.text-center(href="mails/in")
-                            .block-content
-                                p.font-size-h1.mb-0.mt-30
-                                    i.si.si-globe.text-primary 
-                                p.font-w600.mb-30.mt-5.text-primary Surat Masuk
-                    .col-2
-                        a.block.block-rounded.block-bordered.block-link-pop.text-center(href="mails/out")
-                            .block-content
-                                p.font-size-h1.mb-0.mt-30
-                                    i.si.si-globe.text-primary 
-                                p.font-w600.mb-30.mt-5.text-primary Surat Keluar
-                .block.mt-50
-                    .block-header.block-header-default
-                        h3.block-title(id="invoices") This Week
-                        .block-options
-                            button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                            a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Tambah Surat
-                    .block-content.block-content-full
+                    .col-4
+                        .block.block-rounded
+                            .block-content.block-content-full
+                                span.text-body-bg-dark Riwayat Terakhir
+                .row
+                    .col-12
+                        .block.block-themed
+                            .block-header
+                                h3.block-title(id="invoices") Surat Masuk
+                                .block-options
+                                    button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                    a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl-surat-masuk-tambah" href="javascript:void(0)") Tambah Surat
+                            .block-content.block-content-full
+                                table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                                    thead
+                                        tr
+                                            th.text-center No
+                                            th.text-center No Surat
+                                            th.text-center.d-none.d-sm-table-cell Perihal
+                                            th.text-center.d-none.d-sm-table-cell File
+                                            th.d-none.d-sm-table-cell.text-center Action
+                                    tbody
+                                        if mails
+                                            - i = 1
+                                            for data in mails
+                                                tr
+                                                    td.text-center #{i}
+                                                    td.font-w600.w-5 #{data.no_mail}
+                                                    td.font-w600.w-5 #{data.perihal}
+                                                    td.font-w600.w-5 #{data.keterangan}
+                                                    td.text-center
+                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/mails/detail?passCode=" + Buffer.from(data.id).toString('base64') ) Detail
+                                                - i = i+1
+                    .col-12
+                        .block.block-themed
+                            .block-header.bg-corporate-light
+                                h3.block-title(id="invoices") Surat Keluar
+                                .block-options
+                                    button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                    a.btn.btn-alt-info.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl-surat-keluar-tambah" href="javascript:void(0)") Tambah Surat
+                            .block-content.block-content-full
                         
 block modal
-    .modal.fade(id="mdl_billing-tambah" tabindex="-1" role="dialog")
+    .modal.fade(id="mdl-surat-masuk-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
-                .block.block-rounded.block-transparent
+                .block.block-rounded.block-transparent.block-themed
+                    .block-header.bg-primary
+                        h3.block-title(id="invoices") Surat Masuk
                     .block-content.py-50.px-30
-                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Surat 
+                        h4.font-w700.text-center.mb-0 Tambah Surat
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-(action="/billings" method="POST")
+                        form.js-validation-(action="/mails/surat_masuk-create" method="POST" enctype="multipart/form-data")
+                            .form-group
+                                input.form-control(type="text" placeholder="No Surat" name="nosurat")
+                            .form-group
+                                input.form-control(type="text" placeholder="Perihal" name="perihal")
                             .form-group.mt-20
-                                select.js-select2.form-control(style="width:100%" id="select-type" name="typebill" data-placeholder="Mail Types")
-                                    option
-                                        option(value="1") Internal  
-                                        option(value="1") External 
-                                        option(value="1") Penawaran 
-                                        option(value="2") Tugas
-                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Buat Surat
+                                .custom-file
+                                    input.custom-file-input(type="file" name="file")
+                                    label.custom-file-label File Surat
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
 
 block helpers
+    if alerts == "1"
+        script.
+            setTimeout(function () {  
+                    swal.fire({
+                        title: 'Data Tersimpan',
+                        icon: 'success',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+                },10);
+                window.setTimeout(function(){ 
+                    location.replace('/mails');
+                } ,2500); 
     script(src="assets/js/plugins/select2/js/select2.full.min.js")
     script(src="assets/js/plugins/datatables/jquery.dataTables.min.js")
     script(src="assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
