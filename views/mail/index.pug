@@ -59,7 +59,7 @@ block content
                                                     td.font-w600.w-5 #{data.perihal}
                                                     td.font-w600.w-5 #{data.keterangan}
                                                     td.text-center
-                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/mails/detail?passCode=" + Buffer.from(data.id).toString('base64') ) Detail
+                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/mails/in/" + Buffer.from(data.id).toString('base64') ) Detail
                                                 - i = i+1
                     .col-12
                         .block.block-themed
