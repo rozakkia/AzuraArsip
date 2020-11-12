@@ -2,6 +2,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     var Bill_Detail_Sub = sequelize.define('Bill_Detail_Sub', {
+        id: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            allowNull: false,
+            primaryKey: true
+        },
         deskripsi: {
             type: DataTypes.STRING,
             allowNull: false
