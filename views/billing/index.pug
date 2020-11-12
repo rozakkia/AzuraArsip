@@ -7,7 +7,7 @@ block css
 block content
     .content.content-full
         .py-50
-            .position-relative
+            .position-relative.mb-50
                 span.text-back #{title}
                 .row
                     .col-6
@@ -35,53 +35,46 @@ block content
                                 p.font-size-h1.mb-0.mt-30
                                     i.si.si-globe.text-primary 
                                 p.font-w600.mb-30.mt-5.text-primary Clients
-                .block.mt-50
-                    .block-header.block-header-default
-                        h3.block-title(id="invoices") Billings
-                        .block-options
-                            button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                            a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Tambah Billings
-                    .block-content.block-content-full
-                        table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
-                            thead
-                                tr
-                                    th.text-center No
-                                    th Invoice Number
-                                    th.d-none.d-sm-table-cell Keterangan
-                                    th.d-none.d-sm-table-cell Client Company
-                                    th.d-none.d-sm-table-cell Jenis
-                                    th.d-none.d-sm-table-cell Status
-                                    th.text-center Action
-                            tbody
-                                if resultGetBills
-                                    - i = 1
-                                    for bill_data in resultGetBills
-                                        tr
-                                            td.text-center #{i}
-                                            td.font-w600.w-5 #{bill_data.no_bill}
-                                            td.d-none.d-sm-table-cell 
-                                                if bill_data.keterangan == null
-                                                    em.text-muted Belum tersedia
-                                                else 
-                                                    | #{bill_data.keterangan}
-                                            td.d-none.d-sm-table-cell #{bill_data.Client.company_name}
-                                            td.d-none.d-sm-table-cell 
-                                                case bill_data.jenis
-                                                    when 1
-                                                        span.badge.badge-primary Invoice
-                                                    when 2 
-                                                        span.badge.badge-info Receipt
-                                                    default
-                                                        span.badge.badge-danger Galat Error!
-                                            td.d-none.d-sm-table-cell 
-                                                case bill_data.status
-                                                    when 0
-                                                        span.badge.badge-danger Incompleted
-                                                    when 1 
-                                                        span.badge.badge-info Completed
-                                            td.text-center
-                                                a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/detail?passCode=" + Buffer.from(bill_data.no_bill).toString('base64') ) Detail
-                                        - i = i+1
+            .block
+                .block-header.block-header-default
+                    h3.block-title(id="invoices") Billings
+                    .block-options
+                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                        a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Tambah Billings
+                .block-content.block-content-full
+                    table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                        thead
+                            tr
+                                th.text-center No
+                                th Invoice Number
+                                th.d-none.d-sm-table-cell Keterangan
+                                th.d-none.d-sm-table-cell Client Company
+                                th.d-none.d-sm-table-cell Jenis
+                                th.d-none.d-sm-table-cell Status
+                                th.text-center Action
+                        tbody
+                            if resultGetBills
+                                - i = 1
+                                for bill_data in resultGetBills
+                                    tr
+                                        td.text-center #{i}
+                                        td.font-w600.w-5 #{bill_data.no_bill}
+                                        td.d-none.d-sm-table-cell 
+                                            if bill_data.keterangan == null
+                                                em.text-muted Belum tersedia
+                                            else 
+                                                | #{bill_data.keterangan}
+                                        td.d-none.d-sm-table-cell #{bill_data.Client.company_name}
+                                        td.d-none.d-sm-table-cell #{bill_data.Type.alias}
+                                        td.d-none.d-sm-table-cell 
+                                            case bill_data.status
+                                                when 0
+                                                    span.badge.badge-danger Incompleted
+                                                when 1 
+                                                    span.badge.badge-info Completed
+                                        td.text-center
+                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/detail?passCode=" + Buffer.from(bill_data.no_bill).toString('base64') ) Detail
+                                    - i = i+1
 
 block modal
     .modal.fade(id="mdl_billing-tambah" tabindex="-1" role="dialog")
