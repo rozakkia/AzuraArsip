@@ -75,19 +75,17 @@ block content
                                             tr
                                                 th Deskripsi
                                                 th.d-none.d-sm-table-cell Jumlah
-                                                th.d-none.d-sm-table-cell Harga
                                                 th.text-center Action
                                         tbody
                                             if bills_detail
-                                                for data_detail in bills_detail
+                                                for data in bills_detail
                                                     tr
-                                                        td.font-w600 #{data_detail.deskripsi}
-                                                        td.d-none.d-sm-table-cell #{data_detail.jumlah}
-                                                        td.d-none.d-sm-table-cell #{data_detail.harga}
+                                                        td.font-w600 #{data.keterangan}
+                                                        td.d-none.d-sm-table-cell #{data.jumlah}
                                                         td.text-center
-                                                            a.btn.btn-sm.btn-danger.btn-noborder(data-toggle="modal" data-target="#mdl_billDetail-hapus-" + data_detail.id , href="javascript:void(0)")
+                                                            a.btn.btn-sm.btn-danger.btn-noborder(data-toggle="modal" data-target="#mdl_billDetail-hapus-" + data.id , href="javascript:void(0)")
                                                                 i.fa.fa-trash-o
-                                                    .modal.fade(id="mdl_billDetail-hapus-" + data_detail.id , tabindex="-1" role="dialog")
+                                                    .modal.fade(id="mdl_billDetail-hapus-" + data.id , tabindex="-1" role="dialog")
                                                         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
                                                             .modal-content.rounded
                                                                 .block.block-rounded.block-transparent
@@ -95,11 +93,11 @@ block content
                                                                         h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
                                                                         p.text-muted.text-center.font-w400 
                                                                         form.js-validation-signin(action="delete-detail" method="POST")
-                                                                            input(type="text" name="id_detail" value=data_detail.id hidden)
+                                                                            input(type="text" name="id_detail" value=data.id hidden)
                                                                             input(type="text" name="no_bill" value=bill_detail.no_bill hidden)
                                                                             .form-group
                                                                                 label Deskripsi Layanan
-                                                                                textarea.form-control(type="text" disabled rows="3") #{data_detail.deskripsi}
+                                                                                textarea.form-control(type="text" disabled rows="3") #{data.deskripsi}
                                                                             hr
                                                                             h6.font-w700.text-center.mb-0.mt-lg-30 Hapus data ini?
                                                                             button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Ya, Hapus
@@ -125,15 +123,12 @@ block modal
                     .block-content.py-50.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Detail 
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-(action="create-detail" method="POST")
-                            input.form-control(type="text" hidden name="no_bill" value=bill_detail.no_bill)
-                            input.form-control(type="text" hidden name="bill_id" value=bill_detail.id)
+                        form(action="#" id="formCreateDetail" method="POST")
+                            input.form-control(type="text" hidden name="idBill" id="idBill" value=bill_detail.id)
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Deskripsi layanan" name="deskripsi")
+                                input.form-control(type="text" placeholder="Deskripsi layanan"  name="keterangan" id="keterangan")
                             .form-group.mt-20
-                                input.form-control(type="number" placeholder="Jumlah" name="jumlah")
-                            .form-group.mt-20
-                                input.form-control(type="number" placeholder="Harga satuan" name="harga")
+                                input.form-control(type="number" placeholder="Jumlah" name="jumlah" id="jumlah")
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambah Detail
 
     
