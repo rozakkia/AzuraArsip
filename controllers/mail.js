@@ -61,24 +61,17 @@ exports.create_suratMasuk = function(req,res,next) {
   }); 
 }
 
-/* 
-PENOMORAN
-- INVOICE
-AZURA LABS -> 2021/01-AI001
-TAHUN/BULAN-AzurainvoiceNOMOR
-
-AZURA STORE -> 01-SI001/2021
-BULAN-StoreInvoiceNOMOR/TAHUN
-
-- RECEIPT
-AZURA LABS -> 2021/01.AR001
-TAHUN/BULAN.AzuraReceiptNOMOR
-
-AZURA STORE -> 01.SR001/2021
-BULAN.StoreReceiptNOMOR/TAHUN
-
-
-*/
-exports.create_mail = function(req, res, next){
-  
+exports.get_detailMailIn = function(req,res,next){
+  mail_id = Buffer.from(req.params.mail_id, 'base64').toString('ascii')
+  return models.Mail.findOne({
+    where: {
+      id: mail_id
+    }
+  }).then(result => {
+    res.render('mail/in/detail', { 
+      title: 'Mail-In Detail' , 
+      user: req.user, 
+      result: result 
+    });
+  })
 }
