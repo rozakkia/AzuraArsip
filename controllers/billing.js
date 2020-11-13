@@ -5,7 +5,6 @@ const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
 const { result } = require("lodash");
 const url = require('url');
-//const test = () => Client.findAll();
 
 
 exports.get_billings = function(req, res, next) {
@@ -35,41 +34,10 @@ exports.get_billings = function(req, res, next) {
 }
 
 
-exports.invoice_number = function(req, res, next) {
-  let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
-  return models.Bill.findOne({
-    order : [
-      ['createdAt', 'DESC']
-    ],
-    limit : 1
-  }).then(resultBill => {
-    const no_billData = resultBill.no_bill;
-    if (no_billData != null){
-      const get_no_billData = no_billData.slice(0, 7);
-      const today = year + '/' + month;
-      if (get_no_billData == today){
-        getNew = Number(no_billData.slice(8, 11)) + 1;
-        if(String(getNew).length == 1){
-          getCountNew = "00" + getNew
-        }else if (String(getNew).length == 2){
-          getCountNew = "0" + getNew
-        }else {
-          getCountNew = getNew
-        }
-      } else {
-        getCountNew = "001";
-      }
-    } else {
-      getCountNew = "001";
-    }
-    new_noBill = year + '/' + month + '-' + getCountNew;
-    console.log(new_noBill);
-  })
-}
 
 let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
 
-const formatIndexOf =  function(formatString){
+const formatIndexOf =  function(formatString, fS_lastBill, fS_FormatLastBill){
   format = formatString.split("/")
   let oF = {
     "format": format,
@@ -81,15 +49,35 @@ const formatIndexOf =  function(formatString){
     "I": [format.indexOf("I")],
     "YYYY": [format.indexOf("YYYY")],
   }
+  if(fS_lastBill != null){
+    formatLast = fS_lastBill.split("/")
+    formatLastBill = fS_FormatLastBill.split("/")
+    oF.last_ID = formatLast[formatLastBill.indexOf("ID")]
+    oF.last_MM = formatLast[formatLastBill.indexOf("MM")]
+    oF.last_MV = formatLast[formatLastBill.indexOf("MV")]
+  }
+  
   return oF
 }
 
-const newNumberID = function(req,res, oF, type){
+function romanize(num) {
+  var lookup = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1},roman = '',i;
+  for ( i in lookup ) {
+    while ( num >= lookup[i] ) {
+      roman += i;
+      num -= lookup[i];
+    }
+  }
+  return roman;
+}
+
+const NumberID = function(req,res, oF, type, numDetail){
   return models.Service.findOne({
     where: {
       id: type.ServiceId
     }
   }).then(r_Service => {
+    monthromawi = romanize(month)
     let newArrayNum = Array(oF.L).fill(0);
     if(oF.I[0] != -1){
       oF.I.push(r_Service.unique)
@@ -108,22 +96,51 @@ const newNumberID = function(req,res, oF, type){
       newArrayNum[oF.MM[0]] = oF.MM[1]
     }
     if(oF.MV[0] != -1){
-      oF.MV.push(month)
+      oF.MV.push(romanize(month))
       newArrayNum[oF.MV[0]] = oF.MV[1]
     }
-    if(oF.ID[0] != -1){
-      oF.ID.push("001")
-      newArrayNum[oF.ID[0]] = oF.ID[1]
+    if(numDetail == 1){
+      if(oF.ID[0] != -1){
+        oF.ID.push("001")
+        newArrayNum[oF.ID[0]] = oF.ID[1]
+      }else{
+        res.send("The Format Number is Error, ID is unavailable!")
+      }
+    }else if (numDetail == 2){
+      if(oF.ID[0] != -1){
+        if(oF.MM[0] != -1 || oF.MV[0] != -1){
+          if(oF.MM[1] == oF.last_MM || oF.MV[1] == oF.last_MV){
+            newestID = Number(oF.last_ID) + 1
+            if(String(newestID).length == 1){
+              countNewestID = "00" + newestID
+            }else if(String(newestID).length == 2){
+              countNewestID = "0" + newestID
+            }else if(String(newestID).length == 3){
+              countNewestID = newestID
+            }else{
+              res.send("Error Asli")
+            }
+            oF.ID.push(countNewestID)
+            newArrayNum[oF.ID[0]] = oF.ID[1]
+          }else{
+            oF.ID.push("001")
+            newArrayNum[oF.ID[0]] = oF.ID[1]
+          }
+        }
+      }else{
+        res.send("The Format Number is Error, ID is unavailable!")
+      }
+    }else{
+      res.send("Galat Error")
     }
+    console.log(oF)
+    console.log(newArrayNum)
     newNum = (newArrayNum.toString()).replace(/,/g , '/')
     createBill(newNum, req, res)
   })
 }
 
 
-const nextNumberID = function(){
-
-}
 
 const createBill = function(newNum, req, res) {
   encoded = Buffer.from(newNum).toString('base64');
@@ -147,35 +164,40 @@ const createBill = function(newNum, req, res) {
 
 exports.create_billingFirst = function(req, res, next) {
   return models.Bill.findOne({
-    where: {
-      TypeId: req.body.typebill
+    include: {
+      model: models.Type,
+      where:{
+        jenis: '3'
+      }
     },
-    include: [models.Type],
     order : [
       ['createdAt', 'DESC']
     ],
     limit : 1
   }).then(c_LastBill => {
-    if(c_LastBill == null){
-      // Bill sesuai Type belom ada
-      return models.Type.findOne({
-        where: {
-          id: req.body.typebill
-        }, 
-        include : [models.Format_Num]
-      }).then(c_formatType => {
-        newNumberID(req,res, formatIndexOf(c_formatType.Format_Num.format_num),c_formatType)
-      })
-    }else{
-      console.log("tidak ada")
-      return models.Format_Num.findOne({
-        where: {
-          id: c_LastBill.Type.FormatNumId
-        }
-      }).then(c_formatType => {
-        nextNum = nextNumberID(formatIndexOf(c_formatType.format_num))
-      })
-    }
+    return models.Type.findOne({
+      where: {
+        id: req.body.typebill
+      }, 
+      include : [models.Format_Num]
+    }).then(c_formatType => {
+      if(c_LastBill == null){
+        // Bill sesuai Type belom ada
+        numDetail = '1'
+        NumberID(req,res, formatIndexOf(c_formatType.Format_Num.format_num, null, null),c_formatType, numDetail)
+      }else{
+        return models.Format_Num.findOne({
+          where: {
+            id: c_LastBill.Type.FormatNumId
+          }
+        }).then(c_formatLastBill => {
+          numDetail = '2'
+          NumberID(req,res, formatIndexOf(c_formatType.Format_Num.format_num, c_LastBill.no_bill, c_formatLastBill.format_num),c_LastBill.Type, numDetail)
+        })
+      }
+      
+    })
+    
   })
 }
 
@@ -250,43 +272,3 @@ exports.update_billingCreated = function(req, res, next){
   })
 }
 
-
-
-/*
-exports.create_billingSecond = function(req, res, next){
-  let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
-  return models.Bill.create({
-    no_bill: year + '/' + month,
-    jenis: req.body.typebill,
-    ClientId: req.body.idclient,
-    UserId: req.body.userid
-  }).then(result => {
-    res.redirect('/billings/' + req.body.idclient + '/' + req.body.typebill);
-  })
-}
-
-exports.get_billingCreate = function(req, res, next) {
-  return models.Client.findOne({
-    where : {
-        id : req.params.client_id
-    }
-  }).then(client_detail => {
-      res.render('billing/create', { title: req.params.type + ' Create' , user: req.user, client_detail:client_detail });
-  });
-}
-
-
-exports.get_billings = function(req, res, next) {
-  console.log("lala:" + test.company_name)
-  res.render('billing/index', { title: 'Billings Payment' , user: req.user, clients:test });
-}
-*/
-
-
-
-/*
-exports.get_clientList = function(req, res, next) {
-  return models.Client.findAll().then(clients => {
-    res.send({ clients:clients });
-  })
-} */
