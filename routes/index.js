@@ -67,10 +67,7 @@ router.post('/settings/core/format-create', isLoggedIn, setting.create_format);
 // MAILS
 router.get('/mails', isLoggedIn, mail.get_mails);
 router.post('/mails/surat_masuk-create', isLoggedIn, jsonParser, urlencodedParser, mail.create_suratMasuk);
-router.get('/mails/in/:surat_id', isLoggedIn, mail.get_detailMasuk);
-//router.post('/mails', isLoggedIn, mail.create_mail);
-//router.get('/mails/create', isLoggedIn, mail.getCreate_mail);
-//router.post('/mails/create', isLoggedIn, mail.createUpdate_mail);
+router.get('/mails/in/:mail_id', isLoggedIn, mail.get_detailMailIn);
 
 // TEMP
 
