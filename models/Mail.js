@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         keterangan: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         perihal: {
             type: DataTypes.STRING,
