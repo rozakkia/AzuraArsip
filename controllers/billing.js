@@ -7,6 +7,13 @@ const { result } = require("lodash");
 const url = require('url');
 
 
+
+exports.get_template = function( req, res, next) {
+  res.render('templates/invoice', { 
+    title: 'Dashboard', 
+    user: req.user });
+}
+
 exports.get_billings = function(req, res, next) {
   return models.Bill.findAll({
     include: [models.Client, models.Type],
@@ -192,7 +199,7 @@ exports.create_billingFirst = function(req, res, next) {
           }
         }).then(c_formatLastBill => {
           numDetail = '2'
-          NumberID(req,res, formatIndexOf(c_formatType.Format_Num.format_num, c_LastBill.no_bill, c_formatLastBill.format_num),c_LastBill.Type, numDetail)
+          NumberID(req,res, formatIndexOf(c_formatType.Format_Num.format_num, c_LastBill.no_bill, c_formatLastBill.format_num),c_formatType, numDetail)
         })
       }
       
