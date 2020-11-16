@@ -5,13 +5,17 @@ const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
 
 exports.get_clients = function(req, res, next) {
-    return models.Client.findAll({
-      order: [
-        ['createdAt', 'DESC']
-      ]
-    }).then(clients => {
-      res.render('client/index', { title: 'Clients Data', user: req.user , clients:clients , formData: {}, errors: {} });
-    })
+  return models.Client.findAll({
+    order: [
+      ['createdAt', 'DESC']
+    ],
+    include: [models.Client_Contact]
+  }).then(clients => {
+    console.log(clients.Client_Contact)
+    res.render('client/index', { title: 'Clients Data', user: req.user , clients:clients , formData: {}, errors: {} });
+  }).catch(err=>{
+    console.log(err)
+  })
 }
 
 exports.create_clientContact = function(req, res, next) {
@@ -40,7 +44,7 @@ exports.create_client = function(req, res, next) {
 
 
 exports.get_detail = function(req, res, next) {
-    return models.Client.findOne({
+  return models.Client.findOne({
       where : {
           id : req.params.client_id
       }
@@ -52,8 +56,8 @@ exports.get_detail = function(req, res, next) {
       }).then(contact => {
         res.render('client/detail', { title: 'Client Detail' , user: req.user, contact:contact, client_detail:client_detail });
       })
-    });
-  }
+    });  
+}
 
   exports.edit_client = function(req, res, next) {
     return models.Client.update({
