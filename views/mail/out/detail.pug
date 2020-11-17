@@ -1,0 +1,113 @@
+extends ../../layout
+
+block css
+  
+    link(rel="stylesheet", href="/assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/flatpickr/flatpickr.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
+    link(rel="stylesheet", href="/assets/js/plugins/summernote/summernote-bs4.css")
+    
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row.mb-50
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            a.breadcrumb-item(href='/mails') Archieve Mails
+                            a.breadcrumb-item(href='/mails/out') Mail Out
+                            span.breadcrumb-item.active Detail
+                .block.block-rounded
+                    .block-header.bg-info.px-100
+                        h1.mt-20.text-white No Mail: #{result.no_mail}
+                        .block-options
+                            .dropdown
+                                button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                                .dropdown-menu.dropdown-menu-right
+                                    a.dropdown-item.mr-5(data-toggle="modal" data-target="#mdl_client-ubah" href="javascript:void(0)")
+                                        i.fa.fa-pencil.mr-5
+                                        | Ubah Data
+                                    a.dropdown-item(data-toggle="modal" data-target="#mdl_client-hapus" href="javascript:void(0)") 
+                                        i.fa.fa-trash.mr-5
+                                        | Hapus Data
+                    .block-content.px-100.py-50
+                        h6.text-center.mb-0.mt-30
+                            small Perihal
+                        h2.font-w600.mt-0.mb-50.text-center #{result.perihal}
+                        h2.content-heading.text-black Detail Info
+                        form(action="#" method="POST" id="formMail-OutDetail")
+                            .row.items-push
+                                .col-3
+                                    p.text-muted Informasi mengenai surat keluar ini.
+                                .col-8.offset-lg-1.mb-5
+                                    .form-group
+                                        input(hidden id="idmail" value=result.id)
+                                        label Jenis Surat
+                                        input.form-control(type="text" disabled value=result.Type.alias)
+                                .col-8.offset-lg-4.mb-5
+                                    .form-group
+                                        label Keterangan
+                                        if result.stat == '1'
+                                            input.form-control(type="text" placeholder="Singkat mengenai surat keluar ini." id="keterangan")
+                                        else
+                                            input.form-control(type="text" value=result.keterangan disabled)
+                                .col-8.offset-lg-4
+                                    .form-group
+                                        label Tujuan
+                                        if result.stat == '1'
+                                            input.form-control(type="text" placeholder="Tujuan dari surat keluar ini." id="tujuan")
+                                        else
+                                            input.form-control(type="text" value=result.tujuan disabled)
+                                .col-8.offset-lg-4
+                                    .form-group
+                                        label Tanggal Surat
+                                        if result.stat == '1'
+                                            input(type="text" class="js-flatpickr form-control bg-white" id="tanggal" name="example-flatpickr-friendly" placeholder="Tanggal kustom surat dikeluarkan" data-alt-input="true" data-date-format="Y-m-d" data-alt-format="F j, Y")
+                                        else
+                                            input(type="text" class="js-flatpickr form-control bg-white" id="tanggal" name="example-flatpickr-friendly" value=result.date disabled data-alt-input="true" data-date-format="Y-m-d" data-alt-format="F j, Y")
+                            h2.content-heading.text-black Isi Surat Keluar
+                            .row.items-push
+                                .col-3
+                                    p.text-muted Informasi mengenai bagian isi pada surat keluar ini.
+                                .col-8.offset-lg-1.mb-5
+                                    .form-group
+                                        if result.stat == '2'
+                                            textarea.js-summernote(name="summernote" id="isi" contenteditable="false") #{result.isi}
+                                        else if result.stat == '1'
+                                            textarea.js-summernote(name="summernote" id="isi" ) #{result.isi}
+                                        
+                                        
+                            hr.mb-30
+                            .row.items-push.mb-15
+                                .col-3
+                                    if result.stat == '1'
+                                        a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
+                                .col-8.offset-lg-1
+                                    if result.stat == '1'
+                                        button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
+                                    else 
+                                        a.pull-right.btn.btn-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
+                                            i.si.si-printer  Cetak
+
+                        
+            
+
+block helpers
+    script(src="/assets/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js")
+    script(src="/assets/js/plugins/flatpickr/flatpickr.min.js")
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/summernote/summernote-bs4.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['flatpickr','datepicker','summernote','select2']); })
+    if result.stat == '2'
+        script.
+            $("#isi").summernote('disable');
+    script(src="/assets/js/pages/mail-out_detail.js")

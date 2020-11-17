@@ -17,8 +17,61 @@ block content
                             a.breadcrumb-item(href='/mails/in') Mail In
                             span.breadcrumb-item.active Detail
                 .block.block-rounded
-                    .block-content.block-content-full
-            
+                    .block-header.bg-primary.px-100
+                        h1.mt-20.text-white No Mail: #{result.no_mail}
+                        .block-options
+                            .dropdown
+                                button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                                .dropdown-menu.dropdown-menu-right
+                                    a.dropdown-item.mr-5(data-toggle="modal" data-target="#mdl_mail-ubah" href="javascript:void(0)")
+                                        i.fa.fa-pencil.mr-5
+                                        | Ubah Data
+                                    a.dropdown-item(data-toggle="modal" data-target="#mdl_mail-hapus" href="javascript:void(0)") 
+                                        i.fa.fa-trash.mr-5
+                                        | Hapus Data
+                    .block-content.px-100.py-50
+                        h6.text-center.mb-0.mt-30
+                            small Perihal
+                        h2.font-w600.mt-0.mb-50.text-center #{result.perihal}
+                        h2.content-heading.text-black Lampiran Surat
+                            .row.items-push
+                                
+block modal
+    .modal.fade(id="mdl_mail-ubah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
+                        form.js-validation-signin(action="#" id="formMail-InDetail-Ubah" method="POST")
+                            .form-group
+                                input(type="text" id="id_mail" value=result.id hidden)
+                                label No Surat
+                                input.form-control(type="text" placeholder="Mail Number" name="mail_no" id="mail_no" value=result.no_mail)
+                            .form-group
+                                label Perihal
+                                input.form-control(type="text" placeholder="Perihal surat keluar" name="perihal" id="perihal" value=result.perihal)
+                            
+                            hr 
+                            p Mengubah data akan mengubah setiap data yang terRelasi
+                            button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                            button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+
+    .modal.fade(id="mdl_mail-hapus" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                        form.js-validation-signin(action="#", method="POST")
+                            .form-group
+                                label No Surat
+                                input(type="text" id="no_mail" value=result.id disabled)
+                                input.form-control(type="text" id="no_surat" value=result.no_mail disabled)
+                            hr 
+                            p Menghapus data akan menyebabkan konflik pada Relasi
+                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                            button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
 
 block helpers
     script(src="/assets/js/plugins/select2/js/select2.full.min.js")
@@ -26,5 +79,7 @@ block helpers
     script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
 
     script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script(src="/assets/js/pages/mail-in_detail.js")
+    
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })

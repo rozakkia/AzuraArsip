@@ -1,0 +1,87 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50.d-print-none
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            a.breadcrumb-item(href='/billings') Billings Payment
+                            span.breadcrumb-item.active #{title}
+        .block.block-rounded.block-fx-shadow
+        
+            .block-header.bg-info.px-100
+                h1.mt-20.text-white ##{bill_detail.Type.alias} : #{bill_detail.no_bill}
+            .block-content.px-100.py-50
+                form(action="#" id="formDetail" method="POST")
+                    input(type="text" name="idBill" id="idBill" value=bill_detail.id hidden)
+                    h2.content-heading.text-black Client Info
+                    .row.items-push
+                        .col-3
+                            p.text-muted Informasi mengenai client untuk Bill ini.
+                        .col-8.offset-lg-1
+                            .form-group
+                                label Company Name
+                                input.form-control(type="text" placeholder="Company Name" value=bill_detail.Client.company_name disabled)
+                        .col-8.offset-lg-4
+                            .form-group
+                                label Penanggung Jawab
+                                input.form-control(type="text" placeholder="Company Name" value=bill_detail.Client.pj_name+" as "+bill_detail.Client.pj_jabatan disabled)
+                    h2.content-heading.text-black Vital Info
+                        a.mb-5.pull-right.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl_billDetail-tambah" href="javascript:void(0)") Ubah
+                    
+                    .row.items-push
+                        .col-3
+                            p.text-muted Semua informasi yang dibutuhkan didalam Bill ini.
+                        .col-8.offset-lg-1
+                            .form-group
+                                label Keterangan
+                                if bill_detail.stat=='0'
+                                    input.form-control(type="text" id="keterangan" placeholder="Singkat mengenai bill ini" name="keterangan")
+                                else
+                                    input.form-control(type="text" value=bill_detail.keterangan disabled)
+                                    
+                            .form-group.mt-20
+                                label Rekening
+                                if bill_detail.stat=='0'
+                                    select.js-select2.form-control(style="width:100%" id="bank" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
+                                        option
+                                            for data in resultBank
+                                                option(value=data.id) #{data.bank} (#{data.bank_num}) | An. #{data.bank_name}
+                                else
+                                    - rekening = bill_detail.Bank_Account.bank + " - " + bill_detail.Bank_Account.bank_num + " | An. " + bill_detail.Bank_Account.bank_name
+                                    input.form-control(type="text" value=rekening disabled)
+                    hr.mb-30
+                    .row.items-push.mb-15
+                        .col-3
+                            if bill_detail.stat=='0'
+                                a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
+                        .col-8.offset-lg-1
+                            if bill_detail.stat=='1' 
+                                .pull-right
+                                    a.btn.btn-alt-primary.btn-noborder.btn-hero(href="#") Ubah Data
+                                    a.ml-10.btn.btn-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
+                                        i.si.si-printer  Cetak
+                            else
+                                button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
+
+block modal
+    
+
+block helpers
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
+
+    script(src="/assets/js/pages/billing_create.js")

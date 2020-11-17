@@ -20,14 +20,15 @@ block content
                     .col-8
                         .block.block-rounded
                             .block-content.block-content-full
-                                i.si.si-game-controller.fa-2x.text-body-bg-dark
+                                i.si.si-bar-chart.fa-2x.text-body-bg-dark.mr-20
+                                span.h5.text-body-bg-dark #{this_month} #{this_year}
                                 .row.py-20.text-center
                                     .col-6.border-r
-                                        .font-size-h3.font-w600 24
-                                        .font-size-sm.font-w600.text-uppercase.text-muted Invoices
+                                        .font-size-h3.font-w600 #{CountMail_In}
+                                        .font-size-sm.font-w600.text-uppercase.text-muted Surat Masuk
                                     .col-6
-                                        .font-size-h3.font-w600 24
-                                        .font-size-sm.font-w600.text-uppercase.text-muted Receipts
+                                        .font-size-h3.font-w600 #{CountMail_Out}
+                                        .font-size-sm.font-w600.text-uppercase.text-muted Surat Keluar
                     .col-4
                         .block.block-rounded
                             .block-content.block-content-full
@@ -53,14 +54,15 @@ block content
                                         if mails
                                             - i = 1
                                             for data in mails
-                                                tr
-                                                    td.text-center #{i}
-                                                    td.font-w600.w-5 #{data.no_mail}
-                                                    td.font-w600.w-5 #{data.perihal}
-                                                    td.font-w600.w-5 #{data.keterangan}
-                                                    td.text-center
-                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/mails/in/" + Buffer.from(data.id).toString('base64') ) Detail
-                                                - i = i+1
+                                                if(data.jenis == 2)
+                                                    tr
+                                                        td.text-center #{i}
+                                                        td.font-w600.w-5 #{data.no_mail}
+                                                        td.font-w600.w-5 #{data.perihal}
+                                                        td.font-w600.w-5 #{data.keterangan}
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/mails/in/" + Buffer.from(data.id).toString('base64') ) Detail
+                                                    - i = i+1
                     .col-12
                         .block.block-themed
                             .block-header.bg-corporate-light
@@ -69,6 +71,42 @@ block content
                                     button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
                                     a.btn.btn-alt-info.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl-surat-keluar-tambah" href="javascript:void(0)") Tambah Surat
                             .block-content.block-content-full
+                                table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                                    thead
+                                        tr
+                                            th.text-center No
+                                            th.text-center No Surat
+                                            th.text-center.d-none.d-sm-table-cell Perihal
+                                            th.text-center.d-none.d-sm-table-cell Tujuan
+                                            th.text-center.d-none.d-sm-table-cell Jenis
+                                            th.text-center.d-none.d-sm-table-cell Status
+                                            th.d-none.d-sm-table-cell.text-center Action
+                                    tbody
+                                        if mails
+                                            - i = 1
+                                            for data in mails
+                                                if(data.jenis == 1)
+                                                    tr
+                                                        td.text-center #{i}
+                                                        td.font-w600.w-5 #{data.no_mail}
+                                                        td.font-w600.w-5 #{data.perihal}
+                                                        td.font-w600.w-5 
+                                                            if data.tujuan == null
+                                                                em.text-muted.font-w400 Belum tersedia
+                                                            else
+                                                                | #{data.tujuan}
+                                                        td.font-w600.w-5 #{data.Type.alias}
+                                                        td.font-w600.w-5 
+                                                            case data.stat
+                                                                when 1
+                                                                    span.badge.badge-danger Incompleted
+                                                                when 2 
+                                                                    span.badge.badge-info Not Printed Yet
+                                                                when 3
+                                                                    span.badge.badge-primary Printed
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/mails/out/" + Buffer.from(data.id).toString('base64') ) Detail
+                                                    - i = i+1
                         
 block modal
     .modal.fade(id="mdl-surat-masuk-tambah" tabindex="-1" role="dialog")
@@ -90,6 +128,36 @@ block modal
                                     input.custom-file-input(type="file" name="file")
                                     label.custom-file-label File Surat
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
+    
+    .modal.fade(id="mdl-surat-keluar-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent.block-themed
+                    .block-header.bg-info
+                        h3.block-title(id="invoices") Surat Keluar
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0 Tambah Surat
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-(action="mails/surat_keluar-create" method="POST")
+                            input(hidden value=user.id name="userId")
+                            .form-group
+                                select.js-select2.form-control(style="width:100%" id="service" name="service" data-placeholder="What Service?")
+                                    option
+                                        for data in service
+                                            option(value=data.id) #{data.name}
+                            .form-group
+                                select.js-select2.form-control(style="width:100%" id="typemail" name="typemail" data-placeholder="Mail Types")
+                                    option
+                                        for data in typemail
+                                            option(value=data.id) #{data.alias}
+                            .form-group
+                                select.js-select2.form-control(style="width:100%" id="jenismail" name="jenismail" data-placeholder="Mail Types")
+                                    option
+                                    option(value="1") External
+                                    option(value="2") Internal
+                            .form-group
+                                input.form-control(type="text" placeholder="Singkat mengenai surat ini" name="perihal")
+                            button.btn.btn-info.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
 
 block helpers
     if alerts == "1"
@@ -105,6 +173,7 @@ block helpers
                 window.setTimeout(function(){ 
                     location.replace('/mails');
                 } ,2500); 
+
     script(src="assets/js/plugins/select2/js/select2.full.min.js")
     script(src="assets/js/plugins/datatables/jquery.dataTables.min.js")
     script(src="assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
