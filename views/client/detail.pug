@@ -22,9 +22,15 @@ block content
                         | Kembali
                     .block-options
                         button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                        a.btn.btn-primary.btn-noborder.btn-hero.mr-5(data-toggle="modal" data-target="#mdl_client-ubah" href="javascript:void(0)") Ubah Data
-                        a.btn.btn-alt-danger.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_client-hapus" href="javascript:void(0)") 
-                            i.fa.fa-trash
+                        .dropdown
+                            button.btn-block-option.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                            .dropdown-menu.dropdown-menu-right
+                                a.dropdown-item.mr-5(data-toggle="modal" data-target="#mdl_client-ubah" href="javascript:void(0)")
+                                    i.fa.fa-pencil.mr-5
+                                    | Ubah Data
+                                a.dropdown-item(data-toggle="modal" data-target="#mdl_client-hapus" href="javascript:void(0)") 
+                                    i.fa.fa-trash.mr-5
+                                    | Hapus Data
                 .block-content.block-content-full
                     h6.text-center.mb-0.mt-30
                         small Company Name
@@ -89,7 +95,10 @@ block modal
                                 input.form-control(type="text" placeholder="Jabatan" name="jabatan" value=client_detail.pj_jabatan)
                             .form-group.mt-20
                                 textarea.form-control(type="text" placeholder="Alamat Lengkap" name="alamat" rows="3") #{client_detail.alamat}
-                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
+                            hr 
+                            p Mengubah data akan mengubah setiap data yang terRelasi
+                            button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                            button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
 
     .modal.fade(id="mdl_contact-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
@@ -122,10 +131,11 @@ block modal
                             .form-group
                                 label Company Name
                                 input.form-control(type="text" name="company" value=client_detail.company_name disabled)
-                            hr
-                            h6.font-w700.text-center.mb-0.mt-lg-30 Hapus data ini?
-                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Ya, Hapus
-                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Batalkan
+                            hr 
+                            p Menghapus data akan menyebabkan konflik pada Relasi
+                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                            button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                            
     
 
 block helpers

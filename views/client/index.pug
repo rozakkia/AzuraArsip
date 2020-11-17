@@ -29,9 +29,8 @@ block content
                             tr
                                 th.text-center No
                                 th Company name
-                                th.d-none.d-sm-table-cell Kontak
+                                th.d-none.d-sm-table-cell Email
                                 th.d-none.d-sm-table-cell Alamat
-                                th.d-none.d-sm-table-cell Keterangan
                                 th.text-center Action
                         tbody
                             if clients
@@ -40,8 +39,7 @@ block content
                                     tr
                                         td.text-center #{i}
                                         td.font-w600 #{client_data.company_name}
-                                        td.d-none.d-sm-table-cell #{client_data.kontak}
-                                        td.d-none.d-sm-table-cell #{client_data.alamat}
+                                        td.d-none.d-sm-table-cell 
                                         td.d-none.d-sm-table-cell #{client_data.alamat}
                                         td.text-center
                                             a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + client_data.id ) Detail
