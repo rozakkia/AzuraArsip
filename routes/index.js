@@ -68,9 +68,14 @@ router.post('/settings/core/format-create', isLoggedIn, setting.create_format);
 router.get('/mails', isLoggedIn, mail.get_mails);
 router.post('/mails/surat_masuk-create', isLoggedIn, jsonParser, urlencodedParser, mail.create_suratMasuk);
 router.get('/mails/in/:mail_id', isLoggedIn, mail.get_detailMailIn);
+router.post('/mails/in/update', isLoggedIn, mail.update_MailIn);
+router.post('/mails/surat_keluar-create', isLoggedIn, mail.create_suratKeluarFirst)
+router.get('/mails/out/:mail_id', isLoggedIn, mail.get_detailMailOut);
+router.post('/mails/out/update', isLoggedIn, mail.update_MailOut);
 
 // TEMP
 
 router.get('/logout', isLoggedIn, user.logout);
+router.get('/invoice',isLoggedIn, billing.get_template)
 
 module.exports = router;
