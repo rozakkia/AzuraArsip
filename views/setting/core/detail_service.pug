@@ -1,0 +1,116 @@
+extends ../../layout
+
+block css
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative.mb-30
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            a.breadcrumb-item(href='/settings') Settings
+                            a.breadcrumb-item(href='/settings/core') Core Settings
+                            span.breadcrumb-item.active #{title}
+            .block
+                .block-header.block-header-default
+                    a.text-primary(href="/settings/core") 
+                        i.si.si-action-undo    
+                        | Kembali
+                    .block-options
+                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                        .dropdown
+                            button.btn-block-option.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                            .dropdown-menu.dropdown-menu-right
+                                a.dropdown-item.mr-5(data-toggle="modal" data-target="#mdl-ubah" href="javascript:void(0)")
+                                    i.fa.fa-pencil.mr-5
+                                    | Ubah Data
+                                a.dropdown-item(data-toggle="modal" data-target="#mdl-hapus" href="javascript:void(0)") 
+                                    i.fa.fa-trash.mr-5
+                                    | Hapus Data
+                .block-content.block-content-full
+                    h6.text-center.mb-0.mt-30
+                        small Service Name
+                    h2.font-w600.mt-0.mb-50.text-center #{data.name}
+                    .block.block-themed.block-rounded
+                        case data.color_theme
+                            when 0
+                                - color = "gray-darker"
+                                - name = "Gray"
+                            when 1
+                                - color = "primary"
+                                - name = "Blue"
+                            when 2
+                                - color = "info"
+                                - name = "Cyan"
+                            when 3
+                                - color = "warning"
+                                - name = "Yellow"
+                            when 4
+                                - color = "red"
+                                - name = "Red"
+                        .block-header.block-header-default(class="bg-" + color)
+                            h3.block-title.text-center Color Theme: #{name}
+                        
+
+block modal
+    .modal.fade(id="mdl-ubah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
+                        form.js-validation-signin(action="#" id="formUpdate" method="POST")
+                            .form-group
+                                input(id="idNum" hidden value=Buffer.from(data.id).toString('base64'))
+                                label Service Name
+                                input.form-control(type="text" placeholder="Service Name" id="name" value=data.name)
+                            .form-group
+                                label Inisial
+                                input.form-control(type="text" placeholder="Inisial" id="inisial" value=data.unique)
+                            .form-group.mt-20
+                                select.js-select2.form-control(style="width:100%" id="color" data-placeholder="Color Theme")
+                                    option
+                                    option(value="0" selected= data.color_theme==0) Gray
+                                    option(value="1" selected= data.color_theme==1) Blue
+                                    option(value="2" selected= data.color_theme==2) Cyan
+                                    option(value="3" selected= data.color_theme==3) Yellow
+                                    option(value="4" selected= data.color_theme==4) Red
+                            hr 
+                            p Mengubah data akan mengubah setiap data yang terRelasi
+                            button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                            button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+
+    .modal.fade(id="mdl-hapus" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                        form.js-validation-signin(action="#" id="formDelete" method="POST")
+                            .form-group
+                                label Service Name
+                                input#idNum(hidden value=Buffer.from(data.id).toString('base64'))
+                                input.form-control(type="text" name="company" value=data.name disabled)
+                            hr 
+                            p Menghapus data akan menyebabkan konflik pada Relasi
+                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                            button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                            
+    
+
+block helpers
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
+
+    script(src="/assets/js/pages/settings_core_detailService.js")
+    
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
