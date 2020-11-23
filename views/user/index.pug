@@ -46,34 +46,7 @@ block content
                                         td.text-center
                                             a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + user_data.id ) Detail
                                     - i = i+1
-            h4.font-w300.mt-50 Manage Roles  
-            .row
-                .col-12
-                    .block
-                        .block-header.block-header-default
-                            h3.block-title Roles List
-                            .block-options
-                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_role-tambah" href="javascript:void(0)") Tambah Roles
-                        .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
-                                thead
-                                    tr
-                                        th.text-center No
-                                        th.w-30 Roles
-                                        th.d-none.d-sm-table-cell.w-50 Routing
-                                        th.text-center Action
-                                tbody
-                                    if users
-                                        - i = 1
-                                        for role_data in roles
-                                            tr
-                                                td.text-center #{i}
-                                                td.font-w600 #{role_data.nama_role}
-                                                td.d-none.d-sm-table-cell #{role_data.routing}
-                                                td.text-center
-                                                    a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/role/" + role_data.id ) Detail
-                                            - i = i+1
+                            
                
 
 
@@ -99,25 +72,6 @@ block modal
                                         option(value=role_data.id) #{role_data.nama_role}
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
 
-    .modal.fade(id="mdl_role-tambah" tabindex="-1" role="dialog")
-        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-            .modal-content.rounded
-                .block.block-rounded.block-transparent
-                    .block-content.py-50.px-30
-                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Role
-                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-signin(action="/users/role-create" method="POST")
-                            .form-group.mt-20
-                                input.form-control(type="text" placeholder="Nama Role" name="name")
-                            .form-group.mt-20
-                                select.js-select2.form-control(style="width:100%" id="route-select2" name="route" data-placeholder="Routing..." multiple)
-                                    option
-                                    option(value="1") Bank Account 
-                                    option(value="2") Billings
-                                    option(value="3") Clients
-                                    option(value="4") Mails
-                                    option(value="5") Users
-                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
     
     
 
