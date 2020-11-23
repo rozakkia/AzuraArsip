@@ -24,16 +24,17 @@ block content
                 .block.block-rounded
                     .block-header.bg-info.px-100
                         h1.mt-20.text-white No Mail: #{result.no_mail}
-                        .block-options
-                            .dropdown
-                                button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
-                                .dropdown-menu.dropdown-menu-right
-                                    a.dropdown-item.mr-5(data-toggle="modal" data-target="#mdl_client-ubah" href="javascript:void(0)")
-                                        i.fa.fa-pencil.mr-5
-                                        | Ubah Data
-                                    a.dropdown-item(data-toggle="modal" data-target="#mdl_client-hapus" href="javascript:void(0)") 
-                                        i.fa.fa-trash.mr-5
-                                        | Hapus Data
+                        if result.stat == '2'
+                            .block-options
+                                .dropdown
+                                    button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                                    .dropdown-menu.dropdown-menu-right
+                                        a.dropdown-item.mr-5(data-toggle="modal" data-target="#mdl-ubah" href="javascript:void(0)")
+                                            i.fa.fa-pencil.mr-5
+                                            | Ubah Data
+                                        a.dropdown-item(data-toggle="modal" data-target="#mdl-hapus" href="javascript:void(0)") 
+                                            i.fa.fa-trash.mr-5
+                                            | Hapus Data
                     .block-content.px-100.py-50
                         h6.text-center.mb-0.mt-30
                             small Perihal
@@ -85,7 +86,7 @@ block content
                             .row.items-push.mb-15
                                 .col-3
                                     if result.stat == '1'
-                                        a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
+                                        a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl-hapus" href="javascript:void(0)") Batalkan
                                 .col-8.offset-lg-1
                                     if result.stat == '1'
                                         button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
@@ -93,7 +94,25 @@ block content
                                         a.pull-right.btn.btn-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
                                             i.si.si-printer  Cetak
 
-                        
+block modal
+    .modal.fade(id="mdl-hapus" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                        form.js-validation-signin(action="delete" id="formMail-OutDetail-hapus" method="POST")
+                            .form-group
+                                label No Surat
+                                 input(id="idNum" name="idNum" hidden value=Buffer.from(result.id).toString('base64'))
+                                input.form-control(type="text" id="no_surat" value=result.no_mail disabled)
+                            .form-group
+                                label Perihal
+                                input.form-control(type="text" id="perihal" value=result.perihal disabled)
+                            hr 
+                            p Menghapus data akan menyebabkan konflik pada Relasi
+                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit" id="btnHapusData") Hapus Data
+                            button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan             
             
 
 block helpers
