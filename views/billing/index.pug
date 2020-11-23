@@ -20,15 +20,15 @@ block content
                     .col-8
                         .block.block-rounded
                             .block-content.block-content-full
-                                i.si.si-game-controller.fa-2x.text-body-bg-dark 
-                                span.h5.text-body-bg-dark October 2020
+                                i.si.si-bar-chart.fa-2x.text-body-bg-dark.mr-20
+                                span.h5.text-body-bg-dark #{this_month} #{this_year}
                                 .row.py-20.text-center
                                     .col-6.border-r
-                                        .font-size-h3.font-w600 24
-                                        .font-size-sm.font-w600.text-uppercase.text-muted Invoices
+                                        .font-size-h3.font-w600 #{count_Invoice}
+                                        .font-size-sm.font-w600.text-uppercase.text-muted Invoice
                                     .col-6
-                                        .font-size-h3.font-w600 24
-                                        .font-size-sm.font-w600.text-uppercase.text-muted Receipts
+                                        .font-size-h3.font-w600 #{count_Receipt}
+                                        .font-size-sm.font-w600.text-uppercase.text-muted Receipt
                     .col-4
                         a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/clients" target="_blank")
                             .block-content
@@ -65,15 +65,17 @@ block content
                                             else 
                                                 | #{bill_data.keterangan}
                                         td.d-none.d-sm-table-cell #{bill_data.Client.company_name}
-                                        td.d-none.d-sm-table-cell #{bill_data.Type.alias}
+                                        td.d-none.d-sm-table-cell #{bill_data.Type.alias} (#{bill_data.Type.Service.unique})
                                         td.d-none.d-sm-table-cell 
-                                            case bill_data.status
+                                            case bill_data.stat
                                                 when 0
                                                     span.badge.badge-danger Incompleted
-                                                when 1 
-                                                    span.badge.badge-info Completed
+                                                when 1
+                                                    span.badge.badge-info Not Printed Yet
+                                                when 2
+                                                    span.badge.badge-primary Printed
                                         td.text-center
-                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/detail?passCode=" + Buffer.from(bill_data.no_bill).toString('base64') ) Detail
+                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/" + Buffer.from(bill_data.id).toString('base64') ) Detail
                                     - i = i+1
 
 block modal
@@ -106,6 +108,20 @@ block helpers
     script(src="assets/js/pages/be_tables_datatables.min.js")
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })
+        var urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has("alerts") && urlParams.get("alerts")){
+            setTimeout(function () {  
+                swal.fire({
+                    title: 'Data Terhapus',
+                    icon: 'success',
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            },10);
+            window.setTimeout(function(){ 
+               location.replace("/billings");
+            } ,2500);   
+        }
     
     script(src="assets/js/pages/billing_index.js")
 
