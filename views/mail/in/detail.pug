@@ -45,7 +45,7 @@ block modal
                         h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
                         form.js-validation-signin(action="#" id="formMail-InDetail-Ubah" method="POST")
                             .form-group
-                                input(type="text" id="id_mail" value=result.id hidden)
+                                input(id="idNum" hidden value=Buffer.from(result.id).toString('base64'))
                                 label No Surat
                                 input.form-control(type="text" placeholder="Mail Number" name="mail_no" id="mail_no" value=result.no_mail)
                             .form-group
@@ -63,10 +63,9 @@ block modal
                 .block.block-rounded.block-transparent
                     .block-content.mt-20.mb-20.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
-                        form.js-validation-signin(action="#", method="POST")
+                        form.js-validation-signin(action="#" id="formMail-InDetail-hapus" method="POST")
                             .form-group
                                 label No Surat
-                                input(type="text" id="no_mail" value=result.id disabled)
                                 input.form-control(type="text" id="no_surat" value=result.no_mail disabled)
                             hr 
                             p Menghapus data akan menyebabkan konflik pada Relasi
