@@ -4,12 +4,24 @@ const passport = require('passport');
 const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
 
+const rerender_get_bankaccounts = function(alerts, req, res, next) {
+    return models.Bank_Account.findAll({}).then(bank_accounts => {
+        res.render('bank_account/index', {
+            bank_accounts: bank_accounts,
+            title: 'Bank Accounts',
+            user: req.user,
+            alerts: alerts
+        })
+    })
+}
+
 exports.get_bankaccounts = function(req, res, next) {
     return models.Bank_Account.findAll({}).then(bank_accounts => {
         res.render('bank_account/index', {
             bank_accounts: bank_accounts,
             title: 'Bank Accounts',
-            user: req.user
+            user: req.user,
+            alerts: 0
         })
     })
 }
@@ -21,7 +33,8 @@ exports.create_bankaccounts = function(req, res, next) {
         bank_name: req.body.nama, 
         bank_num: req.body.nomor
     }).then(user => {
-        res.redirect('/bank_accounts');  
+        var Alerts = {};
+        return res.send(Alerts) 
     })
 }
 
@@ -33,19 +46,21 @@ exports.update_bankaccounts = function(req, res, next) {
         bank_num: req.body.nomor
     },{
         where: {
-            id: req.body.id
+            id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
         }
     }).then(result => {
-        res.redirect('/bank_accounts');
+        alerts="1"
+        rerender_get_bankaccounts(alerts,req,res,next);
     })
 }
 
 exports.delete_bankaccounts = function(req, res, next) {
     return models.Bank_Account.destroy({
         where:{
-            id: req.body.id
+            id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
         }
     }).then(result => {
-        res.redirect('/bank_accounts');
+        alerts="2"
+        rerender_get_bankaccounts(alerts,req,res,next);
     })
 }
