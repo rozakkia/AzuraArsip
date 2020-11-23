@@ -1,6 +1,7 @@
 extends ../layout
 
 block css
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
 
 block content
     .content.content-full
@@ -53,6 +54,7 @@ block content
                                     .block.block-bordered.block-rounded
                                         .block-content.block-content-full
                                             h6.font-w400 Role Akses
+                                            h6 #{route}
                                 
                                     
 
@@ -64,10 +66,21 @@ block modal
                     .block-content.mt-20.mb-20.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Ubah Data
                         p.text-muted.text-center.font-w400 username: #{user_detail.username}
-                        form.js-validation-signin(action="/users/" + user_detail.id + "/edit", method="POST")
+                        form.js-validation-signin(action="#" id="formUpdate" method="POST")
+                            .form-group
+                                label Username
+                                input(id="idNum" hidden value=Buffer.from(user_detail.id).toString('base64'))
+                                input.form-control(type="text" placeholder="Username" id="username" value=user_detail.username)
                             .form-group
                                 label Nama
-                                input.form-control(type="text" placeholder="Nama Lengkap" name="name" value=user_detail.name)
+                                input(id="idNum" hidden value=Buffer.from(user_detail.id).toString('base64'))
+                                input.form-control(type="text" placeholder="Nama Lengkap" id="name" value=user_detail.name)
+                            .form-group.mt-20
+                                label Role Akses 
+                                select.js-select2.form-control(style="width:100%" id="role" data-placeholder="Role User")
+                                    option
+                                    for role_data in roles
+                                        option(value=role_data.id selected= user_detail.Role.id==role_data.id) #{role_data.nama_role}
                             hr 
                             p Mengubah data akan mengubah setiap data yang terRelasi
                             button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
@@ -80,7 +93,7 @@ block modal
                     .block-content.mt-20.mb-20.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
                         p.text-muted.text-center.font-w400 username: #{user_detail.username}
-                        form.js-validation-signin(action="/users/" + user_detail.id + "/delete", method="POST")
+                        form.js-validation-signin(action="#" id="formDelete", method="POST")
                             .form-group
                                 label Username
                                 input.form-control(type="text" name="username" value=user_detail.username disabled)
@@ -94,3 +107,7 @@ block modal
     
 
 block helpers
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/pages/user_detail.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
