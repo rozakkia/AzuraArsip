@@ -9,10 +9,21 @@ exports.get_clients = function(req, res, next) {
     order: [
       ['createdAt', 'DESC']
     ],
-    include: [models.Client_Contact]
+    include: {
+      model: models.Client_Contact,
+      where:{
+        jenis_kontak: '1'
+      },
+      limit:1
+    }
   }).then(clients => {
-    console.log(clients.Client_Contact)
-    res.render('client/index', { title: 'Clients Data', user: req.user , clients:clients , formData: {}, errors: {} });
+    console.log(JSON.stringify(clients, null, 2));
+    res.render('client/index', { 
+      title: 'Clients Data', 
+      user: req.user , 
+      clients:clients , 
+      formData: {}, 
+      errors: {} });
   }).catch(err=>{
     console.log(err)
   })
@@ -47,15 +58,15 @@ exports.get_detail = function(req, res, next) {
   return models.Client.findOne({
       where : {
           id : req.params.client_id
-      }
+      },
+      include: [{
+        model: models.Client_Contact
+      }]
     }).then(client_detail => {
-      return models.Client_Contact.findAll({
-        where : {
-          ClientId: req.params.client_id
-        }
-      }).then(contact => {
-        res.render('client/detail', { title: 'Client Detail' , user: req.user, contact:contact, client_detail:client_detail });
-      })
+      res.render('client/detail', { 
+        title: 'Client Detail' , 
+        user: req.user, 
+        client_detail:client_detail });
     });  
 }
 
