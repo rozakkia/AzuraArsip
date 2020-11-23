@@ -15,7 +15,8 @@ module.exports = function(passport) {
 		models.User.findOne({
 			where: {
 				'id' : id
-			}
+			},
+			include:[models.Role]
 		}).then(user => {
 			if (user == null) {
 				done(new Error('Wrong user id.'))
@@ -32,7 +33,7 @@ module.exports = function(passport) {
 		return models.User.findOne({
 			where: {
 				'username' : username
-			},
+			}
 		}).then(user => {
 			if (user == null) {
 				return done(null, false)
