@@ -39,7 +39,12 @@ block content
                                     tr
                                         td.text-center #{i}
                                         td.font-w600 #{client_data.company_name}
-                                        td.d-none.d-sm-table-cell 
+                                        if !client_data.Client_Contacts.length
+                                            td.d-none.d-sm-table-cell
+                                                em.font-w400.text-muted Email Belum Tersedia
+                                        else
+                                            for data_sub in client_data.Client_Contacts
+                                                td.d-none.d-sm-table-cell #{data_sub.detail_kontak}
                                         td.d-none.d-sm-table-cell #{client_data.alamat}
                                         td.text-center
                                             a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/clients/" + client_data.id ) Detail

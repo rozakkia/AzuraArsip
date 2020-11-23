@@ -45,12 +45,11 @@ block content
                                 .block-content.py-15
                                     table.table.table-bordered.table-hover.table-vcenter.js-dataTable-full
                                         tbody
-                                            if contact
-                                                for data in contact
-                                                    tr
-                                                        a(href="#")
-                                                            td #{data.alias} 
-                                                            td.font-w600 #{data.detail_kontak}
+                                            for data in client_detail.Client_Contacts
+                                                tr
+                                                    a(href="#")
+                                                        td #{data.alias} 
+                                                        td.font-w600 #{data.detail_kontak}
                         .col-8
                             .row
                                 .col-12
