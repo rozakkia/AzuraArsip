@@ -27,20 +27,33 @@ html(lang='en').no-focus
                                                 small.text-muted.font-w400 Hubungi administrator jika mengalami masalah.
     
     block helpers
-        
-        if swallError == '1'
-            p #{swallError}
-            - swallError = 0
-            p #{swallError}
+        if alerts == "1"
             script.
                 setTimeout(function () {  
-                swal.fire({
-                    title: 'Your Username or Password are wrong :(',
-                    icon: 'warning',
-                    timer: 2500,
-                    showConfirmButton: false
-                });
-                },10);    
+                        swal.fire({
+                            title: 'Berhasil Masuk',
+                            icon: 'success',
+                            timer: 2500,
+                            showConfirmButton: false
+                        });
+                    },10);
+                    window.setTimeout(function(){ 
+                        location.replace('/');
+                    } ,2500);  
+        else if alerts == "2"
+            script.
+                setTimeout(function () {  
+                        swal.fire({
+                            title: 'Gagal Masuk',
+                            text: 'Periksa Username dan Password ya',
+                            icon: 'error',
+                            timer: 2500,
+                            showConfirmButton: false
+                        });
+                    },10);
+                    window.setTimeout(function(){ 
+                        location.replace('/login');
+                    } ,2500);  
                 
 
     include ../common/footer.pug
