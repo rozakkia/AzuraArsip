@@ -1,0 +1,110 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            span.breadcrumb-item.active Settings Profile
+            .block
+                .block-header.block-header-default
+                    a.text-primary(href="/") 
+                        i.si.si-action-undo    
+                        | Kembali
+                    .block-options
+                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                        .dropdown
+                            button.btn-block-option.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                            .dropdown-menu.dropdown-menu-right
+                                a.dropdown-item.mr-5(data-toggle="modal" data-target="#mdl-ubah" href="javascript:void(0)")
+                                    i.fa.fa-pencil.mr-5
+                                    | Ubah Data
+                                a.dropdown-item(data-toggle="modal" data-target="#mdl-pass" href="javascript:void(0)") 
+                                    i.fa.fa-trash.mr-5
+                                    | Ganti Password
+                .block-content.block-content-full
+                    h6.text-center.mb-0.mt-30
+                        small Your Name
+                    h2.font-w600.mt-0.mb-50.text-center #{user.name}
+                    .row.mt-10
+                        .col-6
+                            .block.block-bordered.block-rounded
+                                .block-header.block-header-default
+                                    h3.block-title Akses Kamu
+                                .block-content.py-15
+                                    .form-group
+                                        label Role Name
+                                        input.form-control(type="text" disabled value=user.Role.nama_role)
+                                    .form-group
+                                        label Access Route
+                                        input.form-control(type="text" disabled value=user.Role.routing)
+                        .col-6
+                            .row
+                                .col-12
+                                    .form-group
+                                        label Username
+                                        input.form-control(type="text" disabled value=user.username)
+                                    .form-group
+                                        label Full Name
+                                        input.form-control(type="text" disabled value=user.name) 
+                                
+
+block modal
+    .modal.fade(id="mdl-ubah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
+                        form(action="#" id="formUpdate" method="POST")
+                            .form-group.row
+                                .col-12
+                                    label Username
+                                    input(id="idNum" hidden value=Buffer.from(user.id).toString('base64'))
+                                    input.form-control(type="text" placeholder="Username" id="username" name="username" value=user.username)
+                            .form-group.row
+                                .col-12
+                                    label Nama
+                                    input.form-control(type="text" placeholder="Nama Lengkap" id="name" name="name" value=user.name)
+                            button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                            button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+    
+    .modal.fade(id="mdl-pass" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ganti Password
+                        form.js-validation(action="#" id="formPass" method="POST")
+                            .form-group.row
+                                .col-12
+                                    input.form-control(type="password" placeholder="Konfirmasi kata sandi lama" id="current-password" name="current-password")
+                            hr
+                            .form-group.row
+                                .col-12
+                                    input.form-control(type="password" placeholder="Kata sandi baru" id="new-password" name="new-password")
+                            .form-group.row
+                                .col-12
+                                    input.form-control(type="password" placeholder="Konfirmasi Kata sandi baru" id="confirm-password" name="confirm-password")
+                            button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                            button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+    
+
+block helpers
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+    
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script(src="/assets/js/pages/user_profile.js")
+    script(src="/assets/js/pages/validation_user_profile.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })
