@@ -1,19 +1,19 @@
 
 
 
-$("#formServiceAdd").on("submit", function(e){
+$("#formRoleAdd").on("submit", function(e){
     var formData = {
         name : $("#name").val(),
-        unique :  $("#unique").val()
+        route :  $("#route").val()
     }
     e.preventDefault();
     $.ajax({
         type        : "POST",
         contentType : "application/json",
-        url         : "core/service-create",
+        url         : "core/role-create",
         data        : JSON.stringify(formData),
         dataType    : 'json',
-        success : function(serviceAdd) {
+        success : function(Alerts) {
             setTimeout(function () {  
                 swal.fire({
                     title: 'Data Tersimpan',
@@ -44,8 +44,9 @@ $("#formServiceAdd").on("submit", function(e){
 
 $("#formServiceAdd").on("submit", function(e){
     var formData = {
-        name : $("#name").val(),
-        unique :  $("#unique").val()
+        name : $("#servicename").val(),
+        unique :  $("#unique").val(),
+        color_theme :  $("#color").val(),
     }
     e.preventDefault();
     $.ajax({
