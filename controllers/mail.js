@@ -3,12 +3,69 @@ let bcrypt = require("bcrypt");
 const passport = require('passport');
 const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
-const { result } = require("lodash");
+const { result, orderBy } = require("lodash");
 const multer  = require('multer');
 const url = require('url');
+const moment = require('moment');
+const Sequelize = require('sequelize');
+
+let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
+let month_long = new Date().toLocaleString('default', { month: 'long' });
+
+
+CountMail = function(jenis){
+  return models.Mail.count({
+    where:{
+      $and: Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('createdAt')), month),
+      jenis: jenis
+    }
+  })
+}
 
 exports.get_mails = function(req, res, next) {
-  return models.Mail.findAll().then(mails => {
+  return models.Mail.findAll({
+    order: [
+      ['createdAt','DESC']
+    ],
+    include:[models.Type]
+  }
+  ).then(mails => {
+    console.log(JSON.stringify(mails, null, 2));
+    return models.Service.findAll().then(service=>{
+      return models.Type.findAll({
+        where: {
+          jenis: '1'
+        }
+      }).then(typemail => {
+        CountMail('1').then(function(resIn){
+          CountMail('2').then(function(resOut){
+            res.render('mail/index', { 
+              title: 'Archive Mails' , 
+              user: req.user, 
+              mails:mails,
+              this_month: month_long,
+              this_year: year,
+              CountMail_Out: resOut,
+              CountMail_In: resIn,
+              service:service,
+              typemail: typemail,
+              alerts: '0'
+            });
+          });
+        });
+      })
+    })
+  })
+}
+
+const rerender_get_mails = function(alerts, req, res, next) {
+  return models.Mail.findAll({
+    order: [
+      ['createdAt','DESC']
+    ],
+    include:[models.Type]
+  }
+  ).then(mails => {
     return models.Service.findAll().then(service=>{
       return models.Type.findAll({
         where: {
@@ -25,17 +82,6 @@ exports.get_mails = function(req, res, next) {
         });
       })
     })
-  })
-}
-
-const rerender_get_mails = function(alerts, req, res, next) {
-  return models.Mail.findAll().then(mails => {
-    res.render('mail/index', { 
-      title: 'Archive Mails' , 
-      user: req.user, 
-      mails:mails,
-      alerts: alerts
-    });
   })
 }
 
@@ -87,7 +133,22 @@ exports.get_detailMailIn = function(req,res,next){
   })
 }
 
-let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
+exports.get_detailMailOut = function(req,res,next){
+  mail_id = Buffer.from(req.params.mail_id, 'base64').toString('ascii')
+  return models.Mail.findOne({
+    where: {
+      id: mail_id
+    },
+    include: [models.Type]
+  }).then(result => {
+    res.render('mail/out/detail', { 
+      title: 'Mail-Out Detail' , 
+      user: req.user, 
+      result: result 
+    });
+  })
+}
+
 
 const formatIndexOf =  function(formatString, fS_lastMail, fS_FormatLastMail){
   format = formatString.split("/")
@@ -193,7 +254,7 @@ const NumberID = function(req,res, oF, type, numDetail){
 }
 
 const createMailOut = function(newNum, req, res) {
-  encoded = Buffer.from(newNum).toString('base64');
+  
   return models.Mail.create({
     no_mail: newNum,
     perihal: req.body.perihal,
@@ -202,15 +263,8 @@ const createMailOut = function(newNum, req, res) {
     TypeId: req.body.typemail,
     UserId: req.body.userId
   }).then(result => {
-    res.redirect(url.format({
-      pathname: "out/create",
-      query: {
-        "passCode" : encoded
-      },
-      order: [
-        ['createdAt','DESC']
-      ]
-    }))
+    encoded = Buffer.from(result.id).toString('base64');
+    res.redirect('out/' + encoded); 
   })
 }
 
@@ -247,5 +301,47 @@ exports.create_suratKeluarFirst = function(req,res,next) {
         })
       }
     })
+  })
+}
+
+exports.update_MailOut = function(req, res, next) {
+  return models.Mail.update({
+    keterangan: req.body.keterangan,
+    tujuan: req.body.tujuan,
+    date: req.body.tanggal,
+    isi: req.body.isi,
+    stat: '2'
+  },{
+    where:{
+      id: req.body.idmail
+    }
+  }).then(result => {
+    var serviceAdd = {};
+    return res.send(serviceAdd)  
+  })
+}
+
+exports.update_MailIn = function(req, res, next) {
+  return models.Mail.update({
+    mail_no: req.body.mail_no,
+    perihal: req.body.perihal
+  },{
+    where:{
+      id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
+    }
+  }).then(result => {
+    var Update = {};
+    return res.send(Update)  
+  })
+}
+
+exports.delete_MailIn = function(req, res, next) {
+  return models.Mail.destroy({
+    where:{
+      id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
+    }
+  }).then(result=> {
+    var Alerts = {};
+    return res.send(Alerts)  
   })
 }
