@@ -6,8 +6,25 @@ const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
 const {isEmpty} = require('lodash');
 const { validateUser } = require('../validators/user');
+const { Sequelize } = require("../models");
 
 // Views Controller
+exports.get_success = function( req, res, next) {
+  res.render('auth/login', { 
+    title: 'Login Page',
+    user: req.user,
+    alerts: 1 
+  });
+}
+
+exports.get_error = function( req, res, next) {
+  res.render('auth/login', { 
+    title: 'Login Page',
+    user: req.user,
+    alerts: 2
+  });
+}
+
 exports.get_login = function(req, res, next) {
   res.render('auth/login', { 
     title: 'Login Page' , 
@@ -51,13 +68,27 @@ exports.get_detail = function(req, res, next) {
   return models.User.findOne({
     where : {
         id : req.params.user_id
-    }
+    },
+    include: [models.Role]
   }).then(user_detail => {
+    console.log(user_detail.Role.routing.split(",")  )
+    format = user_detail.Role.routing.split(",")
+    format.splice(1, 1, 'Bank Account');
+    format.splice(2, 1, 'Billings');
+    format.splice(3, 1, 'Client');
+    format.splice(4, 1, 'Mails');
+    format.splice(5, 1, 'Users');
+    console.log(format)
+    formatString = format.toString()
+    return models.Role.findAll().then(roles=>{
       res.render('user/detail', { 
         title: 'User Detail' , 
         user: req.user, 
-        user_detail:user_detail 
+        user_detail:user_detail,
+        route: formatString,
+        roles:roles 
       });
+    })
   });
 }
 
@@ -98,33 +129,35 @@ exports.create_userSuperAdmin = function(req, res, next) {
 }
 
 exports.edit_user = function(req, res, next) {
-  req.params.user_id
-  req.body.name
   return models.User.update({
-    name:req.body.name
+    name: req.body.name,
+    RoleId: req.body.role,
+    username: req.body.username
   },{
     where: {
-      id: req.params.user_id
+      id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
     }
   }).then(result => {
-    res.redirect('/users/' + req.params.user_id);
+    var Alerts = {};
+    return res.send(Alerts) 
   })
 }
 
 exports.delete_user = function(req, res, next) {
 	return models.User.destroy({
 		where: {
-			id: req.params.user_id
+			id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
 		}
 	}).then(result => {
-		res.redirect('/users');
+		var Alerts = {};
+    return res.send(Alerts) 
 	})
 }
 
 exports.login = function(req,res,next){
   passport.authenticate('local', {
-      successRedirect: "/",
-      failureRedirect: "/login",
+      successRedirect: "/login/success",
+      failureRedirect: "/login/error",
       failureFlash: true
   })(req, res, next);  
 }
@@ -135,12 +168,50 @@ exports.logout = function(req, res, next) {
   res.redirect('/');
 }
 
-exports.create_role = function(req, res, next) {
-  role = req.body.route.toString()
-  return models.Role.create({
-    nama_role: req.body.name,
-    routing: role
+
+exports.get_profile = function( req, res, next) {
+  res.render('user/profile', { 
+    title: 'Your Profile',
+    user: req.user
+  });
+}
+
+exports.profile_update = function(req, res, next) {
+  return models.User.update({
+    name: req.body.name,
+    username: req.body.username
+  },{
+    where: {
+      id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
+    }
   }).then(result => {
-    res.redirect('/users');
+    var Alerts = {};
+    return res.send(Alerts) 
+  })
+}
+
+exports.pass_update = function(req, res, next) {
+  return models.User.findOne({
+    where: {
+      id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
+    }
+  }).then(result=>{
+    if(bcrypt.compareSync(req.body.passCurrent, result.password)){
+      models.User.update({
+        password: generateHash(req.body.passNew)
+      },{
+        where: {
+          id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
+        }
+      })
+      var Alerts = '1';
+      console.log(result)
+    }else{
+      console.log("harusnya gagal")
+      var Alerts = '2';
+    }
+    return res.send(Alerts) 
+  }).catch(err=>{
+    console.log(err)
   })
 }
