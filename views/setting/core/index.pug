@@ -26,67 +26,24 @@ block content
                             h3.block-title Services
                             .block-options
                                 button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-service-tambah" href="javascript:void(0)") Tambah Service
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-service-tambah" href="javascript:void(0)") 
+                                    i.fa.fa-plus.mr-5
+                                    | Tambah Service
                         .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter.table-hover
+                            table.table.table-bordered.table-striped.table-vcenter
                                 thead
                                     tr
-                                        th.text-center No
-                                        th Service Name
+                                        th.text-center Service Name
                                         th.text-center Action
                                 tbody
                                     if services
-                                        - i = 1
                                         for data in services
                                             tr
-                                                td.text-center #{i}
                                                 td.font-w600 #{data.name} (#{data.unique})
                                                 td.text-center
-                                                    a.btn.btn-sm.btn-noborder.btn-alt-primary.mr-5(data-toggle="modal" data-target="#mdl_bank_account-ubah" + data.id , href="javascript:void(0)") 
-                                                        i.si.si-pencil.mr-5
+                                                    a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/service/" + Buffer.from(data.id).toString('base64') ) 
+                                                        i.si.si-eye.mr-5
                                                         | Detail
-                                            - i = i+1
-                                            .modal.fade(id="mdl_bank_account-ubah" + data.id , tabindex="-1" role="dialog")
-                                                .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-                                                    .modal-content.rounded
-                                                        .block.block-rounded.block-transparent
-                                                            .block-content.py-50.px-30
-                                                                h4.font-w700.text-center.mb-0.mt-lg-30 Ubah Data
-                                                                p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                                                                form.js-validation-signin(action="/bank_accounts/ubah" method="POST")
-                                                                    input(type="text" hidden value=data.id name="id")
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="text" placeholder="Alias Name" name="alias" value=data.alias)
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="text" placeholder="Bank Name" name="bank" value=data.bank)
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="text" placeholder="Atas Nama" name="nama" value=data.bank_name)
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="number" placeholder="Nomor Rekening" name="nomor" value=data.bank_num)
-                                                                    hr 
-                                                                    p Mengubah data akan mengubah setiap data yang terRelasi
-                                                                    button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
-                                            .modal.fade(id="mdl_bank_account-hapus" + data.id , tabindex="-1" role="dialog")
-                                                .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-                                                    .modal-content.rounded
-                                                        .block.block-rounded.block-transparent
-                                                            .block-content.py-50.px-30
-                                                                h4.font-w700.text-center.mb-0.mt-lg-30 Hapus Data
-                                                                p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                                                                form.js-validation-signin(action="/bank_accounts/hapus" method="POST")
-                                                                    input(type="text" hidden value=data.id name="id")
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="text" placeholder="Alias Name" name="alias" value=data.alias)
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="text" placeholder="Bank Name" name="bank" value=data.bank)
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="text" placeholder="Atas Nama" name="nama" value=data.bank_name)
-                                                                    .form-group.mt-20
-                                                                        input.form-control(type="number" placeholder="Nomor Rekening" name="nomor" value=data.bank_num)
-                                                                    hr 
-                                                                    p Menghapus data akan menyebabkan konflik pada Relasi
-                                                                    button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
-                                                                    button.btn.btn-secondary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Hapus Data
                     
                 .col-4
                     .block
@@ -94,30 +51,52 @@ block content
                             h3.block-title Format Nums
                             .block-options
                                 button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-format-tambah" href="javascript:void(0)") Tambah Format
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-format-tambah" href="javascript:void(0)") 
+                                    i.fa.fa-plus.mr-5
+                                    | Tambah Format
                         .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter.table-hover
+                            table.table.table-bordered.table-striped.table-vcenter
                                 thead
                                     tr
-                                        th.text-center No
-                                        th Alias
-                                        th Format
+                                        th.text-center Alias
+                                        th.text-center Format
+                                        th.text-center Action
                                 tbody
                                     if format
-                                        - i = 1
                                         for data in format
                                             tr
-                                                td.text-center #{i}
                                                 td.font-w600 #{data.alias}
                                                 td.font-w600 #{data.format_num}
+                                                td.text-center
+                                                    a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/format_num/" + Buffer.from(data.id).toString('base64') ) 
+                                                        i.si.si-eye.mr-5
+                                                        | Detail
                 .col-4
                     .block
                         .block-header.block-header-default
                             h3.block-title Roles
                             .block-options
                                 button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-format-tambah" href="javascript:void(0)") Tambah Format
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-role-tambah" href="javascript:void(0)") 
+                                    i.fa.fa-plus.mr-5
+                                    | Tambah Format
                         .block-content.block-content-full
+                            table.table.table-bordered.table-striped.table-vcenter
+                                thead
+                                    tr
+                                        th.text-center.w-30 Roles
+                                        th.d-none.d-sm-table-cell.w-50 Routing
+                                        th.text-center Action
+                                tbody
+                                    if roles
+                                        for data in roles
+                                            tr
+                                                td.font-w600 #{data.nama_role}
+                                                td.d-none.d-sm-table-cell #{data.routing}
+                                                td.text-center
+                                                    a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/role/" + Buffer.from(data.id).toString('base64') ) 
+                                                        i.si.si-eye.mr-5
+                                                        | Detail
             h4.font-w300.mt-50 Types 
                 small Overview
             .row
@@ -127,9 +106,11 @@ block content
                             h3.block-title Billings
                             .block-options
                                 button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-billtype-tambah" href="javascript:void(0)") Tambah
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-billtype-tambah" href="javascript:void(0)") 
+                                    i.fa.fa-plus.mr-5
+                                    | Tambah
                         .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full.table-hover
+                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
                                 thead
                                     tr
                                         th.text-center No
@@ -145,10 +126,16 @@ block content
                                                 tr
                                                     td.text-center #{i}
                                                     td.font-w600 #{data.alias} 
-                                                    td.d-none.d-sm-table-cell #{data.Service.name}
+                                                    td.d-none.d-sm-table-cell 
+                                                        if data.Service == null
+                                                            span.badge.badge-danger data service ini terhapus
+                                                        else
+                                                            | #{data.Service.name}
                                                     td.d-none.d-sm-table-cell #{data.Format_Num.format_num}
                                                     td.text-center
-                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/") Detail
+                                                        a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/type/" + Buffer.from(data.id).toString('base64') ) 
+                                                            i.si.si-eye.mr-5
+                                                            | Detail
                                                 - i = i+1
                 .col-6
                     .block.block-themed.block-rounded
@@ -156,9 +143,11 @@ block content
                             h3.block-title Mails
                             .block-options
                                 button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-mailtype-tambah" href="javascript:void(0)") Tambah
+                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-mailtype-tambah" href="javascript:void(0)") 
+                                    i.fa.fa-plus.mr-5
+                                    | Tambah
                         .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full.table-hover
+                            table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
                                 thead
                                     tr
                                         th.text-center ID
@@ -176,10 +165,34 @@ block content
                                                     td.d-none.d-sm-table-cell #{data.inisial}
                                                     td.d-none.d-sm-table-cell #{data.Format_Num.format_num}
                                                     td.text-center
-                                                        a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/") Detail
+                                                        a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/type/" + Buffer.from(data.id).toString('base64') ) 
+                                                            i.si.si-eye.mr-5
+                                                            | Detail
                                             
 
 block modal
+    .modal.fade(id="mdl-role-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Role
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form.js-validation-signin(action="#" id="formRoleAdd" method="POST")
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Nama Role" id="name")
+                            .form-group.mt-20
+                                label Akses Route
+                                select.js-select2.form-control(style="width:100%" id="route" data-placeholder="Routing..." multiple)
+                                    option
+                                    option(value="1") Bank Account 
+                                    option(value="2") Billings
+                                    option(value="3") Clients
+                                    option(value="4") Mails
+                                    option(value="5") Users
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
+    
+
     .modal.fade(id="mdl-format-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
@@ -204,9 +217,17 @@ block modal
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
                         form.js-validation-signin(action="#" id="formServiceAdd" method="POST")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Service Name" id="name" name="name")
+                                input.form-control(type="text" placeholder="Service Name" id="servicename" name="name")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Unique ID, eg: AS , AZ" id="unique" name="unique" multiple)
+                                input.form-control(type="text" placeholder="Unique ID, eg: AS , AZ" id="unique" name="unique")
+                            .form-group.mt-20
+                                select.js-select2.form-control(style="width:100%" id="color"  data-placeholder="Color Theme")
+                                    option
+                                    option(value="0") Gray
+                                    option(value="1") Blue
+                                    option(value="2") Cyan
+                                    option(value="3") Yellow
+                                    option(value="4") Red
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
 
     .modal.fade(id="mdl-billtype-tambah" tabindex="-1" role="dialog")
@@ -250,7 +271,7 @@ block modal
                                 input.form-control(type="text" placeholder="Aliases Name" name="name")
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Inisial (eg: SPk)" name="inisial")
-                            .format-group.mt-20
+                            .form-group.mt-20
                                 select.js-select2.form-control(style="width:100%" id="select-format" name="format" data-placeholder="Numbering Format")
                                     option
                                         for data in format
