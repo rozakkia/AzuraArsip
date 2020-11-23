@@ -5,6 +5,29 @@ const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
 const { result } = require("lodash");
 const url = require('url');
+const Sequelize = require('sequelize');
+
+let encoded = function(idCode){
+  return Buffer.from(idCode).toString('base64')
+}
+
+let decoded = function(idCode){
+  return Buffer.from(idCode, 'base64').toString('ascii')
+}
+
+CountBill = function(jenis){
+  return models.Bill.count({
+    where:{
+      $and: Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('Bill.createdAt')), month)
+    },
+    include: {
+      model: models.Type,
+      where: {
+        alias: jenis
+      }
+    }
+  })
+}
 
 
 
@@ -16,7 +39,10 @@ exports.get_template = function( req, res, next) {
 
 exports.get_billings = function(req, res, next) {
   return models.Bill.findAll({
-    include: [models.Client, models.Type],
+    include: [models.Client, {
+      model:models.Type,
+      include: [models.Service]
+    }],
     order : [
       ['createdAt', 'DESC']
     ]
@@ -28,12 +54,20 @@ exports.get_billings = function(req, res, next) {
         },
         include:[models.Service]
       }).then(resultTypes => {
-        res.render('billing/index', { 
-          title: 'Billings Payment' , 
-          user: req.user, 
-          resultGetBills:resultGetBills, 
-          resultClients:resultClients, 
-          resultTypes: resultTypes 
+        CountBill('Invoice').then(function(resIn){
+          CountBill('Receipt').then(function(resOut){
+            res.render('billing/index', { 
+              title: 'Billings Payment' , 
+              user: req.user, 
+              this_month: month_long,
+              this_year: year,
+              resultGetBills:resultGetBills, 
+              resultClients:resultClients, 
+              resultTypes: resultTypes,
+              count_Invoice: resIn,
+              count_Receipt: resOut
+            });
+          });
         });
       }) 
     })     
@@ -43,6 +77,7 @@ exports.get_billings = function(req, res, next) {
 
 
 let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
+let month_long = new Date().toLocaleString('default', { month: 'long' });
 
 const formatIndexOf =  function(formatString, fS_lastBill, fS_FormatLastBill){
   format = formatString.split("/")
@@ -140,8 +175,6 @@ const NumberID = function(req,res, oF, type, numDetail){
     }else{
       res.send("Galat Error")
     }
-    console.log(oF)
-    console.log(newArrayNum)
     newNum = (newArrayNum.toString()).replace(/,/g , '/')
     createBill(newNum, req, res)
   })
@@ -150,7 +183,6 @@ const NumberID = function(req,res, oF, type, numDetail){
 
 
 const createBill = function(newNum, req, res) {
-  encoded = Buffer.from(newNum).toString('base64');
   return models.Bill.create({
     no_bill: newNum,
     ClientId: req.body.idclient,
@@ -158,13 +190,7 @@ const createBill = function(newNum, req, res) {
     UserId: req.body.userid
   }).then(result => {
     res.redirect(url.format({
-      pathname: "billings/create",
-      query: {
-        "passCode" : encoded
-      },
-      order: [
-        ['createdAt','DESC']
-      ]
+      pathname: "billings/" + encoded(result.id)
     }))
   })
 }
@@ -209,28 +235,64 @@ exports.create_billingFirst = function(req, res, next) {
 }
 
 exports.get_billingCreated = function(req, res, next){
-  decode = Buffer.from(req.query.passCode, 'base64').toString('ascii')
   return models.Bill.findOne({
     where: [{
-      no_bill : decode
+      id : decoded(req.params.bill_id)
     }],
-    include: [models.Client, models.Bank_Account, models.Type]
+    include: [{
+      model: models.Bill_Detail,
+      include: {
+        model: models.Bill_Detail_Sub,
+        order:[
+          ['createdAt','DESC']
+        ]
+      },
+      order:[
+        ['createdAt','DESC']
+      ]
+    },models.Client, models.Bank_Account, models.Type]
   }).then(resultGetBill => {
-    return models.Bill_Detail.findAll({
-      where: {
-        BillId: resultGetBill.id
-      }
-    }).then(result => {
-      return models.Bank_Account.findAll().then(resultBank => {
-        res.render('billing/create', { 
-          title: 'Billing Created' , 
-          user: req.user, 
-          bill_detail:resultGetBill, 
-          bills_detail:result,
-          resultBank: resultBank
-        });
-      })
+    console.log(JSON.stringify(resultGetBill, null, 2));
+    return models.Bank_Account.findAll().then(resultBank => {
+      res.render('billing/detail', { 
+        title: 'Billing Created' , 
+        user: req.user, 
+        result:resultGetBill,
+        resultBank: resultBank
+      });
     })
+  })
+}
+
+exports.create_detailSub = function(req, res, next){
+  return models.Bill_Detail_Sub.create({
+    deskripsi: req.body.keterangan,
+    harga: req.body.harga,
+    BillDetailId: req.body.idDetail
+  }).then(result =>{
+    encode = encoded("msg_c_detailsub=true")
+    res.redirect(url.format({
+      pathname: req.body.idNum,
+      query: {
+        alerts : encode
+      }
+    }))
+  })
+}
+
+exports.delete_detailSub = function(req, res, next){
+  return models.Bill_Detail_Sub.destroy({
+    where:{
+      id: req.body.idsubDetail
+    }
+  }).then(result=>{
+    encode = encoded("msg_d_detailsub=true")
+    res.redirect(url.format({
+      pathname: req.body.idNum,
+      query: {
+        alerts : encode
+      }
+    }))
   })
 }
 
@@ -238,6 +300,7 @@ exports.create_detail = function(req, res, next){
   return models.Bill_Detail.create({
     keterangan: req.body.keterangan,
     jumlah: req.body.jumlah,
+    harga: req.body.harga,
     BillId: req.body.idBill
   }).then(result =>{
     var alerts = {};
@@ -248,19 +311,46 @@ exports.create_detail = function(req, res, next){
 exports.delete_detail = function(req, res, next){
   return models.Bill_Detail.destroy({
     where: {
-      id: req.body.id_detail
+      id: req.body.idDetail
     }
   }).then(result =>{
-    encoded = Buffer.from(req.body.no_bill).toString('base64');
+    return models.Bill_Detail_Sub.destroy({
+      where: {
+        BillDetailId: req.body.idDetail
+      }
+    }).then(result =>{
+      encode = encoded("msg_d_detail=true")
+      res.redirect(url.format({
+        pathname: req.body.idNum,
+        query: {
+          alerts : encode
+        }
+      }))
+    })
+  }).catch(err=>{
+    console.log(err)
+  })
+}
+
+exports.update_detail = function(req, res, next){
+  return models.Bill_Detail.update({
+    keterangan: req.body.keterangan,
+    jumlah: req.body.jumlah,
+    harga: req.body.harga
+  },{
+    where: {
+      id: req.body.idDetail
+    }
+  }).then(result =>{
+    encode = encoded("msg_u_detail=true")
     res.redirect(url.format({
-      pathname: "create",
+      pathname: req.body.idNum,
       query: {
-        "passCode" : encoded
-      },
-      order: [
-        ['createdAt','DESC']
-      ]
+        alerts : encode
+      }
     }))
+  }).catch(err=>{
+    console.log(err)
   })
 }
 
@@ -268,14 +358,30 @@ exports.update_billingCreated = function(req, res, next){
   return models.Bill.update({
     keterangan: req.body.keterangan,
     BankAccountId: req.body.BankAccountId,
-    stat: 1
+    stat: req.body.stat
   },{
     where:{
-      id: req.body.idBill
+      id: decoded(req.body.idNum)
     }
   }).then(result => {
     var alerts = {};
     return res.send(alerts)
+  })
+}
+
+exports.delete_billingCreated = function(req, res, next){
+  return models.Bill.destroy({
+    where:{
+      id: decoded(req.body.idNum)
+    }
+  }).then(Result => {
+    encode = encoded("msg_d_detail=true")
+    res.redirect(url.format({
+      pathname: "/billings",
+      query: {
+        alerts : encode
+      }
+    }))
   })
 }
 
