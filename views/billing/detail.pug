@@ -1,0 +1,372 @@
+extends ../layout
+
+block css
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
+
+block content
+    .content.content-full
+        .py-50.d-print-none
+            .position-relative
+                span.text-back #{title}
+                .row
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            a.breadcrumb-item(href='/billings') Billings Payment
+                            span.breadcrumb-item.active #{title}
+        .block.block-rounded.block-fx-shadow
+            .block-header.bg-info.px-100
+                h1.mt-20.text-white ##{result.Type.alias} : #{result.no_bill}
+                if result.stat > 0
+                    .block-options
+                        .dropdown
+                            button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                            .dropdown-menu.dropdown-menu-right
+                                a.dropdown-item(data-toggle="modal" data-target="#mdl-hapus" href="javascript:void(0)") 
+                                    i.fa.fa-trash.mr-5
+                                    | Hapus Data
+            .block-content.px-100.py-50
+                if result.stat=='0'
+                    form(action="#" id="formDetail" method="POST")
+                        h2.content-heading.text-black Client Info
+                        .row.items-push
+                            .col-3
+                                p.text-muted Informasi mengenai client untuk Bill ini.
+                            .col-8.offset-lg-1
+                                .form-group
+                                    label Company Name
+                                    input.form-control(type="text" placeholder="Company Name" value=result.Client.company_name disabled)
+                            .col-8.offset-lg-4
+                                .form-group
+                                    label Penanggung Jawab
+                                    input.form-control(type="text" placeholder="Company Name" value=result.Client.pj_name+" as "+result.Client.pj_jabatan disabled)
+                        h2.content-heading.text-black Vital Info
+                        .row.items-push
+                            .col-3
+                                p.text-muted Semua informasi yang dibutuhkan didalam Bill ini.
+                            .col-8.offset-lg-1
+                                .form-group
+                                    label Keterangan
+                                    if result.stat=='0'
+                                        input.form-control(type="text" id="keterangan" placeholder="Singkat mengenai bill ini" name="keterangan")
+                                    else
+                                        input.form-control(type="text" value=result.keterangan disabled)
+                                        
+                                .form-group.mt-20
+                                    label Rekening
+                                    if result.stat=='0'
+                                        select.js-select2.form-control(style="width:100%" id="bank" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
+                                            option
+                                                for data in resultBank
+                                                    option(value=data.id) #{data.bank} (#{data.bank_num}) | An. #{data.bank_name}
+                                    else
+                                        - rekening = result.Bank_Account.bank + " - " + result.Bank_Account.bank_num + " | An. " + result.Bank_Account.bank_name
+                                        input.form-control(type="text" value=rekening disabled)
+                                if result.stat=='1' 
+                                    .pull-right
+                                        a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-ubah" href="javascript:void(0)") Ubah Data
+                      
+                        if result.stat=='0'
+                            hr.mb-30.mt-50
+                            .row.items-push
+                                .col-3
+                                    a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
+                                .col-8.offset-lg-1
+                                    button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
+                else
+                    h2.content-heading.text-black Client Info
+                    .row.items-push
+                        .col-3
+                            p.text-muted Informasi mengenai client untuk Bill ini.
+                        .col-8.offset-lg-1
+                            .form-group
+                                label Company Name
+                                input.form-control(type="text" placeholder="Company Name" value=result.Client.company_name disabled)
+                        .col-8.offset-lg-4
+                            .form-group
+                                label Penanggung Jawab
+                                input.form-control(type="text" placeholder="Company Name" value=result.Client.pj_name+" as "+result.Client.pj_jabatan disabled)
+                    h2.content-heading.text-black Vital Info
+                    .row.items-push
+                        .col-3
+                            p.text-muted Semua informasi yang dibutuhkan didalam Bill ini.
+                        .col-8.offset-lg-1
+                            .form-group
+                                label Keterangan
+                                if result.stat=='0'
+                                    input.form-control(type="text" id="keterangan" placeholder="Singkat mengenai bill ini" name="keterangan")
+                                else
+                                    input.form-control(type="text" value=result.keterangan disabled)
+                                    
+                            .form-group.mt-20
+                                label Rekening
+                                if result.stat=='0'
+                                    select.js-select2.form-control(style="width:100%" id="bank" name="rekening" data-placeholder="Rekening Akun untuk pembayaran bill ini")
+                                        option
+                                            for data in resultBank
+                                                option(value=data.id) #{data.bank} (#{data.bank_num}) | An. #{data.bank_name}
+                                else
+                                    - rekening = result.Bank_Account.bank + " - " + result.Bank_Account.bank_num + " | An. " + result.Bank_Account.bank_name
+                                    input.form-control(type="text" value=rekening disabled)
+                            if result.stat=='1' 
+                                .pull-right
+                                    a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-ubah" href="javascript:void(0)") Ubah Data
+
+                    if result.stat=='1'     
+                        h2.content-heading.text-black Detail Info
+                        .row.items-push
+                            .col-3
+                                p.text-muted Semua informasi detail mengenai bill ini (seperti layanan kerjasama, layanan pembuatan ataupun barang-barang tertentu).
+                            .col-8.offset-lg-1
+                                .block.block-bordered.block-rounded
+                                    .block-header
+                                        h3.block-title(id="invoices") Billing Details
+                                        .block-options
+                                            a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billDetail-tambah" href="javascript:void(0)") Tambah Detail
+                                    .block-content.block-content-full
+                                        table.table.table-hover.js-table-sections
+                                            thead
+                                                tr
+                                                    th
+                                                    th Deskripsi
+                                                    th.d-none.d-sm-table-cell Jumlah 
+                                                    th.d-none.d-sm-table-cell Harga
+                                                    th.text-center Action
+                                                for data in result.Bill_Details
+                                                    tbody.js-table-sections-header
+                                                        tr
+                                                            td.text-center
+                                                                i.fa.fa-angle-right
+                                                            td.font-w600 #{data.keterangan} 
+                                                            td.font-w600 #{data.jumlah}
+                                                            td.d-none.d-sm-table-cell #{data.harga}
+                                                            td.text-center
+                                                                a.btn.btn-sm.btn-alt-info.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl-detailUbah" + data.id , href="javascript:void(0)")
+                                                                    i.fa.fa-pencil
+                                                                a.btn.btn-sm.btn-alt-danger.btn-noborder.ml-5(data-toggle="modal" data-target="#mdl-detailHapus" + data.id , href="javascript:void(0)")
+                                                                    i.fa.fa-trash-o
+                                                        
+                                                        //MODAL Detail
+                                                        .modal.fade(id="mdl-subTambah"+ data.id, tabindex="-1" role="dialog")
+                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                .modal-content.rounded
+                                                                    .block.block-rounded.block-transparent
+                                                                        .block-content.mt-20.mb-20.px-30
+                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Tambah Data
+                                                                            p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                                                                            form.js-validation-signin(action="create-detail-sub" method="POST")
+                                                                                .form-group.mt-20
+                                                                                    input(hidden name="idDetail" value=data.id)
+                                                                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                    label Index Layanan
+                                                                                    textarea.form-control(disabled) #{data.keterangan}
+                                                                                hr
+                                                                                .form-group.mt-20
+                                                                                    input.form-control(type="text" placeholder="Deskripsi layanan" name="keterangan" )
+                                                                                .form-group.mt-20
+                                                                                    input.form-control(type="number" placeholder="Harga Total" name="harga" )
+                                                                                hr
+                                                                                button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambah Sub Layanan
+
+                                                        .modal.fade(id="mdl-detailUbah"+ data.id, tabindex="-1" role="dialog")
+                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                .modal-content.rounded
+                                                                    .block.block-rounded.block-transparent
+                                                                        .block-content.mt-20.mb-20.px-30
+                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
+                                                                            form.js-validation-signin(action="update-detail" method="POST")
+                                                                                .form-group.mt-20
+                                                                                    input(hidden name="idDetail" value=data.id)
+                                                                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                    input.form-control(type="text" placeholder="Deskripsi layanan"  value=data.keterangan name="keterangan" )
+                                                                                .form-group.mt-20
+                                                                                    input.form-control(type="number" placeholder="Jumlah" value=data.jumlah name="jumlah" )
+                                                                                .form-group.mt-20
+                                                                                    input.form-control(type="number" placeholder="Harga Total" value=data.harga name="harga" )
+                                                                                hr 
+                                                                                p Mengubah data akan mengubah setiap data yang terRelasi
+                                                                                button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                                                                                button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+
+                                                        .modal.fade(id="mdl-detailHapus"+ data.id, tabindex="-1" role="dialog")
+                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                .modal-content.rounded
+                                                                    .block.block-rounded.block-transparent
+                                                                        .block-content.mt-20.mb-20.px-30
+                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Hapus Data
+                                                                            p.text-muted.text-center.font-w400 Layanan
+                                                                            form.js-validation-signin(action="delete-detail" method="POST")
+                                                                                .form-group
+                                                                                    label Keterangan
+                                                                                    input(hidden name="idDetail" value=data.id)
+                                                                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                    textarea.form-control(type="text" name="company" disabled) #{data.keterangan}
+                                                                                hr 
+                                                                                p Menghapus data detail layanan juga akan menghapus data sub dibawah layanan ini.
+                                                                                button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                                                                                button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                                                        // END MODAL Detail
+
+                                                    tbody
+                                                        for data_sub in data.Bill_Detail_Subs
+                                                            tr
+                                                                td
+                                                                td.font-w400.text-muted 
+                                                                    em #{data_sub.deskripsi}
+                                                                td.font-w400.text-muted 
+                                                                    em #{data_sub.jumlah}
+                                                                td.font-w400.text-muted 
+                                                                    em #{data_sub.harga}
+                                                                td.text-center
+                                                                    a.btn.btn-sm.btn-alt-danger.btn-noborder(data-toggle="modal" data-target="#mdl-subHapus" + data_sub.id , href="javascript:void(0)")
+                                                                        i.fa.fa-trash-o
+                                                            
+                                                            // MODAL Sub Detail
+                                                            .modal.fade(id="mdl-subHapus"+ data_sub.id, tabindex="-1" role="dialog")
+                                                                .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                    .modal-content.rounded
+                                                                        .block.block-rounded.block-transparent
+                                                                            .block-content.mt-20.mb-20.px-30
+                                                                                h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Hapus Data
+                                                                                p.text-muted.text-center.font-w400 Sub Layanan
+                                                                                form.js-validation-signin(action="delete-detail-sub" method="POST")
+                                                                                    .form-group
+                                                                                        label Index Layanan
+                                                                                        textarea.form-control(disabled) #{data.keterangan}
+                                                                                    hr
+                                                                                    .form-group
+                                                                                        label Sub Layanan
+                                                                                        input(hidden name="idsubDetail" value=data_sub.id)
+                                                                                        input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                        textarea.form-control(type="text" name="company" disabled) #{data_sub.deskripsi}
+                                                                                    hr 
+                                                                                    p Anda tidak akan bisa mengembalikan setelah menghapus
+                                                                                    button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                                                                                    button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                                                            // END MODAL Sub Detail
+
+                                                        tr
+                                                            td
+                                                            td
+                                                                a(data-toggle="modal" data-target="#mdl-subTambah" + data.id , href="javascript:void(0)")
+                                                                    i.si.si-plus.mr-5
+                                                                    | Detail 
+                                                            td
+                                                            td
+                                                            td
+
+
+                    hr.mb-30
+                    .row.items-push.mb-15
+                        .col-8.offset-lg-4
+                            if result.stat=='1' 
+                                .pull-right
+                                    if result.stat=='2' 
+                                        a.ml-10.btn.btn-alt-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
+                                            i.si.si-eye  
+                                            | Lihat Kwitansi
+                                    a.ml-10.btn.btn-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
+                                        i.si.si-printer  
+                                        | Cetak
+                                
+
+block modal
+    input#idMSG_d_detail(hidden value=Buffer.from("msg_d_detail=true").toString('base64'))
+    input#idMSG_u_detail(hidden value=Buffer.from("msg_u_detail=true").toString('base64'))
+    input#idMSG_d_detailsub(hidden value=Buffer.from("msg_d_detailsub=true").toString('base64'))
+    input#idMSG_c_detailsub(hidden value=Buffer.from("msg_c_detailsub=true").toString('base64'))
+    
+    .modal.fade(id="mdl_billDetail-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.py-50.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Detail 
+                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        form(action="#" id="formCreateDetail" method="POST")
+                            input#idNum(hidden value=Buffer.from(result.id).toString('base64'))
+                            input.form-control(type="text" hidden name="idBill" id="idBill" value=result.id)
+                            .form-group.mt-20
+                                input.form-control(type="text" placeholder="Deskripsi layanan"  name="keterangan" id="keterangan")
+                            .form-group.mt-20
+                                input.form-control(type="number" placeholder="Jumlah" name="jumlah" id="jumlah")
+                            .form-group.mt-20
+                                input.form-control(type="number" placeholder="Harga Total" name="harga" id="harga")
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambah Detail
+
+    if result.stat=='1' 
+        .modal.fade(id="mdl-ubah" tabindex="-1" role="dialog")
+            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                .modal-content.rounded
+                    .block.block-rounded.block-transparent
+                        .block-content.mt-20.mb-20.px-30
+                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                            form.js-validation-signin(action="#" id="formUpdate" method="POST")
+                                .form-group.mt-20
+                                    label Keterangan
+                                    input.form-control(type="text" placeholder="Keterangan Billing" id="keteranganUp" value=result.keterangan)
+                                .form-group.mt-20
+                                    label Rekening
+                                    select.js-select2.form-control(style="width:100%" id="rekeningUp" name="format" data-placeholder="Rekening Pembayaran")
+                                        option
+                                            for d_format in resultBank
+                                                option(value=d_format.id selected= result.Bank_Account.id==d_format.id) #{d_format.bank} - #{d_format.bank_num} | #{d_format.bank_name}
+                                hr 
+                                p Mengubah data akan mengubah setiap data yang terRelasi
+                                button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                                button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+
+        .modal.fade(id="mdl-hapus" tabindex="-1" role="dialog")
+            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                .modal-content.rounded
+                    .block.block-rounded.block-transparent
+                        .block-content.mt-20.mb-20.px-30
+                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                            form.js-validation-signin(action="delete-created", method="POST")
+                                .form-group
+                                    label No Bill
+                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                    input.form-control(type="text" value=result.no_bill disabled)
+                                .form-group
+                                    lbael Keterangan
+                                    textarea.form-control(disabled) #{result.keterangan}
+                                hr 
+                                p Menghapus data akan menyebabkan konflik pada Relasi
+                                button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                                button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+
+
+block helpers
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['table-tools','select2']); })
+        var urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has("alerts")){
+            if(urlParams.get("alerts") == $("#idMSG_u_detail").val()){
+                msg="Detail Diubah"
+            }else if(urlParams.get("alerts") == $("#idMSG_d_detail").val()){
+                msg="Detail Dihapus"
+            }else if(urlParams.get("alerts") == $("#idMSG_d_detailsub").val()){
+                msg="Sub Layanan Terhapus"
+            }else if(urlParams.get("alerts") == $("#idMSG_c_detailsub").val()){
+                msg="Sub Layanan Ditambahkan"
+            }
+            setTimeout(function () {  
+                swal.fire({
+                    title: msg,
+                    icon: 'success',
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            },10);
+            window.setTimeout(function(){ 
+               location.replace($("#idNum").val());
+            } ,2500);   
+        }
+
+    script(src="/assets/js/pages/billing_create.js")
