@@ -25,10 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: true
     })
     Bill_Detail.associate = models => {
-        Bill_Detail.hasMany(models.Bill_Detail_Sub, {});
-    }
-    Bill_Detail.associate = models => {
-        
+        Bill_Detail.hasMany(models.Bill_Detail_Sub);
         Bill_Detail.belongsTo(models.Bill, {
             foreignKey: {
                 allowNull: false

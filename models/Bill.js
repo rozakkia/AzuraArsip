@@ -28,11 +28,9 @@ module.exports = (sequelize, DataTypes) => {
         deletedAt: 'deletedAT',
         paranoid: true
     })
-
+    
     Bill.associate = models => {
-        Bill.hasMany(models.Detail_Bill, {});
-    }
-    Bill.associate = models => {
+        Bill.hasMany(models.Bill_Detail);
         Bill.belongsTo(models.Bank_Account, {
             foreignKey: {
                 allowNull: false
