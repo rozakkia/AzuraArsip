@@ -33,9 +33,13 @@ block content
                         h6.text-center.mb-0.mt-30
                             small Perihal
                         h2.font-w600.mt-0.mb-50.text-center #{result.perihal}
-                        h2.content-heading.text-black.mb-50 Lampiran Surat
-                            .row.items-push
-                                iframe.mt-10(src="/file/" + result.keterangan width="100%" height="1100")
+                        .block.block-bordered
+                            .block-header.mt-20
+                                h3.block-title Lampiran Surat
+                                .block-options
+                                    button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                            .block-content.block-content-full
+                                iframe(src="/file/" + result.keterangan width="100%" height="1100")
                                 
 block modal
     .modal.fade(id="mdl_mail-ubah" tabindex="-1" role="dialog")
