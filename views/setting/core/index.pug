@@ -20,85 +20,179 @@ block content
             h4.font-w300.mt-50 #{title} 
                 small Overview
             .row
-                .col-4
-                    .block
-                        .block-header.block-header-default
-                            h3.block-title Services
-                            .block-options
-                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-service-tambah" href="javascript:void(0)") 
-                                    i.fa.fa-plus.mr-5
-                                    | Tambah Service
-                        .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter
-                                thead
-                                    tr
-                                        th.text-center Service Name
-                                        th.text-center Action
-                                tbody
-                                    if services
-                                        for data in services
+                .col-8
+                    h4.font-w300.mt-50
+                        small Roles Settings
+                    .row
+                        .col-12
+                            .block
+                                .block-header.block-header-default
+                                    h3.block-title Roles
+                                    .block-options
+                                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                        a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-role-tambah" href="javascript:void(0)") 
+                                            i.fa.fa-plus.mr-5
+                                            | Tambah
+                                .block-content.block-content-full
+                                    table.table.table-bordered.table-striped.table-vcenter
+                                        thead
                                             tr
-                                                td.font-w600 #{data.name} (#{data.unique})
-                                                td.text-center
-                                                    a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/service/" + Buffer.from(data.id).toString('base64') ) 
-                                                        i.si.si-eye.mr-5
-                                                        | Detail
-                    
-                .col-4
-                    .block
-                        .block-header.block-header-default
-                            h3.block-title Format Nums
-                            .block-options
-                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-format-tambah" href="javascript:void(0)") 
-                                    i.fa.fa-plus.mr-5
-                                    | Tambah Format
-                        .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter
-                                thead
-                                    tr
-                                        th.text-center Alias
-                                        th.text-center Format
-                                        th.text-center Action
-                                tbody
-                                    if format
-                                        for data in format
+                                                th.text-center.w-30 Roles
+                                                th.d-none.d-sm-table-cell.w-50 Routing
+                                                th.text-center Action
+                                        tbody
+                                            if roles
+                                                for data in roles
+                                                    tr
+                                                        td.font-w600 #{data.nama_role}
+                                                        td.d-none.d-sm-table-cell
+                                                            if data.routing.indexOf('1') > -1 
+                                                                span.mr-5.badge.badge-secondary Bank Accounts
+                                                            if data.routing.indexOf('3') > -1 
+                                                                span.mr-5.badge.badge-secondary Clients
+                                                            if data.routing.indexOf('5') > -1 
+                                                                span.mr-5.badge.badge-secondary Users
+                                                            if data.routing.indexOf('2') > -1 
+                                                                span.mr-5.badge.badge-primary Billings
+                                                            if data.routing.indexOf('4') > -1 
+                                                                span.mr-5.badge.badge-primary Mails
+                                                            if data.routing.indexOf('6') > -1 
+                                                                span.mr-5.badge.badge-danger Core Settings
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/role/" + Buffer.from(data.id).toString('base64') ) 
+                                                                i.si.si-eye.mr-5
+                                                                | Detail
+                        .col-12
+                            .block
+                                .block-header.block-header-default
+                                    h3.block-title Users Role Access
+                                    .block-options
+                                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                        
+                                .block-content.block-content-full
+                                    table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                                        thead
                                             tr
-                                                td.font-w600 #{data.alias}
-                                                td.font-w600 #{data.format_num}
-                                                td.text-center
-                                                    a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/format_num/" + Buffer.from(data.id).toString('base64') ) 
-                                                        i.si.si-eye.mr-5
-                                                        | Detail
-                .col-4
-                    .block
-                        .block-header.block-header-default
-                            h3.block-title Roles
-                            .block-options
-                                button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
-                                a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-role-tambah" href="javascript:void(0)") 
-                                    i.fa.fa-plus.mr-5
-                                    | Tambah Format
-                        .block-content.block-content-full
-                            table.table.table-bordered.table-striped.table-vcenter
-                                thead
-                                    tr
-                                        th.text-center.w-30 Roles
-                                        th.d-none.d-sm-table-cell.w-50 Routing
-                                        th.text-center Action
-                                tbody
-                                    if roles
-                                        for data in roles
+                                                th.text-center No
+                                                th.text-center Username
+                                                th.d-none.d-sm-table-cell Role Name
+                                                th.d-none.d-sm-table-cell Last Login
+                                                th.text-center Action
+                                        tbody
+                                            if roles
+                                                - i = 1
+                                                for data in user_role
+                                                    tr
+                                                        td.d-none.d-sm-table-cell.text-center #{i}
+                                                        td.font-w600 #{data.username}
+                                                        td.d-none.d-sm-table-cell #{data.Role.nama_role}
+                                                        td.d-none.d-sm-table-cell
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="/users/" + Buffer.from(data.id).toString('base64') ) 
+                                                                i.si.si-eye.mr-5
+                                                                | Detail
+                                                    - i++
+                    h4.font-w300.mt-50
+                        small Roles Settings
+                    .row
+                        .col-12
+                            .block
+                                .block-header.block-header-default
+                                    h3.block-title Templates
+                                    .block-options
+                                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                        a.btn.btn-alt-primary.btn-noborder(href="core/template/create") 
+                                            i.fa.fa-plus.mr-5
+                                            | Tambah
+                                .block-content.block-content-full
+                                    table.table.table-bordered.table-striped.table-vcenter.js-dataTable-full
+                                        thead
                                             tr
-                                                td.font-w600 #{data.nama_role}
-                                                td.d-none.d-sm-table-cell #{data.routing}
-                                                td.text-center
-                                                    a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/role/" + Buffer.from(data.id).toString('base64') ) 
-                                                        i.si.si-eye.mr-5
-                                                        | Detail
+                                                th.text-center No
+                                                th.text-center Keterangan
+                                                th.text-center Jenis
+                                                th.text-center Digunakan
+                                                th.text-center Action
+                                        tbody
+                                            if templates
+                                                - i = 1
+                                                for data in templates
+                                                    tr
+                                                        td.text-center.font-w600 #{i}
+                                                        td.font-w600 #{data.keterangan}
+                                                        td.font-w600 
+                                                            case data.jenis
+                                                                when '1'
+                                                                    span.badge.badge-info Format Bill Store 
+                                                                when '2'
+                                                                    span.badge.badge-primary Format Bill Details
+                                                                when '3'
+                                                                    span.badge.badge-danger Persuratan
+                                                        td
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/template/" + Buffer.from(data.id).toString('base64') ) 
+                                                                i.si.si-eye.mr-5
+                                                                | Detail 
+                                                    - i++
+                .col-4.border-l
+                    h4.font-w300.mt-50 
+                        small Others
+                    .row
+                        .col-12
+                            .block
+                                .block-header.block-header-default
+                                    h3.block-title Services
+                                    .block-options
+                                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                        a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-service-tambah" href="javascript:void(0)") 
+                                            i.fa.fa-plus.mr-5
+                                            | Tambah Service
+                                .block-content.block-content-full
+                                    table.table.table-bordered.table-striped.table-vcenter
+                                        thead
+                                            tr
+                                                th.text-center Service Name
+                                                th.text-center Action
+                                        tbody
+                                            if services
+                                                for data in services
+                                                    tr
+                                                        td.font-w600 #{data.name} (#{data.unique})
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/service/" + Buffer.from(data.id).toString('base64') ) 
+                                                                i.si.si-eye.mr-5
+                                                                | Detail
+                        .col-12
+                            .block
+                                .block-header.block-header-default
+                                    h3.block-title Format Nums
+                                    .block-options
+                                        button.btn-block-option.mr-20(data-toggle="block-option" data-action="fullscreen_toggle")
+                                        a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-format-tambah" href="javascript:void(0)") 
+                                            i.fa.fa-plus.mr-5
+                                            | Tambah Format
+                                .block-content.block-content-full
+                                    table.table.table-bordered.table-striped.table-vcenter
+                                        thead
+                                            tr
+                                                th.text-center Alias
+                                                th.text-center Format
+                                                th.text-center Action
+                                        tbody
+                                            if format
+                                                for data in format
+                                                    tr
+                                                        td.font-w600 #{data.alias}
+                                                        td.font-w600 #{data.format_num}
+                                                        td.text-center
+                                                            a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/format_num/" + Buffer.from(data.id).toString('base64') ) 
+                                                                i.si.si-eye.mr-5
+                                                                | Detail
+                         
+            
             h4.font-w300.mt-50 Types 
                 small Overview
+            
             .row
                 .col-6
                     .block.block-themed.block-rounded
@@ -168,7 +262,7 @@ block content
                                                         a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/type/" + Buffer.from(data.id).toString('base64') ) 
                                                             i.si.si-eye.mr-5
                                                             | Detail
-                                            
+                                       
 
 block modal
     .modal.fade(id="mdl-role-tambah" tabindex="-1" role="dialog")
@@ -190,6 +284,7 @@ block modal
                                     option(value="3") Clients
                                     option(value="4") Mails
                                     option(value="5") Users
+                                    option(value="6") Core Settings
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
     
 
@@ -244,16 +339,24 @@ block modal
                                 input.form-control(type="text" placeholder="Aliases Name" id="name" name="name")
                             .form-group.mt-20
                                  select.js-select2.form-control(style="width:100%" id="format" name="format" data-placeholder="Numbering Format")
-                                        option
-                                            for data in format
-                                                option(value=data.id) #{data.alias} - #{data.format_num}
+                                    option
+                                        for data in format
+                                            option(value=data.id) #{data.alias} - #{data.format_num}
                             .form-group.mt-20
-                                 select.js-select2.form-control(style="width:100%" id="service" name="service" data-placeholder="Services Index")
-                                        option
-                                            for data in services
-                                                option(value=data.id) #{data.name} (#{data.unique})
+                                select.js-select2.form-control(style="width:100%" id="service" name="service" data-placeholder="Services Index")
+                                    option
+                                        for data in services
+                                            option(value=data.id) #{data.name} (#{data.unique})
+                            
                             .form-group.mt-20
-                                .custom-file
+                                hr
+                                label Templating
+                                select.js-select2.form-control(style="width:100%" id="idtemplate2" name="idtemplate" data-placeholder="Template Index")
+                                    option
+                                    option(value=null) Tidak ada
+                                        for data in templates
+                                            option(value=data.id) #{data.keterangan}
+                                .custom-file.mt-10
                                     input.custom-file-input(type="file" id="template" name="template" data-toggle="custom-file-input")
                                     label.custom-file-label Template file (.pug)
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
@@ -265,7 +368,7 @@ block modal
                     .block-content.py-50.px-30
                         h4.font-w700.text-center.mb-0.mt-lg-30 Tambah Mail Type
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                        form.js-validation-signin(action="core/types-create" method="POST")
+                        form.js-validation-signin(action="core/types-create" method="POST" enctype="multipart/form-data")
                             .form-group.mt-20
                                 input(type="text" name="jenis" hidden value="1")
                                 input.form-control(type="text" placeholder="Aliases Name" name="name")
@@ -279,7 +382,13 @@ block modal
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Unique Code (eg: 02)" name="unique")
                             .form-group.mt-20
-                                .custom-file
+                                hr
+                                label Templating
+                                select.js-select2.form-control(style="width:100%" id="idtemplate" name="idtemplate" data-placeholder="Template Index")
+                                    option
+                                        for data in templates
+                                            option(value=data.id) #{data.keterangan}
+                                .custom-file.mt-10
                                     input.custom-file-input(type="file" name="template" data-toggle="custom-file-input")
                                     label.custom-file-label Template file (.pug)
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan

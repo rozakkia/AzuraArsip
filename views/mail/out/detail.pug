@@ -37,10 +37,11 @@ block content
                                             | Hapus Data
                     .block-content.px-100.py-50
                         h6.text-center.mb-0.mt-30
-                            small Perihal
-                        h2.font-w600.mt-0.mb-50.text-center #{result.perihal}
+                            small Keterangan
+                        h2.font-w600.mt-0.mb-50.text-center #{result.keterangan}
                         h2.content-heading.text-black Detail Info
                         form(action="#" method="POST" id="formMail-OutDetail")
+                            input(hidden id="keytag" value=keytag)
                             .row.items-push
                                 .col-3
                                     p.text-muted Informasi mengenai surat keluar ini.
@@ -51,23 +52,34 @@ block content
                                         input.form-control(type="text" disabled value=result.Type.alias)
                                 .col-8.offset-lg-4.mb-5
                                     .form-group
-                                        label Keterangan
+                                        label Perihal
                                         if result.stat == '1'
-                                            input.form-control(type="text" placeholder="Singkat mengenai surat keluar ini." id="keterangan")
+                                            input.form-control(type="text" placeholder="Perihal surat ini." id="perihal" value=(result.perihal == null? '':result.perihal ))
                                         else
                                             input.form-control(type="text" value=result.keterangan disabled)
                                 .col-8.offset-lg-4
-                                    .form-group
-                                        label Tujuan
-                                        if result.stat == '1'
-                                            input.form-control(type="text" placeholder="Tujuan dari surat keluar ini." id="tujuan")
-                                        else
-                                            input.form-control(type="text" value=result.tujuan disabled)
+                                    .row
+                                        .col-6
+                                            .form-group
+                                                - tujuan = result.tujuan.split('_')
+                                                label Kepada
+                                                if result.stat == '1'
+                                                    input.form-control(type="text" placeholder="Kepada dari surat keluar ini." id="kepada" value=(result.tujuan == null? '':tujuan[0] ))
+                                                else
+                                                    input.form-control(type="text" value=result.tujuan disabled)
+                                        .col-6
+                                            .form-group
+                                                label di
+                                                if result.stat == '1'
+                                                    input.form-control(type="text" placeholder="di dari surat keluar ini." id="di" value=(result.tujuan == null? '':tujuan[1] ))
+                                                else
+                                                    input.form-control(type="text" value=result.tujuan disabled)
+                                    
                                 .col-8.offset-lg-4
                                     .form-group
                                         label Tanggal Surat
                                         if result.stat == '1'
-                                            input(type="text" class="js-flatpickr form-control bg-white" id="tanggal" name="example-flatpickr-friendly" placeholder="Tanggal kustom surat dikeluarkan" data-alt-input="true" data-date-format="Y-m-d" data-alt-format="F j, Y")
+                                            input(type="text" class="js-flatpickr form-control bg-white" id="tanggal" name="example-flatpickr-friendly" value=(result.date == null? '':result.date ) placeholder="Tanggal kustom surat dikeluarkan" data-alt-input="true" data-date-format="Y-m-d" data-alt-format="F j, Y")
                                         else
                                             input(type="text" class="js-flatpickr form-control bg-white" id="tanggal" name="example-flatpickr-friendly" value=result.date disabled data-alt-input="true" data-date-format="Y-m-d" data-alt-format="F j, Y")
                             h2.content-heading.text-black Isi Surat Keluar
@@ -79,22 +91,52 @@ block content
                                         if result.stat == '2'
                                             textarea.js-summernote(name="summernote" id="isi" contenteditable="false") #{result.isi}
                                         else if result.stat == '1'
-                                            textarea.js-summernote(name="summernote" id="isi" ) #{result.isi}
+                                            if result.isi == null
+                                                textarea.js-summernote(name="summernote" id="isi" ) #{isi}
+                                            else if result.isi != null
+                                                textarea.js-summernote(name="summernote" id="isi" ) #{result.isi}
                                         
                                         
-                            hr.mb-30
-                            .row.items-push.mb-15
-                                .col-3
-                                    if result.stat == '1'
+                            if result.stat == '1'
+                                hr.mb-30
+                                .row.items-push.mb-15
+                                    .col-3
                                         a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl-hapus" href="javascript:void(0)") Batalkan
-                                .col-8.offset-lg-1
-                                    if result.stat == '1'
+                                    .col-8.offset-lg-1
                                         button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
-                                    else 
-                                        a.pull-right.btn.btn-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
-                                            i.si.si-printer  Cetak
+                                    
+                        if result.stat>'1'
+                            if result.stat == '2'
+                                hr.mt-50
+                                .row.mb-15
+                                    .col-8.offset-lg-4
+                                        form(action=Buffer.from(result.id).toString('base64') + "/activate_ubah" method="POST")
+                                            input(type="text" hidden value="1" name="idStat")
+                                            button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Ubah Data
+                            .mt-50
+                                .block.block-bordered
+                                    .block-header.mt-20
+                                        h3.block-title Print Detail
+                                        .block-options 
+                                            a.ml-10.mr-20.btn.btn-primary.btn-noborder(data-toggle=(result.stat == 2)? 'modal': '' , data-target=(result.stat == 2)? '#mdl-print': '' , onClick=(result.stat == 3)? "frames['frame'].print()": '' href="javascript:void(0)") 
+                                                i.si.si-printer 
+                                                - printText = (result.stat == 3) ? 'Kembali' : 'Sekarang'
+                                                | Cetak #{printText}
+                                            button.btn-block-option(data-toggle="block-option" data-action="fullscreen_toggle")
+                                    .block-content.block-content-full
+                                        iframe(allowtransparency="false" name="frame" style="background: #FFFFFF;" src=Buffer.from(result.id).toString('base64') + "/print-detailnya" width="100%" height="1100")
 
 block modal
+    .modal.fade(id="mdl-print" tabindex="-1" role="dialog")
+            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                .modal-content.rounded
+                    .block.block-rounded.block-transparent
+                        .block-content.py-50.px-30
+                            h4.font-w700.text-center.mb-0.mt-lg-30 Cetak Data
+                            p.text-muted.text-center.font-w400.mt-20 Kamu tidak bisa merubah data kembali setelah melakukan cetak data.
+                            form(method="POST" id="printData")
+                                button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Ya, Cetak Sekarang
+                                button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
     .modal.fade(id="mdl-hapus" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded

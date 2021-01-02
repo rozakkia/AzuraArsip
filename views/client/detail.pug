@@ -43,13 +43,31 @@ block content
                                     .block-options
                                         a.btn.btn-alt-primary.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl_contact-tambah" href="javascript:void(0)") Tambah Kontak
                                 .block-content.py-15
-                                    table.table.table-bordered.table-hover.table-vcenter.js-dataTable-full
+                                    table.table.table-bordered.table-vcenter
                                         tbody
                                             for data in client_detail.Client_Contacts
                                                 tr
-                                                    a(href="#")
-                                                        td #{data.alias} 
-                                                        td.font-w600 #{data.detail_kontak}
+                                                    td #{data.alias} 
+                                                    td.font-w600 #{data.detail_kontak}
+                                                    td.text-center
+                                                        a.btn.btn-alt-danger.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl_contact-hapus"+data.id, href="javascript:void(0)")
+                                                            i.fa.fa-trash
+                                                .modal.fade(id="mdl_contact-hapus"+data.id, tabindex="-1" role="dialog")
+                                                    .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                        .modal-content.rounded
+                                                            .block.block-rounded.block-transparent
+                                                                .block-content.mt-20.mb-20.px-30
+                                                                    h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                                                                    form.js-validation-signin(action="/clients/" + data.id + "/contact_delete" method="POST")
+                                                                        .form-group
+                                                                            label Contact Name
+                                                                            input(name="idClient" hidden value=client_detail.id)
+                                                                            input.form-control(type="text" name="name" value=data.detail_kontak disabled)
+                                                                        hr 
+                                                                        p Menghapus data akan menyebabkan konflik pada Relasi
+                                                                        button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                                                                        button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                            
                         .col-8
                             .row
                                 .col-12
@@ -65,15 +83,38 @@ block content
                                     .form-group
                                         label Jabatan
                                         input.form-control(type="text" value=client_detail.pj_jabatan disabled)
-                                .col-6
-                                    .form-group
-                                        label Created At
-                                        input.form-control(type="text" value=client_detail.createdAt disabled)
-                                .col-6
-                                    .form-group
-                                        label Last Update
-                                        input.form-control(type="text" value=client_detail.createdAt disabled)
-                            
+                                .col-12.mt-10
+                                    .block.block-bordered.block-rounded
+                                        .block-header.block-header-default
+                                            h3.block-title Bank Accounts
+                                            .block-options
+                                                a.btn.btn-alt-primary.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl_bank-tambah" href="javascript:void(0)") Tambah
+                                        .block-content.py-15
+                                            table.table.table-bordered.table-vcenter
+                                                tbody
+                                                    for data in client_detail.Bank_Accounts
+                                                        tr
+                                                            td #{data.alias} 
+                                                            td.font-w600 #{data.bank} (#{data.bank_num}) | an.#{data.bank_name}
+                                                            td.text-center
+                                                                a.btn.btn-alt-danger.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl_bank-hapus"+data.id, href="javascript:void(0)")
+                                                                    i.fa.fa-trash
+                                                        .modal.fade(id="mdl_bank-hapus"+data.id, tabindex="-1" role="dialog")
+                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                .modal-content.rounded
+                                                                    .block.block-rounded.block-transparent
+                                                                        .block-content.mt-20.mb-20.px-30
+                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                                                                            form.js-validation-signin(action="/clients/" + data.id + "/bank_delete" method="POST")
+                                                                                .form-group
+                                                                                    label Bank Name
+                                                                                    input(name="idClient" hidden value=client_detail.id)
+                                                                                    input.form-control(type="text" name="name" value=data.bank_name disabled)
+                                                                                hr 
+                                                                                p Menghapus data akan menyebabkan konflik pada Relasi
+                                                                                button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                                                                                button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                                
 
 block modal
     .modal.fade(id="mdl_client-ubah" tabindex="-1" role="dialog")
@@ -107,6 +148,7 @@ block modal
                         h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Tambah Kontak
                         form.js-validation-signin(action="/clients/" + client_detail.id + "/contact_create", method="POST")
                             .form-group
+                                input#idContact(value=client_detail.id hidden)
                                 input.form-control(type="text" placeholder="Alias Name" name="alias")
                             .form-group
                                 select.js-select2.form-control(style="width:100%" id="example-select2" name="jenis" data-placeholder="Jenis Kontak")
@@ -134,6 +176,76 @@ block modal
                             p Menghapus data akan menyebabkan konflik pada Relasi
                             button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
                             button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+    
+    .modal.fade(id="mdl_bank-tambah" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Tambah Kontak
+                        form.js-validation-signin(action="#" id="formBankAdd" method="POST")
+                            .form-group
+                                input#idClient(value=client_detail.id hidden)
+                                input.form-control(type="text" placeholder="Alias Name" name="bank_alias" id="bank_alias")
+                            .form-group
+                                select.js-select2.form-control(style="width:100%" id="bank_name" name="bank_name" data-placeholder="Nama Bank")
+                                    option
+                                    option(value='Bank Mandiri') Bank Mandiri
+                                    option(value='Bank Bukopin') Bank Bukopin
+                                    option(value='Bank Danamon') Bank Danamon
+                                    option(value='Bank Mega') Bank Mega
+                                    option(value='Bank CIMB Niaga') Bank CIMB Niaga
+                                    option(value='Bank Permata') Bank Permata
+                                    option(value='Bank Sinarmas') Bank Sinarmas
+                                    option(value='Bank QNB') Bank QNB
+                                    option(value='Bank Lippo') Bank Lippo
+                                    option(value='Bank UOB') Bank UOB
+                                    option(value='Panin Bank') Panin Bank
+                                    option(value='Citibank') Citibank
+                                    option(value='Bank ANZ') Bank ANZ
+                                    option(value='Bank Commonwealth') Bank Commonwealth
+                                    option(value='Bank Maybank') Bank Maybank
+                                    option(value='Bank Maspion') Bank Maspion
+                                    option(value='Bank J Trust') Bank J Trust
+                                    option(value='Bank QNB') Bank QNB
+                                    option(value='Bank KEB Hana') Bank KEB Hana
+                                    option(value='Bank Artha Graha') Bank Artha Graha
+                                    option(value='Bank OCBC NISP') Bank OCBC NISP
+                                    option(value='Bank MNC') Bank MNC
+                                    option(value='Bank DBS') Bank DBS
+                                    option(value='BCA') BCA
+                                    option(value='BNI') BNI
+                                    option(value='BRI') BRI
+                                    option(value='BTN') BTN
+                                    option(value='Bank DKI') Bank DKI
+                                    option(value='Bank BJB') Bank BJB
+                                    option(value='Bank BPD DIY') Bank BPD DIY
+                                    option(value='Bank Jateng') Bank Jateng
+                                    option(value='Bank Jatim') Bank Jatim
+                                    option(value='Bank BPD Bali') Bank BPD Bali
+                                    option(value='Bank Sumut') Bank Sumut
+                                    option(value='Bank Nagari') Bank Nagari
+                                    option(value='Bank Riau Kepri') Bank Riau Kepri
+                                    option(value='Bank Sumsel Babel') Bank Sumsel Babel
+                                    option(value='Bank Lampung') Bank Lampung
+                                    option(value='Bank Jambi') Bank Jambi
+                                    option(value='Bank Kalbar') Bank Kalbar
+                                    option(value='Bank Kalteng') Bank Kalteng
+                                    option(value='Bank Kalsel') Bank Kalsel
+                                    option(value='Bank Kaltim') Bank Kaltim
+                                    option(value='Bank Sulsel') Bank Sulsel
+                                    option(value='Bank Sultra') Bank Sultra
+                                    option(value='Bank BPD Sulteng') Bank BPD Sulteng
+                                    option(value='Bank Sulut') Bank Sulut
+                                    option(value='Bank NTB') Bank NTB
+                                    option(value='Bank NTT') Bank NTT
+                                    option(value='Bank Maluku') Bank Maluku
+                                    option(value='Bank Papua') Bank Papua
+                            .form-group
+                                input.form-control(type="text" placeholder="Atas Nama" id="bank_an")
+                            .form-group
+                                input.form-control(type="number" placeholder="No Rekening" id="bank_num")
+                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
                             
     
 
@@ -143,5 +255,6 @@ block helpers
     script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
 
     script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script(src="/assets/js/pages/client_index.js")
     script.
         jQuery(function(){ Codebase.helpers(['select2']); })

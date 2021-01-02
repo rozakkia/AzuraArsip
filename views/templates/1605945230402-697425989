@@ -1,0 +1,75 @@
+extends layout
+
+block content
+  .content.content-full
+    .py-50
+      .position-relative
+        span.text-back Dashboard
+        h1.font-w700.mb-10 Selamat Pagi, 
+          span.text-primary #{user.name}
+        h3.font-w300.text-muted.mb-50 Ingin melakukan apa hari ini? 
+          i.si.si-emoticon-smile
+      .row 
+        .col-3
+          a.block.block-rounded.block-link-pop.bg-primary(href="/mails")
+            .block-content.block-content-full.py-45.d-flex.align-items-center.justify-content-between
+              .mr-5.mb-15.mt-15
+                small.font-w200.text-white Monthly
+                p.font-size-lg.font-w700.text-white.mb-0
+                  | 780
+                  i.fa.fa-arrow-circle-down.ml-5  
+                  span.text-secondary.text-white.mr-10.ml-10 |
+                  |  200
+                  i.fa.fa-arrow-circle-up.ml-5 
+                p.font-size-sm.text-uppercase.font-w600.text-white.mb-0.mt-1
+                  | Archieve Mails
+              .p-20
+                i.si.fa-3x.si-docs.text-white
+        .col-3
+          a.block.block-rounded.block-link-pop.bg-primary(href="/billings")
+            .block-content.block-content-full.py-45.d-flex.align-items-center.justify-content-between
+              .mr-5.mb-15.mt-15
+                small.font-w200.text-white Monthly
+                p.font-size-lg.font-w700.text-white.mb-0
+                  | 780
+                  i.fa.fa-arrow-circle-down.ml-5  
+                  span.text-secondary.text-white.mr-10.ml-10 |
+                  |  200
+                  i.fa.fa-arrow-circle-up.ml-5 
+                p.font-size-sm.text-uppercase.font-w600.text-white.mb-0.mt-1
+                  | Billing Payments
+              .p-20
+                i.si.fa-3x.si-credit-card.text-white
+        .col-2
+          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/clients")
+            .block-content
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-globe-alt.text-secondary 
+              p.font-w600.mb-30.text-secondary Client
+        .col-2
+          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/bank_accounts")
+            .block-content
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-credit-card.text-secondary 
+              p.font-w600.mb-30.text-secondary Rekening
+        .col-2
+          a.block.block-rounded.block-bordered.block-link-pop.text-center(href="/users")
+            .block-content
+              p.font-size-h1.mb-0.mt-10
+                i.si.si-user-following.text-secondary 
+              p.font-w600.mb-30.text-secondary User Account
+  
+  block helpers
+    if alerts == "1"
+        script.
+            setTimeout(function () {  
+                    swal.fire({
+                        title: 'Data Tersimpan',
+                        icon: 'success',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+                },10);
+                window.setTimeout(function(){ 
+                    location.replace('/');
+                } ,2500); 

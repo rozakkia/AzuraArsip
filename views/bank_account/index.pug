@@ -105,7 +105,59 @@ block modal
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Alias Name" id="alias")
                             .form-group.mt-20
-                                input.form-control(type="text" placeholder="Bank Name" id="bank")
+                                select.js-select2.form-control(style="width:100%" id="bank" name="bank" data-placeholder="Nama Bank")
+                                    option
+                                    option(value='Bank Mandiri') Bank Mandiri
+                                    option(value='Bank Bukopin') Bank Bukopin
+                                    option(value='Bank Danamon') Bank Danamon
+                                    option(value='Bank Mega') Bank Mega
+                                    option(value='Bank CIMB Niaga') Bank CIMB Niaga
+                                    option(value='Bank Permata') Bank Permata
+                                    option(value='Bank Sinarmas') Bank Sinarmas
+                                    option(value='Bank QNB') Bank QNB
+                                    option(value='Bank Lippo') Bank Lippo
+                                    option(value='Bank UOB') Bank UOB
+                                    option(value='Panin Bank') Panin Bank
+                                    option(value='Citibank') Citibank
+                                    option(value='Bank ANZ') Bank ANZ
+                                    option(value='Bank Commonwealth') Bank Commonwealth
+                                    option(value='Bank Maybank') Bank Maybank
+                                    option(value='Bank Maspion') Bank Maspion
+                                    option(value='Bank J Trust') Bank J Trust
+                                    option(value='Bank QNB') Bank QNB
+                                    option(value='Bank KEB Hana') Bank KEB Hana
+                                    option(value='Bank Artha Graha') Bank Artha Graha
+                                    option(value='Bank OCBC NISP') Bank OCBC NISP
+                                    option(value='Bank MNC') Bank MNC
+                                    option(value='Bank DBS') Bank DBS
+                                    option(value='BCA') BCA
+                                    option(value='BNI') BNI
+                                    option(value='BRI') BRI
+                                    option(value='BTN') BTN
+                                    option(value='Bank DKI') Bank DKI
+                                    option(value='Bank BJB') Bank BJB
+                                    option(value='Bank BPD DIY') Bank BPD DIY
+                                    option(value='Bank Jateng') Bank Jateng
+                                    option(value='Bank Jatim') Bank Jatim
+                                    option(value='Bank BPD Bali') Bank BPD Bali
+                                    option(value='Bank Sumut') Bank Sumut
+                                    option(value='Bank Nagari') Bank Nagari
+                                    option(value='Bank Riau Kepri') Bank Riau Kepri
+                                    option(value='Bank Sumsel Babel') Bank Sumsel Babel
+                                    option(value='Bank Lampung') Bank Lampung
+                                    option(value='Bank Jambi') Bank Jambi
+                                    option(value='Bank Kalbar') Bank Kalbar
+                                    option(value='Bank Kalteng') Bank Kalteng
+                                    option(value='Bank Kalsel') Bank Kalsel
+                                    option(value='Bank Kaltim') Bank Kaltim
+                                    option(value='Bank Sulsel') Bank Sulsel
+                                    option(value='Bank Sultra') Bank Sultra
+                                    option(value='Bank BPD Sulteng') Bank BPD Sulteng
+                                    option(value='Bank Sulut') Bank Sulut
+                                    option(value='Bank NTB') Bank NTB
+                                    option(value='Bank NTT') Bank NTT
+                                    option(value='Bank Maluku') Bank Maluku
+                                    option(value='Bank Papua') Bank Papua
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Atas Nama" id="nama")
                             .form-group.mt-20
@@ -144,8 +196,11 @@ block helpers
                 window.setTimeout(function(){ 
                     location.replace('/bank_accounts');
                 } ,2500); 
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
     script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
     script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
 
     script(src="/assets/js/pages/be_tables_datatables.min.js")
     script(src="/assets/js/pages/rekening_index.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['select2']); })

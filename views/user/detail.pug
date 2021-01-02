@@ -54,7 +54,20 @@ block content
                                     .block.block-bordered.block-rounded
                                         .block-content.block-content-full
                                             h6.font-w400 Role Akses
-                                            h6 #{route}
+                                            h4
+                                                - const data = user_detail.Role
+                                                if data.routing.indexOf('1') > -1 
+                                                    span.mr-5.badge.badge-secondary Bank Accounts
+                                                if data.routing.indexOf('3') > -1 
+                                                    span.mr-5.badge.badge-secondary Clients
+                                                if data.routing.indexOf('5') > -1 
+                                                    span.mr-5.badge.badge-secondary Users
+                                                if data.routing.indexOf('2') > -1 
+                                                    span.mr-5.badge.badge-primary Billings
+                                                if data.routing.indexOf('4') > -1 
+                                                    span.mr-5.badge.badge-primary Mails
+                                                if data.routing.indexOf('6') > -1 
+                                                    span.mr-5.badge.badge-danger Core Settings
                                 
                                     
 

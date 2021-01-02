@@ -22,12 +22,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         file_template: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         jenis: {
             type: DataTypes.STRING,
             allowNull: false
-        }   
+        }
     },{
         deletedAt: 'deletedAT',
         paranoid: true
@@ -35,8 +35,11 @@ module.exports = (sequelize, DataTypes) => {
     Type.associate = models => {
         Type.hasMany(models.Mail,{})
         Type.hasMany(models.Bill,{})
-    }
-    Type.associate = models => {
+        Type.belongsTo(models.Template, {
+            foreignKey: {
+                allowNull: false
+            }
+        });
         Type.belongsTo(models.Service, {
             foreignKey: {
                 allowNull: false

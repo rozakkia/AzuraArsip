@@ -40,6 +40,18 @@ exports.create_clientContact = function(req, res, next) {
   })
 }
 
+exports.delete_clientContact = function(req, res, next) {
+  return models.Client_Contact.destroy({
+    where: {
+        id: req.params.id
+    }
+  }).then(result => {
+    res.redirect('/clients/'+req.body.idClient);
+  })
+}
+
+
+
 exports.create_client = function(req, res, next) {
     return models.Client.create({
       company_name: req.body.company,
@@ -59,9 +71,7 @@ exports.get_detail = function(req, res, next) {
       where : {
           id : req.params.client_id
       },
-      include: [{
-        model: models.Client_Contact
-      }]
+      include: [models.Client_Contact, models.Bank_Account]
     }).then(client_detail => {
       res.render('client/detail', { 
         title: 'Client Detail' , 
@@ -94,4 +104,42 @@ exports.get_detail = function(req, res, next) {
       }).then(result => {
           res.redirect('/clients');
       })
+  }
+
+  exports.create_clientBank = function(req, res, next) {
+    return models.Bank_Account.create({
+      alias: req.body.alias,
+      bank: req.body.name,
+      bank_name: req.body.an,
+      bank_num: req.body.num,
+      ClientId: req.body.clientId
+    }).then(result =>{
+      var alert = {};
+      return res.send(alert)
+    })
+  }
+
+  exports.edit_clientBank = function(req, res, next) {
+    return models.Bank_Account.update({
+      alias: req.body.aliasBank,
+      bank: req.body.namaBank,
+      bank_name: req.body.anBank,
+      bank_num: req.body.numBank
+    },{
+      where: {
+        id: req.body.BankId
+      }
+    }).then(result => {
+      res.redirect('/clients/' + req.params.client_id);
+    })
+  }
+  
+  exports.delete_clientBank = function(req, res, next) {
+    return models.Bank_Account.destroy({
+      where: {
+          id: req.params.id
+      }
+    }).then(result => {
+      res.redirect('/clients/'+req.body.idClient);
+    })
   }

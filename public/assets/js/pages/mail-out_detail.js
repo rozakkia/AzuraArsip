@@ -1,10 +1,12 @@
 $("#formMail-OutDetail").on("submit", function(e){
     var formData = {
-        keterangan : $("#keterangan").val(),
+        perihal : $("#perihal").val(),
         idmail : $("#idmail").val(),
-        tujuan :  $("#tujuan").val(),
+        kepada :  $("#kepada").val(),
+        di :  $("#di").val(),
         tanggal :  $("#tanggal").val(),
-        isi :  $("#isi").val()
+        isi :  $("#isi").val(),
+        keytag: $("#keytag").val()
     }
     e.preventDefault();
     $.ajax({
@@ -13,7 +15,7 @@ $("#formMail-OutDetail").on("submit", function(e){
         url         : "update",
         data        : JSON.stringify(formData),
         dataType    : 'json',
-        success : function(clientAdd) {
+        success : function(alerts) {
             setTimeout(function () {  
                 swal.fire({
                     title: 'Data Tersimpan',
@@ -82,62 +84,35 @@ $("#formMail-OutDetail-hapus").on("submit", function(e){
     })
 })
 
-$("#formMail-OutDetail").on("submit", function(e){
-    /*
-        - on klik
-        - terus call function
-    */
+$("#printData").on("submit", function(e){
+    var formData = {
+        idNum : $('#idNum').val()
+    }
     e.preventDefault();
-    Swal.fire({
-        title: 'Hapus data ini?',
-        text: "Kamu tidak akan bisa mengembalikannya",
-        icon: 'warning',
-        timer: 2500,
-        timerProgressBar: true,
-        showCancelButton: true,
-        cancelButtonText: 'Batalkan',
-        confirmButtonText: 'Ya, hapus!'
-    },function(isConfirm){
-        if (isConfirm) {
-            var formData = {
-                idNum : $("#idNum").val()
-            }
-            $.ajax({
-                type        : "POST",
-                contentType : "application/json",
-                url         : "delete",
-                data        : JSON.stringify(formData),
-                dataType    : 'json',
-                success : function(clientAdd) {
-                    setTimeout(function () {  
-                        swal.fire({
-                            title: 'Data Terhapus',
-                            icon: 'success',
-                            timer: 2500,
-                            showConfirmButton: false
-                        });
-                    },10);
-                    window.setTimeout(function(){ 
-                       location.reload();
-                    } ,2500);   
-                },
-                error : function(e) {
-                    setTimeout(function () {  
-                        swal.fire({
-                            title: 'Gagal',
-                            icon: 'error',
-                            text: e,
-                            timer: 2500,
-                            showConfirmButton: false
-                        }, function(){
-                            location.reload();
-                        });
-                    },10);
-                }
-            })
-        }else{
-            swal.fire("Cancelled", "Your imaginary file is safe :)", "error");
-        } 
+    $.ajax({
+        type        : "POST",
+        contentType : "application/json",
+        url         : "print-data-now",
+        data        : JSON.stringify(formData),
+        dataType    : 'json',
+        success : function(alerts) {
+            
+            window.open($('#idNum').val() + "/print-detailnya?print=true");
+            location.reload();
+        },
+        error : function(e) {
+            setTimeout(function () {  
+                swal.fire({
+                    title: 'Gagal',
+                    icon: 'error',
+                    text: e,
+                    timer: 2500,
+                    showConfirmButton: false
+                }, function(){
+                    location.reload();
+                });
+            },10);
+        }
     })
-});
+})
 

@@ -16,7 +16,11 @@ const rerender_get_bankaccounts = function(alerts, req, res, next) {
 }
 
 exports.get_bankaccounts = function(req, res, next) {
-    return models.Bank_Account.findAll({}).then(bank_accounts => {
+    return models.Bank_Account.findAll({
+        where:{
+            ClientId: null
+        }
+    }).then(bank_accounts => {
         res.render('bank_account/index', {
             bank_accounts: bank_accounts,
             title: 'Bank Accounts',

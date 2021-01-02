@@ -22,6 +22,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 }
 
 body {
+  -webkit-print-color-adjust: exact !important;
   margin: 0;
   font-family: "Nunito Sans", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 1rem;
@@ -9441,7 +9442,7 @@ a.text-dark:hover, a.text-dark:focus {
     page-break-after: avoid;
   }
   @page {
-    size: a3;
+    size: a4;
   }
   body {
     min-width: 992px !important;
@@ -9458,10 +9459,7 @@ a.text-dark:hover, a.text-dark:focus {
   .table {
     border-collapse: collapse !important;
   }
-  .table td,
-  .table th {
-    background-color: #fff !important;
-  }
+  
   .table-bordered th,
   .table-bordered td {
     border: 1px solid #dee2e6 !important;

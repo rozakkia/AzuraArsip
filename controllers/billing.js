@@ -29,7 +29,15 @@ CountBill = function(jenis){
   })
 }
 
+Rupiah = function(num){
+  if (num!='null'){
+    var	reverse = num.toString().split('').reverse().join(''),
+    rupiah 	= reverse.match(/\d{1,3}/g);
+    rupiah	= rupiah.join('.').split('').reverse().join('');
 
+    return "Rp. " + rupiah + ",-"
+  }
+}
 
 exports.get_template = function( req, res, next) {
   res.render('templates/invoice', { 
@@ -50,7 +58,7 @@ exports.get_billings = function(req, res, next) {
     return models.Client.findAll().then(resultClients => {
       return models.Type.findAll({
         where:{
-          jenis: "3"
+          jenis: '3'
         },
         include:[models.Service]
       }).then(resultTypes => {
@@ -250,14 +258,40 @@ exports.get_billingCreated = function(req, res, next){
       order:[
         ['createdAt','DESC']
       ]
-    },models.Client, models.Bank_Account, models.Type]
+    },{
+      model:  models.Client,
+      include:[models.Bank_Account]
+    }, models.Bank_Account, {
+      model: models.Type,
+      include: [models.Template]
+    }]
   }).then(resultGetBill => {
-    console.log(JSON.stringify(resultGetBill, null, 2));
-    return models.Bank_Account.findAll().then(resultBank => {
+    return models.Bank_Account.findAll({
+      where:{
+        ClientId: null
+      }
+    }).then(resultBank => {
+      if (resultGetBill.stat < 2) {
+        var d = new Date(resultGetBill.createdAt)
+        dateCreate = d.getDate() + "-" +( d.getMonth() + 1) + "-" + d.getFullYear()
+      }else{
+        if(resultGetBill.Type.Template.jenis == 1){
+          c = resultGetBill.keterangan_store.split("_") 
+          dateCreate = c[7]
+        }else if (resultGetBill.Type.Template.jenis == 2){
+          var d = new Date(resultGetBill.createdAt)
+          dateCreate = d.getDate() + "-" +( d.getMonth() + 1) + "-" + d.getFullYear()
+        }
+      }
+      console.log(d)
+      console.log(resultGetBill.createdAt)
+      console.log(dateCreate)
+      console.log(resultGetBill.createdAt)
       res.render('billing/detail', { 
         title: 'Billing Created' , 
         user: req.user, 
         result:resultGetBill,
+        dateCreate: dateCreate,
         resultBank: resultBank
       });
     })
@@ -297,11 +331,12 @@ exports.delete_detailSub = function(req, res, next){
 }
 
 exports.create_detail = function(req, res, next){
+  id_bill = decoded(req.body.idBill)
   return models.Bill_Detail.create({
     keterangan: req.body.keterangan,
     jumlah: req.body.jumlah,
     harga: req.body.harga,
-    BillId: req.body.idBill
+    BillId: id_bill
   }).then(result =>{
     var alerts = {};
     return res.send(alerts)
@@ -385,3 +420,193 @@ exports.delete_billingCreated = function(req, res, next){
   })
 }
 
+exports.create_main = function(req, res, next){
+  store_detail = req.body.nama + '_' + req.body.url + '_' + req.body.jenis + '_' + req.body.bank + '_' + req.body.total + '_' + req.body.produk + '_' + req.body.alamat + '_' + req.body.dFrom + '_' + req.body.dTo
+  return models.Bill.update({
+    keterangan_store: store_detail,
+    stat: '2'
+  },{
+    where:{
+      id: decoded(req.body.idBill)
+    }
+  }).then(result=>{
+    var alerts = {};
+    return res.send(alerts)
+  })
+}
+
+exports.get_print_detail = function (req, res, next){
+  const html2pug = require('html2pug')
+  const pug = require('pug')
+  return models.Bill.findOne({
+    where: [{
+      id : decoded(req.params.bill_id)
+    }],
+    include: [{
+      model: models.Bill_Detail,
+      include: {
+        model: models.Bill_Detail_Sub,
+        order:[
+          ['createdAt','DESC']
+        ]
+      },
+      order:[
+        ['createdAt','DESC']
+      ]
+    },{
+      model:  models.Client,
+      include:[models.Bank_Account, models.Client_Contact]
+    }, models.Bank_Account, {
+      model: models.Type,
+      include: [models.Template,models.Service]
+    }]
+  }).then(data => {
+    if (data.keterangan_store == null){
+      store_result = ['null','null','null','null','null']
+    }else{
+      store_result = data.keterangan_store.split('_')
+    }
+    return models.Bank_Account.findOne({
+      where: {
+        id: store_result[3]
+      }
+    }).then(data_bank => {
+      return models.Bank_Account.findAll({
+        where: {
+          ClientId: null
+        }
+      }).then(list_bank =>{
+        if(data_bank == null){
+          data_bank = {
+            bank_name: "null",
+            bank_num: "null",
+            bank: "null"
+          }
+        }
+        headerCSS=`<head><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700"><link rel="stylesheet" href="/assets/css/codebase.css"></head>`
+        printable = (req.query.print == 'true') ? "<script type='text/javascript'>window.print()</script>" : ""
+        
+        
+        if(data.Type.Template.isi.indexOf('#{B_bank_list')>-1){
+          function dataBankList(list){
+            output= ''
+            for(i=0; i < list.length; i++){
+              output += "<div class='col-6'><h5 class='font-w700 mb-0'>" + list[i].bank + " - " + list[i].bank_num + "</h5><p class='text-muted font-w400 mt-0 mb-0'> An. " + list[i].bank_name + "</p></div>"
+            }
+            return output
+          }
+          console.log(JSON.stringify(dataBankList(list_bank), null,2))
+          bankListMain = "<div class='row mx-30'>"+ dataBankList(list_bank) +"</div>"
+          codeUtama_wBankList = data.Type.Template.isi.replace('#{B_bank_list}',bankListMain)
+        }else{
+          codeUtama_wBankList = data.Type.Template.isi
+        }
+
+        if(codeUtama_wBankList.indexOf('#{USE_details_subs')>-1){
+          Kdetails_Jumlah = codeUtama_wBankList.indexOf('d_jumlah')
+          Kdetails_Deskripsi = codeUtama_wBankList.indexOf('d_deskripsi')
+          Kdetails_Harga = codeUtama_wBankList.indexOf('d_harga')
+          Kdetails_Total = codeUtama_wBankList.indexOf('d_total')
+          Karray = [Kdetails_Deskripsi,Kdetails_Jumlah,Kdetails_Harga,Kdetails_Total].sort()
+          KdataSort = Array(data.Bill_Details.length).fill(0)
+          function data_Details(data){ 
+            rowFull = ''
+            var rowTotal = 0
+            if(data.Bill_Detail_Subs = undefined){
+              detail = data.Bill_Details.Bill_Detail_Subs
+            }else{
+              detail = ''
+            }
+            for(i=0; i<data.Bill_Details.length;i++){
+              rowDetails = ''
+              rowSubs = ''
+              rowDetails = "<tr><td>" + data.Bill_Details[i].jumlah + "</td><td>" + data.Bill_Details[i].keterangan + "</td><td>" + data.Bill_Details[i].harga + "</td><td>" + data.Bill_Details[i].harga*data.Bill_Details[i].jumlah + "</td></tr>" 
+              
+              for(j=0; j<data.Bill_Details[i].Bill_Detail_Subs.length;j++){
+                rowSubs += "<tr><td></td><td>" + data.Bill_Details[i].Bill_Detail_Subs[j].deskripsi + "</td><td></td><td></td></tr>"
+                //rowFull += rowDetails+rowSubs
+              }
+              rowFull += rowDetails+rowSubs
+              rowTotal += Number(+data.Bill_Details[i].harga * +data.Bill_Details[i].jumlah)
+            }
+            return {rowFull, rowTotal}
+          }
+          detailsRow = data_Details(data)
+          baseDetails = "<table class='table table-borderless'>" + detailsRow.rowFull + "</table>"
+          console.log(JSON.stringify(data, null,2))
+          console.log(baseDetails)
+          
+        }
+        
+        if(data.Type.Template.jenis == '1'){
+          codeUtama = codeUtama_wBankList
+          store_totalFee = store_result[4]
+        }else if(data.Type.Template.jenis == '2'){
+          codeUtama = codeUtama_wBankList.replace('#{USE_details_subs-d_jumlah,d_deskripsi,d_harga,d_total}',baseDetails)
+          store_totalFee = detailsRow.rowTotal
+        }
+        
+
+        pugfile = html2pug(headerCSS +  codeUtama + printable , { tabs: true })
+
+        
+        
+        res.send(pug.render(pugfile, {
+          D_noID : data.no_bill,
+          D_keterangan: data.keterangan,
+          D_date: data.tgl_dikirim,
+          T_alias: data.Type.alias,
+          T_uniqueCode: data.Type.unique_code,
+          S_name: data.Type.Service.name,
+          S_unique: data.Type.Service.unique,
+          B_an: data.Bank_Account.bank_name,
+          B_bank: data.Bank_Account.bank,
+          B_num_bank: data.Bank_Account.bank_num, 
+          C_name: data.Client.company_name, 
+          C_contact: data.Client.Client_Contact,
+          store_name: store_result[0], 
+          store_norek: data_bank.bank_num,
+          store_an: data_bank.bank_name,
+          store_bank: data_bank.bank,
+          store_plan: store_result[2], 
+          store_url: store_result[1],
+          store_fee: Rupiah(store_result[4]),
+          store_totalfee: Rupiah(store_totalFee),
+          store_jenis: store_result[5],
+          store_alamat: store_result[6],
+          D_createdAt: store_result[7],
+          D_date: store_result[8],
+          USE_details: data.Bill_Detail,
+          printable : req.query.print
+        }))
+      })
+    })
+  })
+}
+
+exports.update_main = function(req, res, next){
+  store_detail = req.body.nama + '_' + req.body.url + '_' + req.body.jenis + '_' + req.body.bank + '_' + req.body.total + '_' + req.body.produk + '_' + req.body.alamat + '_' + req.body.dFrom + '_' + req.body.dTo
+  return models.Bill.update({
+    keterangan_store: store_detail
+  },{
+    where:{
+      id: decoded(req.body.idBill)
+    }
+  }).then(result=>{
+    var alerts = {};
+    return res.send(alerts)
+  })
+}
+
+exports.print_data = function(req, res, next){
+  return models.Bill.update({
+    stat:"3"
+  },{
+    where:{
+      id: decoded(req.body.idBill)
+    }
+  }).then(result=>{
+    var alerts = {};
+    return res.send(alerts)
+  })
+}

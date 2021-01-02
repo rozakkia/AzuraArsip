@@ -1,0 +1,247 @@
+extends ../../layout
+
+block css
+  
+    link(rel="stylesheet", href="/assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/flatpickr/flatpickr.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
+    link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
+    link(rel="stylesheet", href="/assets/js/plugins/summernote/summernote-bs4.css")
+    
+
+block content
+    .content.content-full
+        .py-50
+            .position-relative
+                span.text-back #{title}
+                .row.mb-50
+                    .col-6
+                        nav.breadcrumb.push
+                            a.breadcrumb-item(href='/') Dashboard
+                            a.breadcrumb-item(href='/') Settings
+                            a.breadcrumb-item(href='/settings/core') Core Settings
+                            span.breadcrumb-item.active #{title}
+                .block.block-rounded
+                    .block-header.block-header-default
+                        a.text-primary(href="/settings/core") 
+                            i.si.si-action-undo    
+                            | Kembali
+                    .block-content.px-100.py-50
+                        
+                        if result
+                            h2.font-w700.text-center.mb-30.mt-30  Ubah Template
+                        else
+                            h2.font-w700.text-center.mb-0.mt-30 Tambah Template 
+                            p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                        //Template ini akan digunakan untuk tambahan pada pembuatan persuratan. Mengisi pada bagian isi surat saja, untuk penambahan kop surat harap dimasukkan pada bagian file template.
+                        
+                        form.js-validation-signin(action="#" id=(result? "formUbah":"formTambah") method="POST")
+                            .row.items-push
+                                .col-4.mb-5
+                                    .form-group
+                                        label Keterangan
+                                        if result
+                                            input(hidden value=Buffer.from(result.id).toString('base64') id="idNum")
+                                        input.form-control(type="text" id="keterangan" value=(result? result.keterangan : ''), placeholder="Judul atau Keterangan dari template ini")
+                                .col-8
+                                    .form-group.row
+                                        label.col-12 Lainnya
+                                        .col-12.mt-5
+                                            unless result
+                                                - result = {}
+                                                - result.jenis = '0'
+                                            .custom-control.custom-radio.custom-control-inline
+                                                input.custom-control-input(type="radio" name="jenisNyas" id="example-radio1" value="1",  checked=result.jenis=='1' )
+                                                label.custom-control-label(for="example-radio1") Format Bill Store
+                                            .custom-control.custom-radio.custom-control-inline
+                                                input.custom-control-input(type="radio" name="jenisNyas" id="example-radio2" value="2",  checked=result.jenis=='2' )
+                                                label.custom-control-label(for="example-radio2") Format Bill Details
+                                            .custom-control.custom-radio.custom-control-inline
+                                                input.custom-control-input(type="radio" name="jenisNyas" id="example-radio3" value="3",  checked=result.jenis=='3' )
+                                                label.custom-control-label(for="example-radio3") Format Persuratan
+                            .row
+                                .col-4
+                                    .block.block-bordered
+                                        .block-header
+                                            h6.block-title Daftar Variable
+                                        .block-content(data-toggle="slimscroll" data-height="377px")
+                                            #accordion(role="tablist" aria-multiselectable="true")
+                                                h6.font-w400.text-muted.mt-0 Public
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_h1")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_q1" aria-expanded="true" aria-controls="accordion_q1") D_noID
+                                                    #accordion_q1.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_h1" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Data Nomor ID untuk penomoran Bills / Mails
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_h2")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_q2" aria-expanded="true" aria-controls="accordion_q2") D_keterangan
+                                                    #accordion_q2.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_h2" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Keterangan dari Bills / Mails
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_h3")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_q3" aria-expanded="true" aria-controls="accordion_q3") D_date
+                                                    #accordion_q3.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_h3" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil tanggal dari Bills / Mails
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_h4")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_q4" aria-expanded="true" aria-controls="accordion_q4") T_alias
+                                                    #accordion_q4.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_h4" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Type aliasnya atau namanya, contoh: Invoice Azura / Surat Keputusan 
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_h5")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_q5" aria-expanded="true" aria-controls="accordion_q5") S_name
+                                                    #accordion_q5.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_h5" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Nama Service
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_h6")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_q6" aria-expanded="true" aria-controls="accordion_q6") S_unique
+                                                    #accordion_q6.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_h6" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Inisial Service
+                                                hr
+                                                h6.font-w400.text-muted.mt-0 Hanya untuk Billings
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb1")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb1" aria-expanded="true" aria-controls="accordion_qb1") B_an
+                                                    #accordion_qb1.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb1" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Atas Nama Bank
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb2")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb2" aria-expanded="true" aria-controls="accordion_qm1") B_bank
+                                                    #accordion_qb2.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb2" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Nama Bank
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb3")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb3" aria-expanded="true" aria-controls="accordion_qm1") B_num_bank
+                                                    #accordion_qb3.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb3" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil No Rekening Bank
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb4")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb4" aria-expanded="true" aria-controls="accordion_qm1") C_name
+                                                    #accordion_qb4.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb4" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Nama Perusahaan Client
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb5")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb5" aria-expanded="true" aria-controls="accordion_qm1") C_contact
+                                                    #accordion_qb5.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb5" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Kontak Client
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb6")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb6" aria-expanded="true" aria-controls="accordion_qm1") store_name
+                                                    #accordion_qb6.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb6" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Nama Store Client
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb7")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb7" aria-expanded="true" aria-controls="accordion_qm1") store_plan
+                                                    #accordion_qb7.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb7" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Plan Store Client
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb8")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb8" aria-expanded="true" aria-controls="accordion_qm1") store_bank
+                                                    #accordion_qb8.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb8" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Nama Bank Client
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb9")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb9" aria-expanded="true" aria-controls="accordion_qm1") store_norek
+                                                    #accordion_qb9.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb9" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Nomor Rekening Client
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb11")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb11" aria-expanded="true" aria-controls="accordion_qm1") store_fee
+                                                    #accordion_qb11.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb11" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Data Total Pembayaran
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb12")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb12" aria-expanded="true" aria-controls="accordion_qm1") store_totalfee
+                                                    #accordion_qb12.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb12" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Data Akumulasi Total Pembayaran
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb13")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb13" aria-expanded="true" aria-controls="accordion_qm1") store_url
+                                                    #accordion_qb13.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb13" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil URL Website Toko
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb13")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb13" aria-expanded="true" aria-controls="accordion_qm1") store_alamat
+                                                    #accordion_qb13.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb13" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Data Alamat Toko
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hb14")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qb14" aria-expanded="true" aria-controls="accordion_qm1") store_jenis
+                                                    #accordion_qb14.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hb14" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Jenis Produk dari Toko
+                                                hr
+                                                h6.font-w400.text-muted.mt-0 Hanya untuk Mails
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hm1")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qm1" aria-expanded="true" aria-controls="accordion_qm1") D_perihal
+                                                    #accordion_qm1.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hm1" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Perihal Mails
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hm2")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qm2" aria-expanded="true" aria-controls="accordion_qm2") D_tujuan
+                                                    #accordion_qm2.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hm2" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Tujuan Mails
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hm3")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qm3" aria-expanded="true" aria-controls="accordion_qm3") D_date
+                                                    #accordion_qm3.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hm3" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Data Tanggal Surat
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hm4")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qm4" aria-expanded="true" aria-controls="accordion_qm4") T_alias
+                                                    #accordion_qm4.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hm4" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Nama Alias dari Type, Contoh "Surat Keputusan" atau "Surat Keterangan"
+                                                .block.block-bordered.block-rounded.mb-2
+                                                    .block-header.mb-0(role="tab" id="accordion_hm5")
+                                                        a.font-w600(data-toggle="collapse" data-parent="#accordion" href="#accordion_qm5" aria-expanded="true" aria-controls="accordion_qm5") T_inisial
+                                                    #accordion_qm5.collapse.mt-0(role="tabpanel" aria-labelledby="accordion_hm5" data-parent="#accordion")
+                                                        .block-content.pt-0.pb-20
+                                                            |Ambil Kode Unique dari Type, Contoh Surat Keputusan memiliki inisial 002
+                                .col-8
+                                    .form-group
+                                        textarea.js-summernote(name="summernote" id="isi" contenteditable="false")
+                                            if result
+                                                | #{result.isi}
+                               
+                        
+                            .row.items-push.mb-15
+                                .col-12
+                                    hr.mb-30
+                                    button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
+block helpers
+    script(src="/assets/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js")
+    script(src="/assets/js/plugins/flatpickr/flatpickr.min.js")
+    script(src="/assets/js/plugins/select2/js/select2.full.min.js")
+    script(src="/assets/js/plugins/summernote/summernote-bs4.min.js")
+    script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
+    script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
+    script(src="/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js")
+    script(src="/assets/js/pages/be_tables_datatables.min.js")
+    script.
+        jQuery(function(){ Codebase.helpers(['slimscroll','flatpickr','datepicker','summernote','select2']); })
+  
+    script(src="/assets/js/pages/template_index.js")

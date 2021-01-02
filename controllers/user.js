@@ -67,25 +67,15 @@ const rerender_get_users = function(errors, req, res, next) {
 exports.get_detail = function(req, res, next) {
   return models.User.findOne({
     where : {
-        id : req.params.user_id
+      id: Buffer.from(req.params.user_id, 'base64').toString('ascii')
     },
     include: [models.Role]
   }).then(user_detail => {
-    console.log(user_detail.Role.routing.split(",")  )
-    format = user_detail.Role.routing.split(",")
-    format.splice(1, 1, 'Bank Account');
-    format.splice(2, 1, 'Billings');
-    format.splice(3, 1, 'Client');
-    format.splice(4, 1, 'Mails');
-    format.splice(5, 1, 'Users');
-    console.log(format)
-    formatString = format.toString()
     return models.Role.findAll().then(roles=>{
       res.render('user/detail', { 
         title: 'User Detail' , 
         user: req.user, 
         user_detail:user_detail,
-        route: formatString,
         roles:roles 
       });
     })
@@ -119,13 +109,19 @@ exports.create_user = function(req, res, next) {
 }
 
 exports.create_userSuperAdmin = function(req, res, next) {
-  return models.User.create({
-    username: "admin",
-    name: "Administrator", 
-    password: generateHash("admin")
-}).then(user => {
-    res.redirect('/users');  
-})
+  return models.Role.create({
+    nama_role: "Super Administrator",
+    routing: "1,2,3,4,5,6"
+  }).then(role => {
+    return models.User.create({
+      username: "admin",
+      name: "Administrator", 
+      password: generateHash("admin"),
+      RoleId: role.id 
+    }).then(user => {
+        res.redirect('/');  
+    })
+  })
 }
 
 exports.edit_user = function(req, res, next) {

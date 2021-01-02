@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         perihal: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         tujuan: {
             type: DataTypes.STRING,
@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         isi: {
             type: DataTypes.TEXT,
+            allowNull: true
+        },
+        keytag: {
+            type: DataTypes.STRING,
             allowNull: true
         },
         jenis: {

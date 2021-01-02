@@ -42,10 +42,18 @@ block content
                         small Format Num
                     h2.font-w600.mt-0.mb-50.text-center #{data.Format_Num.alias} - #{data.Format_Num.format_num} 
                     h6.text-center.mb-0.mt-30
-                        small File Template
+                        small File Template | 
+                            a(data-toggle="modal" data-target="#mdl-upload" href="javascript:void(0)")  #{((data.file_template)? "Ubah" : "Upload")}
                     .text-center
-                        a.h2.font-w600.mt-0.mb-50(href=Buffer.from(data.id).toString('base64') + "/template", target="_blank") #{data.file_template}.pug
-                        
+                        if data.file_template == null
+                            h4.font-w400.mt-0.mb-50.text-muted
+                                em Belum tersedia
+                        else
+                            a.h2.font-w600.mt-0.mb-50(href=Buffer.from(data.id).toString('base64') + "/template", target="_blank") #{data.file_template}.pug
+                    h6.text-center.mb-0.mt-30
+                        small Template Index
+                    .text-center
+                        a.h2.font-w600.mt-0.mb-50(href="../template/" + Buffer.from(data.Template.id).toString('base64'), target="_blank") #{data.Template.keterangan}
 
 block modal
     .modal.fade(id="mdl-ubah" tabindex="-1" role="dialog")
@@ -105,9 +113,42 @@ block modal
                             button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
                             button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
                             
-    
+    .modal.fade(id="mdl-upload" tabindex="-1" role="dialog")
+        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+            .modal-content.rounded
+                .block.block-rounded.block-transparent
+                    .block-content.mt-20.mb-20.px-30
+                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 #{((data.file_template)? "Ubah File":"Upload File")}
+                        p.text-muted.text-center.font-w400.mt-0 File Template
+                        form.js-validation-signin(action="file/update" method="POST" enctype="multipart/form-data")
+                            .form-group.mt-20
+                                input#idNum(hidden name="idNum" value=Buffer.from(data.id).toString('base64'))
+                                label Nama Type
+                                input.form-control(type="text" disabled value=data.alias)
+                            .custom-file.mt-10
+                                    input.custom-file-input(type="file" name="template" data-toggle="custom-file-input")
+                                    label.custom-file-label Template file (.pug)
+                            
+                            
+                            hr 
+                            p Mengubah data akan mengubah setiap data yang terRelasi
+                            button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                            button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
 
 block helpers
+    if alerts == "1"
+        script.
+            setTimeout(function () {  
+                    swal.fire({
+                        title: 'File Terupload',
+                        icon: 'success',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+                },10);
+                window.setTimeout(function(){ 
+                    location.replace('/settings/core/type/' + Buffer.from(data.id).toString('base64'));
+                } ,2500); 
     script(src="/assets/js/plugins/select2/js/select2.full.min.js")
     script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
     script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")

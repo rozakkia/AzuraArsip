@@ -18,9 +18,9 @@ exports.get_typeTemplate = function(req, res, next){
 }
 
 exports.get_settings = function(req, res, next) {
-    return models.Client.findAll().then(clients => {
-      res.render('setting/index', { title: 'Settings', user: req.user , clients:clients , formData: {}, errors: {} });
-    })
+  return models.Client.findAll().then(clients => {
+    res.render('setting/index', { title: 'Settings', user: req.user , clients:clients , formData: {}, errors: {} });
+  })
 }
 
 exports.get_core = function(req, res, next) {
@@ -30,15 +30,23 @@ exports.get_core = function(req, res, next) {
     }).then(types => {
       return models.Format_Num.findAll().then(format => {
         return models.Role.findAll().then(roles =>{
-          res.render('setting/core/index', { 
-            title: 'Core Settings', 
-            user: req.user, 
-            services:services,
-            types:types,
-            roles:roles,
-            format:format,
-            alerts: '0'
-          });
+          return models.Template.findAll().then(templates=>{
+            return models.User.findAll({
+              include: [models.Role]
+            }).then(user_role => {
+              res.render('setting/core/index', { 
+                title: 'Core Settings', 
+                user: req.user, 
+                services:services,
+                types:types,
+                roles:roles,
+                format:format,
+                user_role: user_role,
+                templates: templates,
+                alerts: '0'
+              });
+            })
+          })
         })
       })
     })
@@ -51,14 +59,25 @@ const rerender_get_core = function(alerts, req, res, next) {
       include: [models.Service, models.Format_Num]
     }).then(types => {
       return models.Format_Num.findAll().then(format => {
-        res.render('setting/core/index', { 
-          title: 'Core Settings', 
-          user: req.user, 
-          services:services,
-          types:types,
-          format:format,
-          alerts: alerts
-        });
+        return models.Role.findAll().then(roles =>{
+          return models.Template.findAll().then(templates=>{
+            return models.User.findAll({
+              include: [models.Role]
+            }).then(user_role => {
+              res.render('setting/core/index', { 
+                title: 'Core Settings', 
+                user: req.user, 
+                services:services,
+                types:types,
+                roles:roles,
+                format:format,
+                user_role: user_role,
+                templates: templates,
+                alerts: alerts
+              });
+            })
+          })
+        })
       })
     })
   })
@@ -82,7 +101,6 @@ exports.get_roleDetail = function(req, res, next) {
       id: Buffer.from(req.params.id, 'base64').toString('ascii')
     }
   }).then(data=>{
-    routArray = data.routing.split(",")
     res.render('setting/core/detail_role', { 
       title: 'Format Num Detail', 
       user: req.user, 
@@ -175,7 +193,7 @@ var storage = multer.diskStorage({
     cb(null, 'views/templates')
   },
   filename: function (req, file, cb) {
-    cb(null, uniqueSuffix)
+    cb(null, uniqueSuffix + '-' +  file.originalname)
   }
 })
  
@@ -189,15 +207,16 @@ exports.create_type = function(req,res,next) {
         rerender_get_core(alerts,req,res,next);
         res.send('Error while uploading.');
     }else{
-      console.log("ini cuy=" + req.body.name)
+      fileNamesnya = ((req.file)? uniqueSuffix + "-" +req.file.originalname:null)
       return models.Type.create({
         alias: req.body.name, 
         inisial: req.body.inisial,
         jenis: req.body.jenis,
         unique_code: req.body.unique,
-        file_template: uniqueSuffix,
+        file_template: fileNamesnya,
         FormatNumId: req.body.format,
-        ServiceId: req.body.service   
+        ServiceId: req.body.service,
+        TemplateId: req.body.idtemplate   
       }).then(result=>{
         alerts="1"
         rerender_get_core(alerts,req,res,next);
@@ -211,22 +230,56 @@ exports.get_typeDetail = function(req, res, next) {
     where:{
       id: Buffer.from(req.params.id, 'base64').toString('ascii')
     },
-    include:[models.Format_Num, models.Service]
+    include:[models.Format_Num, models.Service, models.Template]
   }).then(data=>{
     return models.Service.findAll().then(service=>{
       return models.Format_Num.findAll().then(format=>{
-        if(data.jenis==1){
-          ti = 'Mail'
-        }else if(data.jenis==3){
-          ti = 'Billing'
-        }
-        res.render('setting/core/detail_type', { 
-          title:  ti + ' Type Detail', 
-          user: req.user, 
-          data: data,
-          format: format,
-          service: service
-        });
+        return models.Template.findAll().then(template=>{
+          if(data.jenis==1){
+            ti = 'Mail'
+          }else if(data.jenis==3){
+            ti = 'Billing'
+          }
+          res.render('setting/core/detail_type', { 
+            title:  ti + ' Type Detail', 
+            user: req.user, 
+            data: data,
+            format: format,
+            service: service,
+            template: template,
+            alerts : '0'
+          });
+        })
+      })
+    })
+  })
+}
+
+const rerender_get_typeDetail = function(req, res, next) {
+  return models.Type.findOne({
+    where:{
+      id: Buffer.from(req.params.id, 'base64').toString('ascii')
+    },
+    include:[models.Format_Num, models.Service, models.Template]
+  }).then(data=>{
+    return models.Service.findAll().then(service=>{
+      return models.Format_Num.findAll().then(format=>{
+        return models.Template.findAll().then(template=>{
+          if(data.jenis==1){
+            ti = 'Mail'
+          }else if(data.jenis==3){
+            ti = 'Billing'
+          }
+          res.render('setting/core/detail_type', { 
+            title:  ti + ' Type Detail', 
+            user: req.user, 
+            data: data,
+            format: format,
+            service: service,
+            template: template,
+            alerts: alerts
+          });
+        })
       })
     })
   })
@@ -319,4 +372,87 @@ exports.delete_format = function(req, res, next) {
     var Alerts = {};
     return res.send(Alerts)
   })
+}
+
+exports.get_template = function(req, res, next){
+  return res.render('setting/core/index_template', { 
+    title: 'Create Template', user: req.user  });
+}
+
+const html2pug = require('html2pug')
+const pug = require('pug')
+
+exports.get_templateDetail = function(req, res, next){
+  return models.Template.findOne({
+    where:{
+      id: Buffer.from(req.params.id_template, 'base64').toString('ascii')
+    }
+  }).then(result => {
+    pugfile = html2pug(result.isi , { tabs: true })
+    // res.send(pug.render(pugfile, {
+    //   D_noID: "2020/XII/02/AZ",
+    //   store_name: "Toko Binatang Sehat",
+    //   store_norek: "0522333470",
+    //   store_bank: "Bank Negara Indonesia (BNI)",
+    //   store_url: "binatangsehat.com",
+    //   store_plan: "BASIC",
+    //   store_fee: "5000.000",
+    //   store_totalfee: "5000.000"
+    // }))
+    res.render('setting/core/index_template', { 
+      title: 'Detail Template',
+      user: req.user,
+      result: result,
+      pugfile: pugfile  
+    });
+  })
+}
+
+exports.create_template = function(req, res, next){
+  return models.Template.create({
+    keterangan: req.body.keterangan,
+    isi: req.body.isi,
+    jenis: req.body.jenis
+  }).then(result => {
+    var Alerts = {};
+    return res.send(Alerts)
+  })
+}
+
+exports.update_templateDetail = function(req, res, next){
+  return models.Template.update({
+    keterangan: req.body.keterangan,
+    isi: req.body.isi,
+    jenis: req.body.jenis
+  },{
+    where:{
+      id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
+    }
+  }).then(result => {
+    console.log(req.body.jenis)
+    var Alerts = {};
+    return res.send(Alerts)
+  })
+}
+
+exports.update_typeFile = function(req, res, next){
+  upload(req,res,function(err) {
+    if(err) {
+        alerts="2"
+        rerender_get_core(alerts,req,res,next);
+        res.send('Error while uploading.');
+    }else{
+      return models.Type.update({
+        file_template : uniqueSuffix + "-" +req.file.originalname
+      },{
+        where:{
+          id: Buffer.from(req.body.idNum, 'base64').toString('ascii')
+        }
+      }).then(result=>{
+        res.redirect("../"+req.body.idNum); 
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  }); 
 }

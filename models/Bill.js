@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
+        keterangan_store: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
         tgl_dikirim: {
             type: DataTypes.DATE,
             allowNull: true
@@ -33,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
         Bill.hasMany(models.Bill_Detail);
         Bill.belongsTo(models.Bank_Account, {
             foreignKey: {
-                allowNull: false
+                allowNull: true
             }
         });
         Bill.belongsTo(models.Client, {
@@ -47,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
         Bill.belongsTo(models.Type, {
-            foreignKey: {
+            foreignKey:  {
                 allowNull: false
             }
         });

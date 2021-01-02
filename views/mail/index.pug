@@ -122,7 +122,7 @@ block modal
                             .form-group
                                 input.form-control(type="text" placeholder="No Surat" name="nosurat")
                             .form-group
-                                input.form-control(type="text" placeholder="Perihal" name="perihal")
+                                input.form-control(type="text" placeholder="Perihal surat ini" name="perihal")
                             .form-group.mt-20
                                 .custom-file
                                     input.custom-file-input(type="file" name="file")
@@ -151,12 +151,12 @@ block modal
                                         for data in typemail
                                             option(value=data.id) #{data.alias}
                             .form-group
-                                select.js-select2.form-control(style="width:100%" id="jenismail" name="jenismail" data-placeholder="Mail Types")
+                                select.js-select2.form-control(style="width:100%" id="jenismail" name="jenismail" data-placeholder="Mail Jenis")
                                     option
                                     option(value="1") External
                                     option(value="2") Internal
                             .form-group
-                                input.form-control(type="text" placeholder="Perihal surat keluar ini" name="perihal")
+                                input.form-control(type="text" placeholder="Keterangan surat keluar ini" name="keterangan")
                             button.btn.btn-info.btn-noborder.btn-hero.w-100.mt-20(type="submit") Simpan
 
 block helpers

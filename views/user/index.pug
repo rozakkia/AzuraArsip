@@ -44,7 +44,7 @@ block content
                                         td.d-none.d-sm-table-cell #{user_data.username}
                                         td.d-none.d-sm-table-cell #{user_data.Role.nama_role}
                                         td.text-center
-                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + user_data.id ) Detail
+                                            a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/users/" + Buffer.from(user_data.id).toString('base64') ) Detail
                                     - i = i+1
                             
                

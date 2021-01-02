@@ -1,6 +1,7 @@
 extends ../layout
 
 block css
+    link(rel="stylesheet" href="/assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css")
     link(rel="stylesheet", href="/assets/js/plugins/select2/css/select2.min.css")
     link(rel="stylesheet", href="/assets/js/plugins/datatables/dataTables.bootstrap4.css")
 
@@ -18,14 +19,18 @@ block content
         .block.block-rounded.block-fx-shadow
             .block-header.bg-info.px-100
                 h1.mt-20.text-white ##{result.Type.alias} : #{result.no_bill}
+                    if result.stat == 3
+                        |  - 
+                        span.badge.badge-primary Printed
                 if result.stat > 0
-                    .block-options
-                        .dropdown
-                            button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
-                            .dropdown-menu.dropdown-menu-right
-                                a.dropdown-item(data-toggle="modal" data-target="#mdl-hapus" href="javascript:void(0)") 
-                                    i.fa.fa-trash.mr-5
-                                    | Hapus Data
+                    unless result.stat == 3
+                        .block-options
+                            .dropdown
+                                button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
+                                .dropdown-menu.dropdown-menu-right
+                                    a.dropdown-item(data-toggle="modal" data-target="#mdl-hapus" href="javascript:void(0)") 
+                                        i.fa.fa-trash.mr-5
+                                        | Hapus Data
             .block-content.px-100.py-50
                 if result.stat=='0'
                     form(action="#" id="formDetail" method="POST")
@@ -60,12 +65,6 @@ block content
                                             option
                                                 for data in resultBank
                                                     option(value=data.id) #{data.bank} (#{data.bank_num}) | An. #{data.bank_name}
-                                    else
-                                        - rekening = result.Bank_Account.bank + " - " + result.Bank_Account.bank_num + " | An. " + result.Bank_Account.bank_name
-                                        input.form-control(type="text" value=rekening disabled)
-                                if result.stat=='1' 
-                                    .pull-right
-                                        a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-ubah" href="javascript:void(0)") Ubah Data
                       
                         if result.stat=='0'
                             hr.mb-30.mt-50
@@ -109,167 +108,261 @@ block content
                                 else
                                     - rekening = result.Bank_Account.bank + " - " + result.Bank_Account.bank_num + " | An. " + result.Bank_Account.bank_name
                                     input.form-control(type="text" value=rekening disabled)
-                            if result.stat=='1' 
-                                .pull-right
+                            if result.stat == '1' || result.stat == '2' 
+                                .pull-right.mt-20
                                     a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-ubah" href="javascript:void(0)") Ubah Data
+                          
+                    
+                    if result.stat>'0'  
+                        if result.Type.Template.jenis=='1'
+                            h2.content-heading.text-black Main Info
+                            form(action="#" id="formMain" method="POST")
+                                .row.items-push
+                                    .col-3
+                                        p.text-muted Berikut adalah informasi utama dari Bill ini. Relasi template pada jenis Bill ini adalah Format Store.
+                                    .col-8.offset-lg-1
+                                        .row
+                                            .col-12
+                                                .form-group
+                                                    label Keterangan Toko
+                                                    if result.keterangan_store != null
+                                                        - result_store = result.keterangan_store.split('_')
+                                                    .row
+                                                        .col-6
+                                                            input.form-control(type="text" id="nama_toko" value=(result.keterangan_store==null)? '':result_store[0] placeholder="Nama Toko, eg: Toko Abadi Sejahtera" name="nama_toko" disabled= result.stat > 1)
+                                                        .col-6
+                                                            input.form-control(type="text" id="url_toko"  value=(result.keterangan_store==null)? '':result_store[1] placeholder="URL Website Toko, eg: tokoabadi.com" name="url_toko" disabled= result.stat > 1)
+                                            .col-12
+                                                div(class=(result.Type.Template.keterangan.indexOf("Receipt") == -1)? "row" : "")
+                                                    div(class=(result.Type.Template.keterangan.indexOf("Receipt") == -1)? "col-6" : "")
+                                                        .form-group
+                                                            label Jenis Plan
+                                                            input.form-control(type="text" id="jenis_toko" placeholder="Jenis layanan yang diberikan. eg: Basic / Premium" name="jenis_toko"  value=(result.keterangan_store==null)? '':result_store[2], disabled= result.stat > 1)
+                                                    unless result.Type.Template.keterangan.indexOf("Invoice") == -1
+                                                        .col-6
+                                                            .form-group
+                                                                label Jenis Produk
+                                                                input.form-control(type="text" id="produk_toko" placeholder="eg: Fashion, Food" name="jenis_toko"  value=(result.keterangan_store==null)? '':result_store[5], disabled= result.stat > 1)
+                                            unless result.Type.Template.keterangan.indexOf("Invoice") == -1
+                                                .col-12
+                                                    .form-group
+                                                        label Alamat Toko
+                                                        input.form-control(type="text" id="alamat_toko" placeholder="Alamat Singkat Toko, eg: Semarang, Jawa Tengah" value=(result.keterangan_store==null)? '':result_store[6], disabled= result.stat > 1)
 
-                    if result.stat=='1'     
-                        h2.content-heading.text-black Detail Info
-                        .row.items-push
-                            .col-3
-                                p.text-muted Semua informasi detail mengenai bill ini (seperti layanan kerjasama, layanan pembuatan ataupun barang-barang tertentu).
-                            .col-8.offset-lg-1
-                                .block.block-bordered.block-rounded
-                                    .block-header
-                                        h3.block-title(id="invoices") Billing Details
-                                        .block-options
-                                            a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billDetail-tambah" href="javascript:void(0)") Tambah Detail
-                                    .block-content.block-content-full
-                                        table.table.table-hover.js-table-sections
-                                            thead
-                                                tr
-                                                    th
-                                                    th Deskripsi
-                                                    th.d-none.d-sm-table-cell Jumlah 
-                                                    th.d-none.d-sm-table-cell Harga
-                                                    th.text-center Action
-                                                for data in result.Bill_Details
-                                                    tbody.js-table-sections-header
+                                                .col-12
+                                                    .form-group.row
+                                                        label.col-12 Tanggal Penting
+                                                        .col-12
+                                                            .input-daterange.input-group(data-date-format="dd-mm-yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true")
+                                                                input.form-control#dfrom_toko(type="text" value=dateCreate name="example-daterange1" placeholder="Tanggal Dibuat" data-week-start="1" data-autoclose="true" data-today-highlight="true" disabled= result.stat > 1)
+                                                                .input-group-prepend.input-group-append
+                                                                    span.input-group-text.font-w600 sampai
+                                                                input.form-control#dto_toko(type="text" value=(result.keterangan_store==null)? '':result_store[8] name="example-daterange2" placeholder="Tanggal Kadaluarsa" data-week-start="1" data-autoclose="true" data-today-highlight="true" disabled= result.stat > 1)
+
+                                            .col-12
+                                                .row
+                                                    .col-6
+                                                        .form-group
+                                                            label Keterangan Rekening Toko
+                                                            select.js-select2.form-control(style="width:100%" id="bankmain" name="nama_bank" data-placeholder="Rekening Akun untuk pembayaran bill ini", disabled= result.stat > 1)
+                                                                option
+                                                                if result.stat==1
+                                                                    - result_store = []
+                                                                    - result_store[3] = '000'
+                                                                for data in result.Client.Bank_Accounts
+                                                                    option(value=data.id selected= data.id == result_store[3]) #{data.bank} (#{data.bank_num}) | an.#{data.bank_name}
+                                                    .col-6
+                                                        .form-group
+                                                            label Total Fee
+                                                            input.form-control(type="text" id="total_toko" placeholder="Total Fee Bills" value=(result.keterangan_store==null)? '':result_store[4], disabled= result.stat > 1)
+                                                
+                                                unless result.keterangan_store==null
+                                                    if result.stat == '1' || result.stat == '2' 
+                                                        .pull-right.mt-20
+                                                            a.btn.btn-alt-primary.btn-noborder(data-toggle="modal" data-target="#mdl-ubah-main" href="javascript:void(0)") Ubah Data
+                                if result.stat == '1'
+                                    hr.mb-30.mt-50
+                                    .row.items-push
+                                        .col-8.offset-lg-4
+                                            button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
+                        else if result.Type.Template.jenis == '2'   
+                            h2.content-heading.text-black Detail Info
+                            .row.items-push
+                                .col-3
+                                    p.text-muted Semua informasi detail mengenai bill ini (seperti layanan kerjasama, layanan pembuatan ataupun barang-barang tertentu).
+                                .col-8.offset-lg-1
+                                    .block.block-bordered.block-rounded
+                                        .block-header
+                                            h3.block-title(id="invoices") Billing Details
+                                            unless result.stat == 3
+                                                .block-options
+                                                    a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billDetail-tambah" href="javascript:void(0)") Tambah Detail
+                                        .block-content.block-content-full
+                                            if result.Bill_Details.length == 0
+                                                p.text-center.font-w200.text-secondary
+                                                    em Data Details belum tersedia
+                                            else
+                                                table.table.table-hover.js-table-sections
+                                                    thead
                                                         tr
-                                                            td.text-center
-                                                                i.fa.fa-angle-right
-                                                            td.font-w600 #{data.keterangan} 
-                                                            td.font-w600 #{data.jumlah}
-                                                            td.d-none.d-sm-table-cell #{data.harga}
-                                                            td.text-center
-                                                                a.btn.btn-sm.btn-alt-info.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl-detailUbah" + data.id , href="javascript:void(0)")
-                                                                    i.fa.fa-pencil
-                                                                a.btn.btn-sm.btn-alt-danger.btn-noborder.ml-5(data-toggle="modal" data-target="#mdl-detailHapus" + data.id , href="javascript:void(0)")
-                                                                    i.fa.fa-trash-o
-                                                        
-                                                        //MODAL Detail
-                                                        .modal.fade(id="mdl-subTambah"+ data.id, tabindex="-1" role="dialog")
-                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-                                                                .modal-content.rounded
-                                                                    .block.block-rounded.block-transparent
-                                                                        .block-content.mt-20.mb-20.px-30
-                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Tambah Data
-                                                                            p.text-muted.text-center.font-w400 Lengkapi isian berikut
-                                                                            form.js-validation-signin(action="create-detail-sub" method="POST")
-                                                                                .form-group.mt-20
-                                                                                    input(hidden name="idDetail" value=data.id)
-                                                                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
-                                                                                    label Index Layanan
-                                                                                    textarea.form-control(disabled) #{data.keterangan}
-                                                                                hr
-                                                                                .form-group.mt-20
-                                                                                    input.form-control(type="text" placeholder="Deskripsi layanan" name="keterangan" )
-                                                                                .form-group.mt-20
-                                                                                    input.form-control(type="number" placeholder="Harga Total" name="harga" )
-                                                                                hr
-                                                                                button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambah Sub Layanan
-
-                                                        .modal.fade(id="mdl-detailUbah"+ data.id, tabindex="-1" role="dialog")
-                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-                                                                .modal-content.rounded
-                                                                    .block.block-rounded.block-transparent
-                                                                        .block-content.mt-20.mb-20.px-30
-                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
-                                                                            form.js-validation-signin(action="update-detail" method="POST")
-                                                                                .form-group.mt-20
-                                                                                    input(hidden name="idDetail" value=data.id)
-                                                                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
-                                                                                    input.form-control(type="text" placeholder="Deskripsi layanan"  value=data.keterangan name="keterangan" )
-                                                                                .form-group.mt-20
-                                                                                    input.form-control(type="number" placeholder="Jumlah" value=data.jumlah name="jumlah" )
-                                                                                .form-group.mt-20
-                                                                                    input.form-control(type="number" placeholder="Harga Total" value=data.harga name="harga" )
-                                                                                hr 
-                                                                                p Mengubah data akan mengubah setiap data yang terRelasi
-                                                                                button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
-                                                                                button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
-
-                                                        .modal.fade(id="mdl-detailHapus"+ data.id, tabindex="-1" role="dialog")
-                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-                                                                .modal-content.rounded
-                                                                    .block.block-rounded.block-transparent
-                                                                        .block-content.mt-20.mb-20.px-30
-                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Hapus Data
-                                                                            p.text-muted.text-center.font-w400 Layanan
-                                                                            form.js-validation-signin(action="delete-detail" method="POST")
-                                                                                .form-group
-                                                                                    label Keterangan
-                                                                                    input(hidden name="idDetail" value=data.id)
-                                                                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
-                                                                                    textarea.form-control(type="text" name="company" disabled) #{data.keterangan}
-                                                                                hr 
-                                                                                p Menghapus data detail layanan juga akan menghapus data sub dibawah layanan ini.
-                                                                                button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
-                                                                                button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
-                                                        // END MODAL Detail
-
-                                                    tbody
-                                                        for data_sub in data.Bill_Detail_Subs
+                                                            th
+                                                            th Deskripsi
+                                                            th.d-none.d-sm-table-cell Jumlah 
+                                                            th.d-none.d-sm-table-cell Harga
+                                                            unless (result.stat == '3')
+                                                                th.text-center Action
+                                                    if !result.Bill_Details
+                                                        tbody
                                                             tr
-                                                                td
-                                                                td.font-w400.text-muted 
-                                                                    em #{data_sub.deskripsi}
-                                                                td.font-w400.text-muted 
-                                                                    em #{data_sub.jumlah}
-                                                                td.font-w400.text-muted 
-                                                                    em #{data_sub.harga}
-                                                                td.text-center
-                                                                    a.btn.btn-sm.btn-alt-danger.btn-noborder(data-toggle="modal" data-target="#mdl-subHapus" + data_sub.id , href="javascript:void(0)")
-                                                                        i.fa.fa-trash-o
-                                                            
-                                                            // MODAL Sub Detail
-                                                            .modal.fade(id="mdl-subHapus"+ data_sub.id, tabindex="-1" role="dialog")
-                                                                .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
-                                                                    .modal-content.rounded
-                                                                        .block.block-rounded.block-transparent
-                                                                            .block-content.mt-20.mb-20.px-30
-                                                                                h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Hapus Data
-                                                                                p.text-muted.text-center.font-w400 Sub Layanan
-                                                                                form.js-validation-signin(action="delete-detail-sub" method="POST")
-                                                                                    .form-group
-                                                                                        label Index Layanan
-                                                                                        textarea.form-control(disabled) #{data.keterangan}
-                                                                                    hr
-                                                                                    .form-group
-                                                                                        label Sub Layanan
-                                                                                        input(hidden name="idsubDetail" value=data_sub.id)
-                                                                                        input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
-                                                                                        textarea.form-control(type="text" name="company" disabled) #{data_sub.deskripsi}
-                                                                                    hr 
-                                                                                    p Anda tidak akan bisa mengembalikan setelah menghapus
-                                                                                    button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
-                                                                                    button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
-                                                            // END MODAL Sub Detail
+                                                            |   Data tidak tersedia
+                                                    else
+                                                        for data in result.Bill_Details
+                                                            tbody.js-table-sections-header
+                                                                tr
+                                                                    td.text-center
+                                                                        i.fa.fa-angle-right
+                                                                    td.font-w600 #{data.keterangan} 
+                                                                    td.font-w600 #{data.jumlah}
+                                                                    td.d-none.d-sm-table-cell #{data.harga}
+                                                                    unless (result.stat == '3')
+                                                                        td.text-center
+                                                                            a.btn.btn-sm.btn-alt-info.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl-detailUbah" + data.id , href="javascript:void(0)")
+                                                                                i.fa.fa-pencil
+                                                                            a.btn.btn-sm.btn-alt-danger.btn-noborder.ml-5(data-toggle="modal" data-target="#mdl-detailHapus" + data.id , href="javascript:void(0)")
+                                                                                i.fa.fa-trash-o
+                                                                
+                                                                unless (result.stat == '3')
+                                                                    //MODAL Detail
+                                                                    .modal.fade(id="mdl-subTambah"+ data.id, tabindex="-1" role="dialog")
+                                                                        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                            .modal-content.rounded
+                                                                                .block.block-rounded.block-transparent
+                                                                                    .block-content.mt-20.mb-20.px-30
+                                                                                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Tambah Data
+                                                                                        p.text-muted.text-center.font-w400 Lengkapi isian berikut
+                                                                                        form.js-validation-signin(action="create-detail-sub" method="POST")
+                                                                                            .form-group.mt-20
+                                                                                                input(hidden name="idDetail" value=data.id)
+                                                                                                input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                                label Index Layanan
+                                                                                                textarea.form-control(disabled) #{data.keterangan}
+                                                                                            hr
+                                                                                            .form-group.mt-20
+                                                                                                input.form-control(type="text" placeholder="Deskripsi layanan" name="keterangan" )
+                                                                                            .form-group.mt-20
+                                                                                                input.form-control(type="number" placeholder="Harga Total" name="harga" )
+                                                                                            hr
+                                                                                            button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambah Sub Layanan
 
-                                                        tr
-                                                            td
-                                                            td
-                                                                a(data-toggle="modal" data-target="#mdl-subTambah" + data.id , href="javascript:void(0)")
-                                                                    i.si.si-plus.mr-5
-                                                                    | Detail 
-                                                            td
-                                                            td
-                                                            td
+                                                                    .modal.fade(id="mdl-detailUbah"+ data.id, tabindex="-1" role="dialog")
+                                                                        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                            .modal-content.rounded
+                                                                                .block.block-rounded.block-transparent
+                                                                                    .block-content.mt-20.mb-20.px-30
+                                                                                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
+                                                                                        form.js-validation-signin(action="update-detail" method="POST")
+                                                                                            .form-group.mt-20
+                                                                                                input(hidden name="idDetail" value=data.id)
+                                                                                                input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                                input.form-control(type="text" placeholder="Deskripsi layanan"  value=data.keterangan name="keterangan" )
+                                                                                            .form-group.mt-20
+                                                                                                input.form-control(type="number" placeholder="Jumlah" value=data.jumlah name="jumlah" )
+                                                                                            .form-group.mt-20
+                                                                                                input.form-control(type="number" placeholder="Harga Total" value=data.harga name="harga" )
+                                                                                            hr 
+                                                                                            p Mengubah data akan mengubah setiap data yang terRelasi
+                                                                                            button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                                                                                            button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
 
+                                                                    .modal.fade(id="mdl-detailHapus"+ data.id, tabindex="-1" role="dialog")
+                                                                        .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                            .modal-content.rounded
+                                                                                .block.block-rounded.block-transparent
+                                                                                    .block-content.mt-20.mb-20.px-30
+                                                                                        h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Hapus Data
+                                                                                        p.text-muted.text-center.font-w400 Layanan
+                                                                                        form.js-validation-signin(action="delete-detail" method="POST")
+                                                                                            .form-group
+                                                                                                label Keterangan
+                                                                                                input(hidden name="idDetail" value=data.id)
+                                                                                                input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                                textarea.form-control(type="text" name="company" disabled) #{data.keterangan}
+                                                                                            hr 
+                                                                                            p Menghapus data detail layanan juga akan menghapus data sub dibawah layanan ini.
+                                                                                            button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                                                                                            button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                                                                    // END MODAL Detail
 
-                    hr.mb-30
-                    .row.items-push.mb-15
-                        .col-8.offset-lg-4
-                            if result.stat=='1' 
-                                .pull-right
-                                    if result.stat=='2' 
-                                        a.ml-10.btn.btn-alt-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
+                                                            tbody
+                                                                for data_sub in data.Bill_Detail_Subs
+                                                                    tr
+                                                                        td
+                                                                        td.font-w400.text-muted 
+                                                                            em #{data_sub.deskripsi}
+                                                                        td.font-w400.text-muted 
+                                                                            em #{data_sub.jumlah}
+                                                                        td.font-w400.text-muted 
+                                                                            em #{data_sub.harga}
+                                                                        unless (result.stat == '3')
+                                                                            td.text-center
+                                                                                a.btn.btn-sm.btn-alt-danger.btn-noborder(data-toggle="modal" data-target="#mdl-subHapus" + data_sub.id , href="javascript:void(0)")
+                                                                                    i.fa.fa-trash-o
+                                                                    
+                                                                    unless (result.stat == '3')
+                                                                        // MODAL Sub Detail
+                                                                        .modal.fade(id="mdl-subHapus"+ data_sub.id, tabindex="-1" role="dialog")
+                                                                            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                                                                                .modal-content.rounded
+                                                                                    .block.block-rounded.block-transparent
+                                                                                        .block-content.mt-20.mb-20.px-30
+                                                                                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Hapus Data
+                                                                                            p.text-muted.text-center.font-w400 Sub Layanan
+                                                                                            form.js-validation-signin(action="delete-detail-sub" method="POST")
+                                                                                                .form-group
+                                                                                                    label Index Layanan
+                                                                                                    textarea.form-control(disabled) #{data.keterangan}
+                                                                                                hr
+                                                                                                .form-group
+                                                                                                    label Sub Layanan
+                                                                                                    input(hidden name="idsubDetail" value=data_sub.id)
+                                                                                                    input(hidden name="idNum" value=Buffer.from(result.id).toString('base64'))
+                                                                                                    textarea.form-control(type="text" name="company" disabled) #{data_sub.deskripsi}
+                                                                                                hr 
+                                                                                                p Anda tidak akan bisa mengembalikan setelah menghapus
+                                                                                                button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit") Hapus Data
+                                                                                                button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                                                                        // END MODAL Sub Detail
+
+                                                                unless (result.stat == '3')
+                                                                    tr
+                                                                        td
+                                                                        td
+                                                                            a(data-toggle="modal" data-target="#mdl-subTambah" + data.id , href="javascript:void(0)")
+                                                                                i.si.si-plus.mr-5
+                                                                                | Detail 
+                                                                        td
+                                                                        td
+                                                                        td
+                            
+
+                    if result.stat>'1' || result.Bill_Details.length>'0'
+                        .mt-50
+                            .block.block-noborder
+                                .block-header.mt-20
+                                    h3.block-title Print Detail
+                                    .block-options 
+                                        a.ml-10.btn.btn-alt-primary.btn-noborder(href="#" onclick="Codebase.helpers('print-page');") 
                                             i.si.si-eye  
                                             | Lihat Kwitansi
-                                    a.ml-10.btn.btn-primary.btn-noborder.btn-hero(href="#" onclick="Codebase.helpers('print-page');") 
-                                        i.si.si-printer  
-                                        | Cetak
-                                
+                                        a.ml-10.mr-20.btn.btn-primary.btn-noborder(data-toggle=(result.stat == 3)? '':'modal' , data-target=(result.stat == 3)? '':'#mdl-print' , onClick=(result.stat == 3)? "frames['frame'].print()": '' href="javascript:void(0)") 
+                                            i.si.si-printer 
+                                            - printText = (result.stat == 3) ? 'Kembali' : 'Sekarang'
+                                            | Cetak #{printText}
+                                        button.btn-block-option(data-toggle="block-option" data-action="fullscreen_toggle")
+                                .block-content.block-content-full
+                                    iframe(allowtransparency="false" name="frame" style="background: #FFFFFF;" src=Buffer.from(result.id).toString('base64') + "/print-detailnya" width="100%" height="1100")
+                        
+                                    
 
 block modal
     input#idMSG_d_detail(hidden value=Buffer.from("msg_d_detail=true").toString('base64'))
@@ -277,6 +370,19 @@ block modal
     input#idMSG_d_detailsub(hidden value=Buffer.from("msg_d_detailsub=true").toString('base64'))
     input#idMSG_c_detailsub(hidden value=Buffer.from("msg_c_detailsub=true").toString('base64'))
     
+    if result.stat == '2' || result.Bill_Details.length>'0'
+        .modal.fade(id="mdl-print" tabindex="-1" role="dialog")
+            .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
+                .modal-content.rounded
+                    .block.block-rounded.block-transparent
+                        .block-content.py-50.px-30
+                            h4.font-w700.text-center.mb-0.mt-lg-30 Cetak Data
+                            p.text-muted.text-center.font-w400.mt-20 Kamu tidak bisa merubah data kembali setelah melakukan cetak data.
+                            form(method="POST" id="printData")
+                                button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Ya, Cetak Sekarang
+                                button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+                        
+
     .modal.fade(id="mdl_billDetail-tambah" tabindex="-1" role="dialog")
         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
             .modal-content.rounded
@@ -286,7 +392,7 @@ block modal
                         p.text-muted.text-center.font-w400 Lengkapi isian berikut
                         form(action="#" id="formCreateDetail" method="POST")
                             input#idNum(hidden value=Buffer.from(result.id).toString('base64'))
-                            input.form-control(type="text" hidden name="idBill" id="idBill" value=result.id)
+                            input.form-control(type="text" hidden name="idBill" id="idBill" value=Buffer.from(result.id).toString('base64'))
                             .form-group.mt-20
                                 input.form-control(type="text" placeholder="Deskripsi layanan"  name="keterangan" id="keterangan")
                             .form-group.mt-20
@@ -295,13 +401,71 @@ block modal
                                 input.form-control(type="number" placeholder="Harga Total" name="harga" id="harga")
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambah Detail
 
-    if result.stat=='1' 
+    if result.stat=='2' && result.Type.Template.jenis == '1'
+        .modal.fade(id="mdl-ubah-main" tabindex="-1" role="dialog")
+            .modal-dialog.modal-md.modal-dialog-centered.modal-dialog-popout(role="document")
+                .modal-content.rounded
+                    .block.block-rounded.block-transparent
+                        .block-content.mt-20.mb-20.px-30
+                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-0 Ubah Data
+                            p.text-muted.text-center.font-w400 Main Info 
+                            form.js-validation-signin(action="#" id="formMainUpdate" method="POST")
+                                .row
+                                    .col-6
+                                        .form-group
+                                            label Nama Toko
+                                            input.form-control(type="text" placeholder="Keterangan Billing" id="namastoreUp" value=result_store[0])
+                                    .col-6
+                                        .form-group
+                                            label URL Toko
+                                            input.form-control(type="text" placeholder="Keterangan Billing" id="urltokoUp" value=result_store[1])
+                                div(class=(result.Type.Template.keterangan.indexOf("Receipt") == -1)? "row" : "")
+                                    div(class=(result.Type.Template.keterangan.indexOf("Receipt") == -1)? "col-6" : "")
+                                        .form-group
+                                            label Jenis Plan
+                                            input.form-control(type="text" placeholder="Keterangan Billing" id="plantokoUp" value=result_store[2])
+                                    unless result.Type.Template.keterangan.indexOf("Invoice") == -1
+                                        .col-6
+                                            .form-group
+                                                label Jenis Produk
+                                                input.form-control(type="text" placeholder="Keterangan Billing" id="produkUp" value=result_store[5])
+                                unless result.Type.Template.keterangan.indexOf("Invoice") == -1
+                                    .row
+                                        .col-12
+                                            .form-group
+                                                label Alamat Toko
+                                                input.form-control(type="text" id="alamatUp" placeholder="Alamat Singkat Toko, eg: Semarang, Jawa Tengah" value=(result.keterangan_store==null)? '':result_store[6])
+                                        .col-12
+                                            .form-group
+                                                label Tanggal Penting
+                                                .input-daterange.input-group(data-date-format="dd-mm-yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true")
+                                                    input.form-control#dfromUp(type="text" value=dateCreate name="example-daterange1" placeholder="Tanggal Dibuat" data-week-start="1" data-autoclose="true" data-today-highlight="true")
+                                                    .input-group-prepend.input-group-append
+                                                        span.input-group-text.font-w600 sampai
+                                                    input.form-control#dtoUp(type="text" value=result_store[8] name="example-daterange2" placeholder="Tanggal Kadaluarsa" data-week-start="1" data-autoclose="true" data-today-highlight="true")
+                                .row
+                                    .col-6
+                                        .form-group
+                                            label Rekening
+                                            select.js-select2.form-control(style="width:100%" id="bankstoreUp" name="format" data-placeholder="Rekening Pembayaran")
+                                                option
+                                                    for data in result.Client.Bank_Accounts
+                                                            option(value=data.id selected= data.id == result_store[3]) #{data.bank} (#{data.bank_num}) | an.#{data.bank_name}
+                                    .col-6
+                                        .form-group
+                                            label Total Fee
+                                            input.form-control(type="text" placeholder="Keterangan Billing" id="totalUp" value=result_store[4])
+                                hr 
+                                p Mengubah data akan mengubah setiap data yang terRelasi
+                                button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
+                                button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
+    if result.stat=='1'
         .modal.fade(id="mdl-ubah" tabindex="-1" role="dialog")
             .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
                 .modal-content.rounded
                     .block.block-rounded.block-transparent
                         .block-content.mt-20.mb-20.px-30
-                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Hapus Data
+                            h4.font-w700.text-center.mb-0.mt-lg-30.mb-30 Ubah Data
                             form.js-validation-signin(action="#" id="formUpdate" method="POST")
                                 .form-group.mt-20
                                     label Keterangan
@@ -338,13 +502,14 @@ block modal
 
 
 block helpers
+    script(src="/assets/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js")
     script(src="/assets/js/plugins/select2/js/select2.full.min.js")
     script(src="/assets/js/plugins/datatables/jquery.dataTables.min.js")
     script(src="/assets/js/plugins/datatables/dataTables.bootstrap4.min.js")
 
     script(src="/assets/js/pages/be_tables_datatables.min.js")
     script.
-        jQuery(function(){ Codebase.helpers(['table-tools','select2']); })
+        jQuery(function(){ Codebase.helpers(['table-tools','select2','datepicker']); })
         var urlParams = new URLSearchParams(window.location.search);
         if(urlParams.has("alerts")){
             if(urlParams.get("alerts") == $("#idMSG_u_detail").val()){

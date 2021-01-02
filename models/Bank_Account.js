@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
     })
     Bank_Account.associate = models => {
         Bank_Account.hasMany(models.Bill, {});
+        Bank_Account.belongsTo(models.Client, {
+            foreignKey: {
+                allowNull: true
+            }
+        });
     }
 
     return Bank_Account;

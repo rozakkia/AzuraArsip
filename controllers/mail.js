@@ -3,11 +3,19 @@ let bcrypt = require("bcrypt");
 const passport = require('passport');
 const myPassport = require('../passport_setup')(passport);
 let flash = require('connect-flash');
-const { result, orderBy } = require("lodash");
+const { result, orderBy, template } = require("lodash");
 const multer  = require('multer');
 const url = require('url');
 const moment = require('moment');
 const Sequelize = require('sequelize');
+
+let encoded = function(idCode){
+  return Buffer.from(idCode).toString('base64')
+}
+
+let decoded = function(idCode){
+  return Buffer.from(idCode, 'base64').toString('ascii')
+}
 
 let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
 let month_long = new Date().toLocaleString('default', { month: 'long' });
@@ -30,15 +38,15 @@ exports.get_mails = function(req, res, next) {
     include:[models.Type]
   }
   ).then(mails => {
-    console.log(JSON.stringify(mails, null, 2));
+    
     return models.Service.findAll().then(service=>{
       return models.Type.findAll({
         where: {
           jenis: '1'
         }
       }).then(typemail => {
-        CountMail('1').then(function(resIn){
-          CountMail('2').then(function(resOut){
+        CountMail('2').then(function(resIn){
+          CountMail('1').then(function(resOut){
             res.render('mail/index', { 
               title: 'Archive Mails' , 
               user: req.user, 
@@ -78,7 +86,7 @@ const rerender_get_mails = function(alerts, req, res, next) {
           mails:mails,
           service:service,
           typemail: typemail,
-          alerts: '0'
+          alerts: alerts
         });
       })
     })
@@ -105,10 +113,11 @@ exports.create_suratMasuk = function(req,res,next) {
         rerender_get_mails(alerts,req,res,next);
         res.send('Error while uploading.' + err);
     }else{
+      const filename = req.file.originalname.split('.').slice(0, -1).join('.');
       return models.Mail.create({
         no_mail: req.body.nosurat, 
         perihal: req.body.perihal,
-        keterangan: uniqueSuffix + '-' +  req.file.originalname,
+        keterangan: uniqueSuffix + '-' +  filename,
         jenis: "2"
       }).then(result=>{
         alerts="1"
@@ -139,12 +148,22 @@ exports.get_detailMailOut = function(req,res,next){
     where: {
       id: mail_id
     },
-    include: [models.Type]
+    include: [{
+      model: models.Type,
+      include: {
+        model: models.Template
+      }
+    }]
   }).then(result => {
+    keyTag = [result.Type.Template.isi.indexOf('&lt;&gt;'),result.Type.Template.isi.indexOf('&lt;/&gt;')]
+    keytag = result.Type.Template.isi.indexOf('&lt;&gt;')+"_"+result.Type.Template.isi.indexOf('&lt;/&gt;')
+    isiSlice = result.Type.Template.isi.slice((keyTag[0]) + 8,keyTag[1])
     res.render('mail/out/detail', { 
       title: 'Mail-Out Detail' , 
       user: req.user, 
-      result: result 
+      isi: isiSlice,
+      result: result,
+      keytag: keytag 
     });
   })
 }
@@ -257,7 +276,7 @@ const createMailOut = function(newNum, req, res) {
   
   return models.Mail.create({
     no_mail: newNum,
-    perihal: req.body.perihal,
+    keterangan: req.body.keterangan,
     jenis: '1',
     stat: '1',
     TypeId: req.body.typemail,
@@ -306,18 +325,19 @@ exports.create_suratKeluarFirst = function(req,res,next) {
 
 exports.update_MailOut = function(req, res, next) {
   return models.Mail.update({
-    keterangan: req.body.keterangan,
-    tujuan: req.body.tujuan,
+    perihal: req.body.perihal,
+    tujuan: req.body.kepada + "_" + req.body.di,
     date: req.body.tanggal,
     isi: req.body.isi,
+    keytag: req.body.keytag,
     stat: '2'
   },{
     where:{
       id: req.body.idmail
     }
   }).then(result => {
-    var serviceAdd = {};
-    return res.send(serviceAdd)  
+    var alerts = {};
+    return res.send(alerts)  
   })
 }
 
@@ -343,5 +363,68 @@ exports.delete_MailIn = function(req, res, next) {
   }).then(result=> {
     var Alerts = {};
     return res.send(Alerts)  
+  })
+}
+
+exports.get_print_detail = function (req, res, next){
+  const html2pug = require('html2pug')
+  const pug = require('pug')
+  return models.Mail.findOne({
+    where: {
+      id: decoded(req.params.mail_id)
+    },
+    include:[{
+      model: models.Type,
+      include: {
+        model: models.Template
+      }
+    }]
+  }).then(result=>{
+    headerCSS=`<head><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700"><link rel="stylesheet" href="/assets/css/codebase.css"></head>`
+    printable = (req.query.print == 'true') ? "<script type='text/javascript'>window.print()</script>" : ""
+    resKey = result.keytag.split("_")
+    isi = result.Type.Template.isi.slice(resKey[0],resKey[1])
+    isiUbah = result.Type.Template.isi.replace(isi,result.isi)
+    pugfile = html2pug(headerCSS + isiUbah + printable , { tabs: true })
+    
+    tempatSplit = result.tujuan.split("_")
+    res.send(pug.render(pugfile, {
+      D_noID: result.no_mail,
+      D_keterangan: result.keterangan ,
+      D_date: result.createdAt,
+      T_alias: result.Type.alias,
+      // S_name: result.Service.name,
+      // S_unique:,
+      D_perihal: result.perihal,
+      D_tujuan: tempatSplit[0],
+      D_tempat: tempatSplit[1],
+      D_date: result.date,
+      T_inisial: result.Type.inisial
+    }))
+  })
+}
+
+exports.activateUbah = function(req, res, next){
+  return models.Mail.update({
+    stat: '1'
+  },{
+    where:{
+      id: decoded(req.params.mail_id)
+    }
+  }).then(result => {
+    res.redirect('/mails/out/' +req.params.mail_id); 
+  })
+}
+
+exports.print_data = function(req, res, next){
+  return models.Mail.update({
+    stat:"3"
+  },{
+    where:{
+      id: decoded(req.body.idNum)
+    }
+  }).then(result=>{
+    var alerts = {};
+    return res.send(alerts)
   })
 }
