@@ -61,7 +61,8 @@ block content
                                     .row
                                         .col-6
                                             .form-group
-                                                - tujuan = result.tujuan.split('_')
+                                                if result.tujuan != null
+                                                    - tujuan = result.tujuan.split('_')
                                                 label Kepada
                                                 if result.stat == '1'
                                                     input.form-control(type="text" placeholder="Kepada dari surat keluar ini." id="kepada" value=(result.tujuan == null? '':tujuan[0] ))
@@ -149,8 +150,8 @@ block modal
                                  input(id="idNum" name="idNum" hidden value=Buffer.from(result.id).toString('base64'))
                                 input.form-control(type="text" id="no_surat" value=result.no_mail disabled)
                             .form-group
-                                label Perihal
-                                input.form-control(type="text" id="perihal" value=result.perihal disabled)
+                                label Keterangan
+                                input.form-control(type="text" id="perihal" value=result.keterangan disabled)
                             hr 
                             p Menghapus data akan menyebabkan konflik pada Relasi
                             button.btn.btn-alt-danger.btn-noborder.w-100.mt-20(type="submit" id="btnHapusData") Hapus Data

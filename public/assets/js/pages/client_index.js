@@ -137,7 +137,7 @@ $("#formBankAdd").on("submit", function(e){
     $.ajax({
         type        : "POST",
         contentType : "application/json",
-        url         : "clients/bank_create",
+        url         : "bank_create",
         data        : JSON.stringify(formData),
         dataType    : 'json',
         success : function(alert) {

@@ -14,10 +14,12 @@ mixin navbar(user)
                             a.nav-link.font-w600(href="/settings/profile")
                                 i.font-w600 
                                 | #{user.name}
-                        li.nav-item.mr-xl-2
-                            a.nav-link.font-w600(href="/settings/core")
-                                i.font-w600 
-                                | Pengaturan
+                        - rCore = user.Role.routing.split(',').includes('6')
+                        if rCore == true
+                            li.nav-item.mr-xl-2
+                                a.nav-link.font-w600(href="/settings/core")
+                                    i.font-w600 
+                                    | Pengaturan
                     if user
                         li.nav-item.mr-xl-2
                             a.nav-link.font-w600(href="/logout")

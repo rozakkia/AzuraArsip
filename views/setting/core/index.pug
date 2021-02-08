@@ -93,7 +93,7 @@ block content
                                                                 | Detail
                                                     - i++
                     h4.font-w300.mt-50
-                        small Roles Settings
+                        small Template Settings
                     .row
                         .col-12
                             .block
@@ -111,7 +111,7 @@ block content
                                                 th.text-center No
                                                 th.text-center Keterangan
                                                 th.text-center Jenis
-                                                th.text-center Digunakan
+                                                th.text-center Last Updated
                                                 th.text-center Action
                                         tbody
                                             if templates
@@ -128,7 +128,7 @@ block content
                                                                     span.badge.badge-primary Format Bill Details
                                                                 when '3'
                                                                     span.badge.badge-danger Persuratan
-                                                        td
+                                                        td #{data.last_update}
                                                         td.text-center
                                                             a.btn.btn-sm.btn-noborder.btn-alt-info.mr-5(href="core/template/" + Buffer.from(data.id).toString('base64') ) 
                                                                 i.si.si-eye.mr-5
@@ -338,6 +338,8 @@ block modal
                                 input(type="text" name="unique" id="unique" value="0" hidden)
                                 input.form-control(type="text" placeholder="Aliases Name" id="name" name="name")
                             .form-group.mt-20
+                                input.form-control(type="text" placeholder="Inisial" id="inisial" name="inisial")
+                            .form-group.mt-20
                                  select.js-select2.form-control(style="width:100%" id="format" name="format" data-placeholder="Numbering Format")
                                     option
                                         for data in format
@@ -353,7 +355,7 @@ block modal
                                 label Templating
                                 select.js-select2.form-control(style="width:100%" id="idtemplate2" name="idtemplate" data-placeholder="Template Index")
                                     option
-                                    option(value=null) Tidak ada
+                                    option(value='0') Tidak ada
                                         for data in templates
                                             option(value=data.id) #{data.keterangan}
                                 .custom-file.mt-10

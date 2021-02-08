@@ -134,7 +134,7 @@ const NumberID = function(req,res, oF, type, numDetail){
       newArrayNum[oF.I[0]] = oF.I[1]
     }
     if(oF.U[0] != -1){
-      oF.U.push(type.unique_code)   
+      oF.U.push(type.inisial)   
       newArrayNum[oF.U[0]] = oF.U[1]
     }
     if(oF.YYYY[0] != -1){
@@ -142,7 +142,12 @@ const NumberID = function(req,res, oF, type, numDetail){
       newArrayNum[oF.YYYY[0]] = oF.YYYY[1]
     }
     if(oF.MM[0] != -1){
-      oF.MM.push(month)
+      if (month.length == 1){
+        monthVar = '0' + month 
+      }else {
+        monthVar = month
+      }
+      oF.MM.push(monthVar)
       newArrayNum[oF.MM[0]] = oF.MM[1]
     }
     if(oF.MV[0] != -1){
@@ -154,28 +159,60 @@ const NumberID = function(req,res, oF, type, numDetail){
         oF.ID.push("001")
         newArrayNum[oF.ID[0]] = oF.ID[1]
       }else{
-        res.send("The Format Number is Error, ID is unavailable!")
+        res.send("The Format Number is Error, ID is unavailable! 1")
       }
     }else if (numDetail == 2){
+      // if(oF.MM[1] == oF.last_MM || oF.MV[1] == oF.last_MV){
+      //   newestID = Number(oF.last_ID) + 1
+      //   if(String(newestID).length == 1){
+      //     countNewestID = "00" + newestID
+      //   }else if(String(newestID).length == 2){
+      //     countNewestID = "0" + newestID
+      //   }else if(String(newestID).length == 3){
+      //     countNewestID = newestID
+      //   }else{
+      //     res.send("Error Asli")
+      //   }
+      //   oF.ID.push(countNewestID)
+      //   newArrayNum[oF.ID[0]] = oF.ID[1]
+      // }else{
+      //   oF.ID.push("001")
+      //   newArrayNum[oF.ID[0]] = oF.ID[1]
+      // }
       if(oF.ID[0] != -1){
-        if(oF.MM[0] != -1 || oF.MV[0] != -1){
-          if(oF.MM[1] == oF.last_MM || oF.MV[1] == oF.last_MV){
-            newestID = Number(oF.last_ID) + 1
-            if(String(newestID).length == 1){
-              countNewestID = "00" + newestID
-            }else if(String(newestID).length == 2){
-              countNewestID = "0" + newestID
-            }else if(String(newestID).length == 3){
-              countNewestID = newestID
-            }else{
-              res.send("Error Asli")
-            }
-            oF.ID.push(countNewestID)
-            newArrayNum[oF.ID[0]] = oF.ID[1]
+        if(oF.MM[0] != -1){
+          if(oF.MM[1] == oF.last_MM){
+            isPlusOne = true
           }else{
-            oF.ID.push("001")
-            newArrayNum[oF.ID[0]] = oF.ID[1]
+            isPlusOne = false
           }
+        }else if (oF.MV[0] != -1){
+          if(oF.MV[1] == oF.last_MV){
+            isPlusOne = true
+          }else{
+            isPlusOne = false
+          }
+        }else{
+          res.send("Error")
+        }
+        if(isPlusOne === true){
+          newestID = Number(oF.last_ID) + 1
+          if(String(newestID).length == 1){
+            countNewestID = "00" + newestID
+          }else if(String(newestID).length == 2){
+            countNewestID = "0" + newestID
+          }else if(String(newestID).length == 3){
+            countNewestID = newestID
+          }else{
+            res.send("Error Asli")
+          }
+          oF.ID.push(countNewestID)
+          newArrayNum[oF.ID[0]] = oF.ID[1]
+        }else if(isPlusOne === false){
+          oF.ID.push("001")
+          newArrayNum[oF.ID[0]] = oF.ID[1]
+        }else{
+          res.send('ERROR PlusONE')
         }
       }else{
         res.send("The Format Number is Error, ID is unavailable!")
@@ -184,6 +221,7 @@ const NumberID = function(req,res, oF, type, numDetail){
       res.send("Galat Error")
     }
     newNum = (newArrayNum.toString()).replace(/,/g , '/')
+    console.log(oF)
     createBill(newNum, req, res)
   })
 }
@@ -436,6 +474,7 @@ exports.create_main = function(req, res, next){
 }
 
 exports.get_print_detail = function (req, res, next){
+  //MAX 8 DETAILS
   const html2pug = require('html2pug')
   const pug = require('pug')
   return models.Bill.findOne({
@@ -520,11 +559,10 @@ exports.get_print_detail = function (req, res, next){
             for(i=0; i<data.Bill_Details.length;i++){
               rowDetails = ''
               rowSubs = ''
-              rowDetails = "<tr><td>" + data.Bill_Details[i].jumlah + "</td><td>" + data.Bill_Details[i].keterangan + "</td><td>" + data.Bill_Details[i].harga + "</td><td>" + data.Bill_Details[i].harga*data.Bill_Details[i].jumlah + "</td></tr>" 
+              rowDetails = "<tr><td>" + data.Bill_Details[i].jumlah + "</td><td>" + data.Bill_Details[i].keterangan + "</td><td>" + Rupiah(data.Bill_Details[i].harga) + "</td><td>" + Rupiah(data.Bill_Details[i].harga*data.Bill_Details[i].jumlah) + "</td></tr>" 
               
               for(j=0; j<data.Bill_Details[i].Bill_Detail_Subs.length;j++){
-                rowSubs += "<tr><td></td><td>" + data.Bill_Details[i].Bill_Detail_Subs[j].deskripsi + "</td><td></td><td></td></tr>"
-                //rowFull += rowDetails+rowSubs
+                rowSubs += "<tr><td></td><td><span class='text-muted'>" + data.Bill_Details[i].Bill_Detail_Subs[j].deskripsi + "</span></td><td></td><td></td></tr>"
               }
               rowFull += rowDetails+rowSubs
               rowTotal += Number(+data.Bill_Details[i].harga * +data.Bill_Details[i].jumlah)

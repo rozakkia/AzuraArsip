@@ -6,6 +6,7 @@ let flash = require('connect-flash');
 const multer  = require('multer');
 const { route } = require("../routes");
 var path = require('path');
+const Sequelize = require('sequelize');
 
 exports.get_typeTemplate = function(req, res, next){
   return models.Type.findOne({
@@ -30,10 +31,13 @@ exports.get_core = function(req, res, next) {
     }).then(types => {
       return models.Format_Num.findAll().then(format => {
         return models.Role.findAll().then(roles =>{
-          return models.Template.findAll().then(templates=>{
+          return models.Template.findAll({
+            attributes: ['id','keterangan','jenis', [Sequelize.fn('YEAR', Sequelize.col('updatedAt')), 'last_update']]
+          }).then(templates=>{
             return models.User.findAll({
               include: [models.Role]
             }).then(user_role => {
+              console.log(JSON.stringify(templates, null, 2))
               res.render('setting/core/index', { 
                 title: 'Core Settings', 
                 user: req.user, 
@@ -208,6 +212,8 @@ exports.create_type = function(req,res,next) {
         res.send('Error while uploading.');
     }else{
       fileNamesnya = ((req.file)? uniqueSuffix + "-" +req.file.originalname:null)
+      templateVal = (req.body.idtemplate == '0')? null:req.body.idtemplate
+      console.log(templateVal) 
       return models.Type.create({
         alias: req.body.name, 
         inisial: req.body.inisial,
@@ -216,7 +222,7 @@ exports.create_type = function(req,res,next) {
         file_template: fileNamesnya,
         FormatNumId: req.body.format,
         ServiceId: req.body.service,
-        TemplateId: req.body.idtemplate   
+        TemplateId: templateVal   
       }).then(result=>{
         alerts="1"
         rerender_get_core(alerts,req,res,next);
@@ -240,6 +246,7 @@ exports.get_typeDetail = function(req, res, next) {
           }else if(data.jenis==3){
             ti = 'Billing'
           }
+          console.log(JSON.stringify(data, null, 2))
           res.render('setting/core/detail_type', { 
             title:  ti + ' Type Detail', 
             user: req.user, 
@@ -295,6 +302,7 @@ exports.update_type = function(req, res, next) {
     inisial : req.body.inisial,
     unique_code : req.body.unique,
     FormatNumId: req.body.selectformat,
+    TemplateId: req.body.selecttemplate,
     ServiceId: selectservice
   },{
     where:{

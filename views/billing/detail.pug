@@ -70,7 +70,7 @@ block content
                             hr.mb-30.mt-50
                             .row.items-push
                                 .col-3
-                                    a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
+                                    //- a.btn.btn-secondary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billing-tambah" href="javascript:void(0)") Batalkan
                                 .col-8.offset-lg-1
                                     button.pull-right.btn.btn-primary.btn-noborder.btn-hero(type="submit") Simpan Data
                 else
@@ -351,9 +351,10 @@ block content
                                 .block-header.mt-20
                                     h3.block-title Print Detail
                                     .block-options 
-                                        a.ml-10.btn.btn-alt-primary.btn-noborder(href="#" onclick="Codebase.helpers('print-page');") 
-                                            i.si.si-eye  
-                                            | Lihat Kwitansi
+                                        if result.stat == 3
+                                            a.ml-10.btn.btn-alt-primary.btn-noborder(href="#" onclick="Codebase.helpers('print-page');") 
+                                                i.si.si-eye  
+                                                | Lihat Kwitansi
                                         a.ml-10.mr-20.btn.btn-primary.btn-noborder(data-toggle=(result.stat == 3)? '':'modal' , data-target=(result.stat == 3)? '':'#mdl-print' , onClick=(result.stat == 3)? "frames['frame'].print()": '' href="javascript:void(0)") 
                                             i.si.si-printer 
                                             - printText = (result.stat == 3) ? 'Kembali' : 'Sekarang'
@@ -480,7 +481,7 @@ block modal
                                 p Mengubah data akan mengubah setiap data yang terRelasi
                                 button.btn.btn-alt-primary.btn-noborder.w-100.mt-20(type="submit") Simpan
                                 button.btn.btn-alt-secondary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
-
+    if result.stat == '1' || result.stat == '2'
         .modal.fade(id="mdl-hapus" tabindex="-1" role="dialog")
             .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
                 .modal-content.rounded

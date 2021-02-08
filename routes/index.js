@@ -21,15 +21,16 @@ let {
     authClient, 
     authCore, 
     authMail, 
-    authUser
+    authUser,
+    notLoggedIn
 } = require('../middleware/hasAuth.js')
 
 /* GET home page. */
 router.get('/', isLoggedIn, index.get_index);
-router.get('/login', user.get_login);
-router.post('/login', user.login);
+router.get('/login', notLoggedIn, user.get_login);
+router.post('/login', notLoggedIn, user.login);
 router.get('/login/success', isLoggedIn, user.get_success);
-router.get('/login/error', user.get_error);
+router.get('/login/error', notLoggedIn, user.get_error);
 
 // USERS //
 router.get('/users', isLoggedIn, authUser, user.get_users);

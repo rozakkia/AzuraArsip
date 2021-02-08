@@ -103,9 +103,9 @@
                         }]
                     },
                     byService_data = {
-                        labels: ["Azura Store", "Azura Labs", "Mails"],
+                        labels: ["Mails", "Azura Store", "Azura Labs"],
                         datasets: [{
-                            data: [50, 25, 25],
+                            data: data_byService,
                             backgroundColor: ["rgba(156,204,101,1)", "rgba(255,202,40,1)", "rgba(239,83,80,1)"],
                             hoverBackgroundColor: ["rgba(156,204,101,.5)", "rgba(255,202,40,.5)", "rgba(239,83,80,.5)"]
                         }]

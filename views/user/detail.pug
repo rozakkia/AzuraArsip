@@ -37,9 +37,29 @@ block content
                     .row.mt-10
                         .col-4
                             .block.block-bordered.block-rounded
+                                .block-header.block-header-default
+                                    span.text-muted Riwayat Terakhir
                                 .block-content.block-content-full
+                                    h6.font-w400.mb-5 Billings
+                                    if Bill
+                                        span.badge.badge-info.mr-10 #{Bill.Type.alias}
+                                        br
+                                        a.push.text-primary.font-size-md(href="/billings/"+Buffer.from(Bill.id).toString('base64')) #{Bill.keterangan}
+                                    else
+                                        span.badge.badge-secondary.mr-10 Riwayat tidak ada
                                     hr
-                                    h6.font-w400 Riwayat Terakhir
+                                    h6.font-w400.mb-5 Mails
+                                    if Mail
+                                        if Mail.jenis == '1'
+                                            span.badge.badge-info.mr-10 Mail-Out
+                                            br
+                                            a.push.text-primary.font-size-md(href="/mails/out/"+Buffer.from(Mail.id).toString('base64')) #{Mail.keterangan}
+                                        if Mail.jenis == '2' 
+                                            span.badge.badge-primary.mr-10 Mail-In
+                                            br
+                                            a.push.text-primary.font-size-md(href="/mails/in/"+Buffer.from(Mail.id).toString('base64')) #{Mail.perihal}
+                                    else
+                                        span.badge.badge-secondary.mr-10 Riwayat tidak ada
                         .col-8
                             .row
                                 .col-6

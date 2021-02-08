@@ -5,6 +5,7 @@ $("#formUpdate").on("submit", function(e){
         alias : $("#alias").val(),
         inisial : $("#inisial").val(),
         unique : $("#unique").val(),
+        selecttemplate : $("#select-template").val(),
         selectformat : $("#select-format").val(),
         selectservice : $("#select-service").val()
     }

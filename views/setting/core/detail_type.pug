@@ -41,19 +41,24 @@ block content
                     h6.text-center.mb-0.mt-30
                         small Format Num
                     h2.font-w600.mt-0.mb-50.text-center #{data.Format_Num.alias} - #{data.Format_Num.format_num} 
-                    h6.text-center.mb-0.mt-30
-                        small File Template | 
-                            a(data-toggle="modal" data-target="#mdl-upload" href="javascript:void(0)")  #{((data.file_template)? "Ubah" : "Upload")}
-                    .text-center
-                        if data.file_template == null
-                            h4.font-w400.mt-0.mb-50.text-muted
-                                em Belum tersedia
-                        else
-                            a.h2.font-w600.mt-0.mb-50(href=Buffer.from(data.id).toString('base64') + "/template", target="_blank") #{data.file_template}.pug
+                    //- h6.text-center.mb-0.mt-30
+                    //-     small File Template | 
+                    //-         a(data-toggle="modal" data-target="#mdl-upload" href="javascript:void(0)")  #{((data.file_template)? "Ubah" : "Upload")}
+                    //- .text-center
+                    //-     if data.file_template == null
+                    //-         h4.font-w400.mt-0.mb-50.text-muted
+                    //-             em Belum tersedia
+                    //-     else
+                    //-         a.h2.font-w600.mt-0.mb-50(href=Buffer.from(data.id).toString('base64') + "/template", target="_blank") #{data.file_template}.pug
                     h6.text-center.mb-0.mt-30
                         small Template Index
                     .text-center
-                        a.h2.font-w600.mt-0.mb-50(href="../template/" + Buffer.from(data.Template.id).toString('base64'), target="_blank") #{data.Template.keterangan}
+                        if data.TemplateId == null
+                            h4.font-w400.mt-0.mb-50.text-muted
+                                em
+                                    |Belum Tersedia
+                        else
+                            a.h2.font-w600.mt-0.mb-50(href="../template/" + Buffer.from(data.Template.id).toString('base64'), target="_blank") #{data.Template.keterangan}
 
 block modal
     .modal.fade(id="mdl-ubah" tabindex="-1" role="dialog")
@@ -82,6 +87,18 @@ block modal
                                             else
                                                 for d_service in service
                                                     option(value=d_service.id selected= data.Service.id==d_service.id) #{d_service.name} (#{d_service.unique})
+                            .form-group.mt-20
+                                label Template Index
+                                select.js-select2.form-control(style="width:100%" id="select-template" name="template" data-placeholder="Template Index")
+                                    option
+                                        if data.TemplateId == null
+                                            option(value='0' selected) Tidak ada
+                                            for d_template in template
+                                                option(value=d_template.id) #{d_template.keterangan}
+                                        else
+                                            option(value='0') Tidak ada
+                                            for d_template in template
+                                                option(value=d_template.id selected= data.Template.id==d_template.id) #{d_template.keterangan}
                             .form-group.mt-20
                                 label Format Num
                                 select.js-select2.form-control(style="width:100%" id="select-format" name="format" data-placeholder="Numbering Format")

@@ -19,6 +19,13 @@ exports.isLoggedIn = function(req, res, next) {
         res.redirect('/login'); 
 }
 
+exports.notLoggedIn = function(req, res, next) {
+    if (!req.user)
+        next();
+    else 
+        res.redirect('/'); 
+}
+
 exports.authBankAccount = function(req, res, next) {
     routeAccess(req, res, next, '1')
 }

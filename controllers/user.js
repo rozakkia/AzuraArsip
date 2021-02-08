@@ -72,12 +72,36 @@ exports.get_detail = function(req, res, next) {
     include: [models.Role]
   }).then(user_detail => {
     return models.Role.findAll().then(roles=>{
-      res.render('user/detail', { 
-        title: 'User Detail' , 
-        user: req.user, 
-        user_detail:user_detail,
-        roles:roles 
-      });
+      return models.Bill.findOne({
+        where: {
+          UserId: Buffer.from(req.params.user_id, 'base64').toString('ascii')
+        },
+        order : [
+          ['createdAt', 'DESC']
+        ],
+        include: {
+          model: models.Type,
+          attributes: ['id','alias']
+        }
+      }).then(Billfind => {
+        return models.Mail.findOne({
+          where: {
+            UserId : Buffer.from(req.params.user_id, 'base64').toString('ascii')
+          },
+          order : [
+            ['createdAt', 'DESC']
+          ]
+        }).then(Mailfind => {
+          res.render('user/detail', { 
+            title: 'User Detail' , 
+            user: req.user, 
+            user_detail:user_detail,
+            roles:roles,
+            Bill: Billfind,
+            Mail: Mailfind 
+          });
+        })
+      })
     })
   });
 }
