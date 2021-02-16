@@ -19,11 +19,24 @@ block content
         .block.block-rounded.block-fx-shadow
             .block-header.bg-info.px-100
                 h1.mt-20.text-white ##{result.Type.alias} : #{result.no_bill}
-                    if result.stat == 3
+                    if result.stat == 8
                         |  - 
-                        span.badge.badge-primary Printed
+                        span.badge.badge-dark Dibatalkan
+                    if result.Type.has_paid == true
+                        if result.stat == 3
+                            |  - 
+                            span.badge.badge-primary Not Paid Yet
+                        else if result.stat == 4
+                            |  - 
+                            span.badge.badge-primary Printed
+                            span.mx-4.badge.badge-success Paid
+                    else if result.Type.has_paid == false 
+                        if result.stat == 3
+                            |  - 
+                            span.badge.badge-success Printed
+                    
                 if result.stat > 0
-                    unless result.stat == 3
+                    unless result.stat == 3 || result.stat == 4 || result.stat == 8
                         .block-options
                             .dropdown
                                 button.btn-block-option.dropdown-toggle.text-white(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Lainnya
@@ -194,7 +207,7 @@ block content
                                     .block.block-bordered.block-rounded
                                         .block-header
                                             h3.block-title(id="invoices") Billing Details
-                                            unless result.stat == 3
+                                            unless result.stat == 3 || result.stat == 8
                                                 .block-options
                                                     a.btn.btn-alt-primary.btn-noborder.btn-hero(data-toggle="modal" data-target="#mdl_billDetail-tambah" href="javascript:void(0)") Tambah Detail
                                         .block-content.block-content-full
@@ -209,7 +222,7 @@ block content
                                                             th Deskripsi
                                                             th.d-none.d-sm-table-cell Jumlah 
                                                             th.d-none.d-sm-table-cell Harga
-                                                            unless (result.stat == '3')
+                                                            unless (result.stat == '3' || result.stat == '8')
                                                                 th.text-center Action
                                                     if !result.Bill_Details
                                                         tbody
@@ -224,14 +237,14 @@ block content
                                                                     td.font-w600 #{data.keterangan} 
                                                                     td.font-w600 #{data.jumlah}
                                                                     td.d-none.d-sm-table-cell #{data.harga}
-                                                                    unless (result.stat == '3')
+                                                                    unless (result.stat == '3' || result.stat == '8')
                                                                         td.text-center
                                                                             a.btn.btn-sm.btn-alt-info.btn-noborder.mr-5(data-toggle="modal" data-target="#mdl-detailUbah" + data.id , href="javascript:void(0)")
                                                                                 i.fa.fa-pencil
                                                                             a.btn.btn-sm.btn-alt-danger.btn-noborder.ml-5(data-toggle="modal" data-target="#mdl-detailHapus" + data.id , href="javascript:void(0)")
                                                                                 i.fa.fa-trash-o
                                                                 
-                                                                unless (result.stat == '3')
+                                                                unless (result.stat == '3' || result.stat == '8')
                                                                     //MODAL Detail
                                                                     .modal.fade(id="mdl-subTambah"+ data.id, tabindex="-1" role="dialog")
                                                                         .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
@@ -303,12 +316,12 @@ block content
                                                                             em #{data_sub.jumlah}
                                                                         td.font-w400.text-muted 
                                                                             em #{data_sub.harga}
-                                                                        unless (result.stat == '3')
+                                                                        unless (result.stat == '3' || result.stat == '8')
                                                                             td.text-center
                                                                                 a.btn.btn-sm.btn-alt-danger.btn-noborder(data-toggle="modal" data-target="#mdl-subHapus" + data_sub.id , href="javascript:void(0)")
                                                                                     i.fa.fa-trash-o
                                                                     
-                                                                    unless (result.stat == '3')
+                                                                    unless (result.stat == '3' || result.stat == '8')
                                                                         // MODAL Sub Detail
                                                                         .modal.fade(id="mdl-subHapus"+ data_sub.id, tabindex="-1" role="dialog")
                                                                             .modal-dialog.modal-sm.modal-dialog-centerd.modal-dialog-popout(role="document")
@@ -333,7 +346,7 @@ block content
                                                                                                 button.btn.btn-alt-primary.btn-noborder.btn-hero.w-100.mt-20(type="button" data-dismiss="modal") Batalkan
                                                                         // END MODAL Sub Detail
 
-                                                                unless (result.stat == '3')
+                                                                unless (result.stat == '3' || result.stat == '8')
                                                                     tr
                                                                         td
                                                                         td
@@ -345,24 +358,39 @@ block content
                                                                         td
                             
 
-                    if result.stat>'1' || result.Bill_Details.length>'0'
-                        .mt-50
+                        
+                        .mt-50.mb-100
                             .block.block-noborder
                                 .block-header.mt-20
                                     h3.block-title Print Detail
-                                    .block-options 
-                                        if result.stat == 3
-                                            a.ml-10.btn.btn-alt-primary.btn-noborder(href="#" onclick="Codebase.helpers('print-page');") 
-                                                i.si.si-eye  
-                                                | Lihat Kwitansi
-                                        a.ml-10.mr-20.btn.btn-primary.btn-noborder(data-toggle=(result.stat == 3)? '':'modal' , data-target=(result.stat == 3)? '':'#mdl-print' , onClick=(result.stat == 3)? "frames['frame'].print()": '' href="javascript:void(0)") 
-                                            i.si.si-printer 
-                                            - printText = (result.stat == 3) ? 'Kembali' : 'Sekarang'
-                                            | Cetak #{printText}
+                                    .block-options
+                                        unless result.stat == '8'
+                                            a.ml-10.mr-20.btn.btn-primary.btn-noborder(data-toggle=(result.stat == 3)? '':'modal' , data-target=(result.stat == 3 || result.stat == 4)? '':'#mdl-print' , onClick=(result.stat == 3)? "frames['frame'].print()": '' href="javascript:void(0)") 
+                                                i.si.si-printer 
+                                                - printText = (result.stat == 3 || result.stat == 4) ? 'Kembali' : 'Sekarang'
+                                                | Cetak #{printText}
                                         button.btn-block-option(data-toggle="block-option" data-action="fullscreen_toggle")
                                 .block-content.block-content-full
                                     iframe(allowtransparency="false" name="frame" style="background: #FFFFFF;" src=Buffer.from(result.id).toString('base64') + "/print-detailnya" width="100%" height="1100")
-                        
+                                    if result.Type.has_paid == true
+                                        if result.stat == '3' 
+                                            hr
+                                            .pull-right.mt-20.mb-50
+                                                a.ml-10.mr-20.btn.btn-hero.btn-secondary.btn-noborder(id="swalBatal" href="javascript:void(0)") 
+                                                    i.si.si-ban 
+                                                    | Batalkan
+                                                a.ml-10.mr-20.btn.btn-hero.btn-primary.btn-noborder(id="swalBayar" href="javascript:void(0)") 
+                                                    i.si.si-credit-card 
+                                                    | Bayar Sekarang
+                                        
+                                        if result.stat == '4'
+                                            hr
+                                            .pull-right.mt-20.mb-50
+                                                a.ml-10.mr-20.btn.btn-hero.btn-info.btn-noborder(id="" href="javascript:void(0)") 
+                                                    i.si.si-film 
+                                                    | Lihat Kwitansi
+
+
                                     
 
 block modal

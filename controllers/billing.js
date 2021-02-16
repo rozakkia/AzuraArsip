@@ -321,10 +321,7 @@ exports.get_billingCreated = function(req, res, next){
           dateCreate = d.getDate() + "-" +( d.getMonth() + 1) + "-" + d.getFullYear()
         }
       }
-      console.log(d)
-      console.log(resultGetBill.createdAt)
-      console.log(dateCreate)
-      console.log(resultGetBill.createdAt)
+      // console.log(resultGetBill.Type)
       res.render('billing/detail', { 
         title: 'Billing Created' , 
         user: req.user, 
@@ -534,7 +531,7 @@ exports.get_print_detail = function (req, res, next){
             }
             return output
           }
-          console.log(JSON.stringify(dataBankList(list_bank), null,2))
+          // console.log(JSON.stringify(dataBankList(list_bank), null,2))
           bankListMain = "<div class='row mx-30'>"+ dataBankList(list_bank) +"</div>"
           codeUtama_wBankList = data.Type.Template.isi.replace('#{B_bank_list}',bankListMain)
         }else{
@@ -571,8 +568,8 @@ exports.get_print_detail = function (req, res, next){
           }
           detailsRow = data_Details(data)
           baseDetails = "<table class='table table-borderless'>" + detailsRow.rowFull + "</table>"
-          console.log(JSON.stringify(data, null,2))
-          console.log(baseDetails)
+          // console.log(JSON.stringify(data, null,2))
+          // console.log(baseDetails)
           
         }
         
@@ -639,6 +636,32 @@ exports.update_main = function(req, res, next){
 exports.print_data = function(req, res, next){
   return models.Bill.update({
     stat:"3"
+  },{
+    where:{
+      id: decoded(req.body.idBill)
+    }
+  }).then(result=>{
+    var alerts = {};
+    return res.send(alerts)
+  })
+}
+
+exports.paid_bill = function(req, res, next){
+  return models.Bill.update({
+    stat:"4"
+  },{
+    where:{
+      id: decoded(req.body.idBill)
+    }
+  }).then(result=>{
+    var alerts = {};
+    return res.send(alerts)
+  })
+}
+
+exports.unpaid_bill = function(req, res, next){
+  return models.Bill.update({
+    stat:"8"
   },{
     where:{
       id: decoded(req.body.idBill)

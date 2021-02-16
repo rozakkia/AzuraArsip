@@ -78,6 +78,8 @@ router.post('/billings/create-main', isLoggedIn, authBilling, billing.create_mai
 router.get('/billings/:bill_id/print-detailnya', isLoggedIn, authBilling, billing.get_print_detail);
 router.post('/billings/update-main', isLoggedIn, authBilling, billing.update_main);
 router.post('/billings/print-data-now', isLoggedIn, authBilling, billing.print_data)
+router.post('/billings/paid-bill', isLoggedIn, authBilling, billing.paid_bill);
+router.post('/billings/unpaid-bill', isLoggedIn, authBilling, billing.unpaid_bill);
 
 // SETTINGS
 

@@ -358,9 +358,6 @@ block modal
                                     option(value='0') Tidak ada
                                         for data in templates
                                             option(value=data.id) #{data.keterangan}
-                                .custom-file.mt-10
-                                    input.custom-file-input(type="file" id="template" name="template" data-toggle="custom-file-input")
-                                    label.custom-file-label Template file (.pug)
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
     
     .modal.fade(id="mdl-mailtype-tambah" tabindex="-1" role="dialog")
@@ -390,9 +387,6 @@ block modal
                                     option
                                         for data in templates
                                             option(value=data.id) #{data.keterangan}
-                                .custom-file.mt-10
-                                    input.custom-file-input(type="file" name="template" data-toggle="custom-file-input")
-                                    label.custom-file-label Template file (.pug)
                             button.btn.btn-primary.btn-noborder.btn-hero.w-100.mt-20(type="submit") Tambahkan
     
 

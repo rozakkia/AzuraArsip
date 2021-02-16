@@ -18,68 +18,18 @@ countBill = function(){
 countService = function(){
   // belom bisa
   return models.Service.findAll({
+    attributes: [ 
+      [Sequelize.fn('COUNT', Sequelize.col('types.bills.id')) ,'c']
+    ],
     include: [{
       model: models.Type,
-      attributes: [
-        'id',
-        [Sequelize.fn('count', Sequelize.col('types.bills.id')) ,'type_count'] // <---- Here you will get the total count of user
-      ],
+      attributes: [],
       include: [{
         model: models.Bill,
         attributes: [] // <----- Make sure , this should be empty
       }],
     }],
     group: ['id']
-
-    // attributes: { 
-    //   include: [[Sequelize.fn("COUNT", Sequelize.col("type.bill.id")), "Counts"]] 
-    // },
-    // include: [{
-    //     model: models.Type,
-    //     // attributes: { 
-    //     //   include: [[Sequelize.fn("COUNT", Sequelize.col("bills.id")), "Counts"]] 
-    //     // },
-    //     include: [{
-    //         model: models.Bill,
-    //         attributes: []
-    //     }]
-    // }]
-
-
-
-    // include: [{
-    //     model: models.Type,
-    //     attributes: { 
-    //       include: [[Sequelize.fn("COUNT", Sequelize.col("bills.id")), "sensorCount"]] 
-    //     },
-    //     include: {
-    //       model: models.Bill,
-    //       attributes: []
-    //     }
-    // }]
-    // attributes: ['id', 'name'],
-    // include: {
-    //   model: models.Type,
-    //   attributes: ['id'],
-    //   include: {
-    //     model: models.Bill,
-    //     attributes: ['id']
-    //   }
-    // }
-    /*
-    
-    select si service
-    select include type service
-
-
-    attributes: ({
-      include: [[Sequelize.fn("COUNT", Sequelize.col("types.ServiceId")), "serviceCounts"]] 
-    }),
-    include: [{
-      model: models.Type, 
-      attributes: []
-    }]
-    */
   }).catch(err=>{
     console.log(err)
   })
@@ -121,15 +71,17 @@ exports.get_index = function( req, res, next) {
               CountMail('2').then(function(resIn){
                 CountMail('1').then(function(resOut){
                   hasRoute = req.user.Role.routing.split(',')
-                  console.log(JSON.stringify(countService, null, 2));
+                  // console.log(JSON.stringify(countService, null, 2))
                   data_byType = [
                     a,b,c
                   ]
-
                   data_byService = [
                     resIn+resOut
                   ]
-                  
+                  for(i=0; i<countService.length; i++){
+                    data_byService.push(objCount = JSON.stringify(countService[i]).slice(5).replace("}",""))
+                  }
+                  // console.log(data_byService)
                   res.render('index', { 
                     title: 'Dashboard', 
                     user: req.user,

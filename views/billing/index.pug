@@ -74,8 +74,20 @@ block content
                                                     span.badge.badge-danger Incompleted / Not Printed Yet
                                                 when 2
                                                     span.badge.badge-info Not Printed Yet
-                                                when 3
-                                                    span.badge.badge-primary Printed
+                                                when 8 
+                                                    span.badge.badge-dark Dibatalkan
+                                            if bill_data.Type.has_paid == true
+                                                case bill_data.stat 
+                                                    when 3
+                                                        span.badge.badge-primary Printed
+                                                        span.mx-2.badge.badge-danger Not Paid Yet
+                                                    when 4 
+                                                        span.badge.badge-primary Printed
+                                                        span.mx-2.badge.badge-success Paid 
+                                            else if bill_data.Type.has_paid == false 
+                                                case bill_data.stat 
+                                                    when 3
+                                                        span.badge.badge-primary Printed
                                         td.text-center
                                             a.btn.btn-sm.btn-noborder.btn-alt-secondary.mr-5(href="/billings/" + Buffer.from(bill_data.id).toString('base64') ) Detail
                                     - i = i+1
